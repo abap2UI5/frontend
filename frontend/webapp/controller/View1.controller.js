@@ -12,7 +12,6 @@ sap.ui.define([
             onAfterRendering: function () {
 
                 sap.z2ui5 = {};
-                
                 try {
                     sap.z2ui5.oParent = this.oView.getParent();
                     if (sap.z2ui5.oParent.getMetadata().getName() !== 'sap.m.App') {
@@ -21,16 +20,9 @@ sap.ui.define([
                 } catch (error) {
                     sap.z2ui5.oParent = this.getView().byId(this.getView().getId() + "--app");
                 }
-                try {
-                    var app = this.oView.getParent().getComponentData().startupParameters.appid[0];
-                } catch (error) {
                     try {
-                        app = this.getOwnerComponent().getComponentData().startupParameters.appid[0];
-                    } catch (error) { }
-                }
-                if (app) {
-                    sap.z2ui5.APP_START = app;
-                }
+                        sap.z2ui5.APP_START = this.getOwnerComponent().getComponentData().startupParameters.app_start[0];
+                    } catch(e){ }
 
                 this.getView().getModel().read("/z2ui5_cds_01", {
                     success: function (oRetrievedResult) {
