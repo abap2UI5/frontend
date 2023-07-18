@@ -15,7 +15,7 @@ And allows the integration of abap2UI5 apps to:
 * SAP Mobile Start (device)
 
 ## Installation
-The project consists of three branchens:
+The project consists of three additional branchens:
 1. Frontend UI5 application, deploy it to your abap system or btp
 2. Backend Odata Serice (abap_cloud), CDS service
 3. Backend OData Service (standard_abap), SEGW service
