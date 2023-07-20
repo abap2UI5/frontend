@@ -1,4 +1,0 @@
-@EndUserText.label: 'test'
-define service Z2ui5_serv_cds_01 {
-  expose z2ui5_cds_01;
-}
