@@ -9,7 +9,7 @@
 * installation can be performed using [**abapGit**](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png)
 
 ### Functionality
-<img width="940" alt="image" src="https://github.com/abap2UI5/integration-fiori_launchpad_on_premise/assets/102328295/2f465e8d-bc2d-4b50-866d-08e33f19b028">
+<img width="838" alt="image" src="https://github.com/abap2UI5/integration-fiori_launchpad_on_premise/assets/102328295/af486e4c-c57a-4596-a865-48c80c73e986">
 
 (*) this project can also be used to integrate your abap2UI5 on-premise apps with Business Technology Platform
 
