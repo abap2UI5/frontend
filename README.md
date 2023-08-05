@@ -11,7 +11,7 @@
 ### Functionality
 <img width="838" alt="image" src="https://github.com/abap2UI5/integration-fiori_launchpad_on_premise/assets/102328295/af486e4c-c57a-4596-a865-48c80c73e986">
 
-(*) this project can also be used to integrate your abap2UI5 on-premise apps with Business Technology Platform
+(*) this project can also be used to integrate your abap2UI5 on-premise apps to Business Technology Platform
 
 ### Artifacts
 OData-Service calling abap2UI5:<br>
