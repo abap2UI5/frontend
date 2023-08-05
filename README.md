@@ -17,7 +17,7 @@ _This project can also be used to integrate your abap2UI5 on-premise apps to Bus
 After the installation with abapGit, three ICF nodes are created (1) OData Service and (2)(3) for the UI5 App. Check in transaction SICF if they are activated and reachable:<br>
 <img width="500" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/2cb8a77b-72ee-4b21-9b12-ad5227a68f9f"><br>
 Now you can launch the abap2UI5 app:<br>
-<img width="500" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/0176bd82-f57a-4d8c-afa8-7daa155eb110">
+<img width="500" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/0176bd82-f57a-4d8c-afa8-7daa155eb110"><br>
 This is the app you can use for the launchpad integration.
 
 #### FAQ
