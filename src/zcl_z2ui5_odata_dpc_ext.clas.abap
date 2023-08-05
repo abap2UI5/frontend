@@ -6,15 +6,13 @@ class ZCL_Z2UI5_ODATA_DPC_EXT definition
 public section.
 
   methods /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITYSET
-    redefinition .
+    redefinition.
+
 protected section.
 private section.
 ENDCLASS.
 
-
-
 CLASS ZCL_Z2UI5_ODATA_DPC_EXT IMPLEMENTATION.
-
 
   METHOD /iwbep/if_mgw_appl_srv_runtime~get_entityset.
 
@@ -30,4 +28,5 @@ CLASS ZCL_Z2UI5_ODATA_DPC_EXT IMPLEMENTATION.
     copy_data_to_ref( EXPORTING is_data = lt_result CHANGING cr_data = er_entityset ).
 
   ENDMETHOD.
+
 ENDCLASS.
