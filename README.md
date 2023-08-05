@@ -1,5 +1,6 @@
-## Extension - abap2UI5 Service Integration
+### Branch - OData Service based on SEGW
 
+* abap2UI5 Service Integration 
 * odata service based on segw
 * install this repository with abapGit
 
