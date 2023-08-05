@@ -15,11 +15,15 @@ _This project can also be used to integrate your abap2UI5 on-premise apps to Bus
 
 #### Artifacts
 OData-Service calling abap2UI5:<br>
-<img width="600" alt="image" src="https://github.com/abap2UI5/ext-service_integration/assets/102328295/3d96ac7e-514e-4d31-82ad-f64f78142ca7"><br>
-<img width="600" alt="image" src="https://github.com/abap2UI5/integration-fiori_launchpad_on_premise/assets/102328295/3ff770a0-e62c-40ce-9f2b-375f9261101d">
+<img width="400" alt="image" src="https://github.com/abap2UI5/ext-service_integration/assets/102328295/3d96ac7e-514e-4d31-82ad-f64f78142ca7"><br>
+<img width="400" alt="image" src="https://github.com/abap2UI5/integration-fiori_launchpad_on_premise/assets/102328295/3ff770a0-e62c-40ce-9f2b-375f9261101d">
 <br>
 UI5-App calling the OData-Service:<br>
-<img width="600" alt="image" src="https://github.com/abap2UI5/ext-service_integration/assets/102328295/98c4f5d7-bb81-47d4-9f15-2acb7839e6ba">
+<img width="400" alt="image" src="https://github.com/abap2UI5/ext-service_integration/assets/102328295/98c4f5d7-bb81-47d4-9f15-2acb7839e6ba">
+
+#### Installation
+...
+
 #### FAQ
 * check out the [**documentation**](https://github.com/abap2UI5/abap2UI5-documentation) for installation & configuration guidelines
 * your comments, questions, wishes and bugs are welcome, please create an [**issue**](https://github.com/abap2UI5/integration-fiori_launchpad_on_premise/issues)
