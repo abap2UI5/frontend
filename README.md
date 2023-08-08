@@ -18,7 +18,7 @@ After the installation with abapGit, three ICF nodes are created (1) OData Servi
 <img width="500" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/0176bd82-f57a-4d8c-afa8-7daa155eb110"><br>
 <img width="500" alt="Bildschirm­foto 2023-08-06 um 14 52 42" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/1ddaba83-70d8-49b1-8a19-60cdd7d3b748">
 
-Use this app for the launchpad integration. For more detailed installation guidelines, refer to this [link.](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/installation.md)
+For more detailed installation guidelines, check out this [**link**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/installation.md) and use the installed app for the launchpad integration as described [**here.**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/launchpad_setup.md)
 
 #### FAQ
 * check out the [**documentation**](https://github.com/abap2UI5/abap2UI5-documentation) for installation & configuration guidelines
