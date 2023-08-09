@@ -10,6 +10,7 @@
 
 #### Functionality
 <img width="838" alt="image" src="https://github.com/abap2UI5/integration-fiori_launchpad_on_premise/assets/102328295/af486e4c-c57a-4596-a865-48c80c73e986">
+<img width="700" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/17c375e8-10cd-471e-83f8-d62ed27224e3">
 
 _Additionally this project can be used to integrate your abap2UI5 on-premise apps to Business Technology Platform_
 
