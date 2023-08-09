@@ -8,11 +8,11 @@
 * the integration is compatible with SAP Netweaver (v.7.50 or higher) or S/4 Private (Standard ABAP)
 * installation can be performed using [**abapGit**](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png)
 
+_📢 Additionally this project can be used to integrate your abap2UI5 on-premise apps to the Business Technology Platform_
+
 #### Functionality
 <img width="838" alt="image" src="https://github.com/abap2UI5/integration-fiori_launchpad_on_premise/assets/102328295/af486e4c-c57a-4596-a865-48c80c73e986">
 <img width="700" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/17c375e8-10cd-471e-83f8-d62ed27224e3">
-
-_Additionally this project can be used to integrate your abap2UI5 on-premise apps to Business Technology Platform_
 
 #### Installation
 After the installation with abapGit, three ICF nodes are created (1) OData Service and (2)(3) for the UI5 App. Check in transaction SICF if they are available and activated. Launch the UI5 app from this provided node:<br>
