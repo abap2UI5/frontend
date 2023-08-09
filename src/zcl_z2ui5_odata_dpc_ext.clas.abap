@@ -20,7 +20,7 @@ CLASS ZCL_Z2UI5_ODATA_DPC_EXT IMPLEMENTATION.
     DATA(lv_body) = VALUE #( lt_filter_cond[ 1 ]-select_options[ 1 ]-low OPTIONAL ).
 
     DATA(lv_resp) = COND #( WHEN lv_body IS INITIAL
-        THEN z2ui5_cl_http_handler=>http_get( check_logging = abap_true )
+        THEN z2ui5_cl_http_handler=>http_get( )
         ELSE z2ui5_cl_http_handler=>http_post( lv_body ) ).
 
     DATA lt_result TYPE zcl_z2ui5_odata_mpc=>tt_z2ui5_odata.
