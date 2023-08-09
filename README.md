@@ -8,7 +8,7 @@
 * the integration is compatible with SAP Netweaver (v.7.50 or higher) or S/4 Private (Standard ABAP)
 * installation can be performed using [**abapGit**](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png)
 
-_📢 Additionally this project can be used to integrate your abap2UI5 on-premise apps to the Business Technology Platform_
+_📢 Additionally this project can be used to integrate your abap2UI5 on-premise apps to the Business Technology Platform [(here)](https://github.com/abap2UI5/ext-business_technology_platform)_
 
 #### Functionality
 <img width="838" alt="image" src="https://github.com/abap2UI5/integration-fiori_launchpad_on_premise/assets/102328295/af486e4c-c57a-4596-a865-48c80c73e986">
