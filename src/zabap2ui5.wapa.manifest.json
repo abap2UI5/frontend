@@ -61,7 +61,12 @@
     "contentDensities": {                                                                                                                                                                                                                                      
       "compact": true,                                                                                                                                                                                                                                         
       "cozy": true                                                                                                                                                                                                                                             
-    },                                                                                                                                                                                                                                                         
+    },
+    "services": {
+			"ShellUIService": {
+				"factoryName": "sap.ushell.ui5service.ShellUIService"
+			}
+		},
     "models": {                                                                                                                                                                                                                                                
       "i18n": {                                                                                                                                                                                                                                                
         "type": "sap.ui.model.resource.ResourceModel",                                                                                                                                                                                                         
