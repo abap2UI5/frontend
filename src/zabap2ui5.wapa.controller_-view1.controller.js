@@ -6,22 +6,22 @@ sap.ui.define([
      */                                                                                                                                                                                                                                                        
     function (Controller) {                                                                                                                                                                                                                                    
         "use strict";                                                                                                                                                                                                                                          
-        var that;                                                                                                                                                                                                                                                       
-        return Controller.extend("z2ui5.controller.View1", {  
-            onInit: function () {
-				that = this;
-                
-				//Set app title dynamically 
-				this.getOwnerComponent().getService("ShellUIService").then( // promise is returned
-					function (oService) {
-						try {
-							var sTitle = that.getOwnerComponent().getComponentData().startupParameters.app_title[0];
-							oService.setTitle(sTitle);
-						} catch (e) {}
-					}
-				);
-			},
-            
+        var that;                                                                                                                                                                                                                                              
+        return Controller.extend("z2ui5.controller.View1", {                                                                                                                                                                                                   
+            onInit: function () {                                                                                                                                                                                                                              
+				that = this;                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                               
+				//Set app title dynamically                                                                                                                                                                                                                                
+				this.getOwnerComponent().getService("ShellUIService").then( // promise is returned                                                                                                                                                                         
+					function (oService) {                                                                                                                                                                                                                                     
+						try {                                                                                                                                                                                                                                                    
+							var sTitle = that.getOwnerComponent().getComponentData().startupParameters.app_title[0];                                                                                                                                                                
+							oService.setTitle(sTitle);                                                                                                                                                                                                                              
+						} catch (e) {}                                                                                                                                                                                                                                           
+					}                                                                                                                                                                                                                                                         
+				);                                                                                                                                                                                                                                                         
+			},                                                                                                                                                                                                                                                          
+                                                                                                                                                                                                                                                               
             onAfterRendering: function () {                                                                                                                                                                                                                    
                                                                                                                                                                                                                                                                
                 sap.z2ui5 = {};                                                                                                                                                                                                                                
