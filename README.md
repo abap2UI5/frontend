@@ -2,8 +2,7 @@
 
 #### Key Features
 * enables the integration of abap2UI5 Apps into SAP Fiori Launchpads (On-Premise)
-* the repository contains an UI5 App and an OData service based on SEGW
-* it facilitates the invocation of abap2UI5 Apps through a standard UI5/OData App, offering the flexibility to integrate various Apps into On-Premise Launchpads
+* the repository contains an UI5 App and an OData service
 * the abap2UI5 apps and the framework's functionality remain unaltered
 * the integration is compatible with SAP Netweaver (v.7.50 or higher) or S/4 Private (Standard ABAP)
 * installation can be performed using [**abapGit**](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png)
