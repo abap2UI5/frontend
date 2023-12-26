@@ -8,7 +8,7 @@
 * installation can be performed using [**abapGit**](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png)
 
 #### Functionality
-<img width="838" alt="image" src="https://github.com/abap2UI5/integration-fiori_launchpad_on_premise/assets/102328295/af486e4c-c57a-4596-a865-48c80c73e986">
+<img width="800" alt="Bildschirmfoto 2023-12-26 um 11 31 11" src="https://github.com/abap2UI5/abap2UI5-launchpad_on_premise/assets/102328295/6c4b5977-61ec-40e9-a246-b223387666d5">
 <img width="700" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/17c375e8-10cd-471e-83f8-d62ed27224e3">
 
 #### Installation
