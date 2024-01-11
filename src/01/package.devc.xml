@@ -3,7 +3,7 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <DEVC>
-    <CTEXT>icf service</CTEXT>
+    <CTEXT>backend - http service</CTEXT>
    </DEVC>
   </asx:values>
  </asx:abap>
