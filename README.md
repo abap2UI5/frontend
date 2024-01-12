@@ -7,6 +7,8 @@
 * the integration is compatible with SAP Netweaver (v.7.50 or higher) or S/4 Private (Standard ABAP)
 * installation can be performed using [**abapGit**](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png)
 
+_Running into problems or found a bug? Create an issue [**here**](https://github.com/abap2UI5/abap2UI5/issues)_
+  
 #### Functionality
 <img width="800" alt="Bildschirmfoto 2023-12-26 um 11 31 11" src="https://github.com/abap2UI5/abap2UI5-launchpad_on_premise/assets/102328295/6c4b5977-61ec-40e9-a246-b223387666d5">
 <img width="700" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/17c375e8-10cd-471e-83f8-d62ed27224e3">
