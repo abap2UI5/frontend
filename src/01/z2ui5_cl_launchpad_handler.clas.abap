@@ -18,8 +18,8 @@ CLASS Z2UI5_CL_LAUNCHPAD_HANDLER IMPLEMENTATION.
   METHOD IF_HTTP_EXTENSION~HANDLE_REQUEST.
 
     DATA(lv_resp) = SWITCH #( server->request->get_method( )
-       WHEN 'GET'  THEN z2ui5_cl_fw_http_handler=>http_get( )
-       WHEN 'POST' THEN z2ui5_cl_fw_http_handler=>http_post( server->request->get_cdata( ) ) ).
+       WHEN 'GET'  THEN z2ui5_cl_http_handler=>http_get( )
+       WHEN 'POST' THEN z2ui5_cl_http_handler=>http_post( server->request->get_cdata( ) ) ).
 
     server->response->set_header_field( name = `cache-control` value = `no-cache` ).
     server->response->set_cdata( lv_resp ).
