@@ -1,13 +1,13 @@
 ## abap2UI5 Integration - SAP Fiori Launchpad (On-Premise) <img src="https://github.com/abap2UI5/abap2UI5/assets/102328295/52ac0bb6-a219-4e9d-9e4f-62698dab3063" width="30">
 
+_Running into problems or found a bug? Create an issue [**here**](https://github.com/abap2UI5/abap2UI5/issues)_
+
 #### Key Features
 * enables the integration of abap2UI5 Apps into SAP Fiori Launchpads (On-Premise)
 * the repository contains an UI5 App (BSP) and a HTTP Service for the communication with abap2UI5
 * the abap2UI5 apps and the framework's functionality remain unaltered
 * the integration is compatible with SAP Netweaver (v.7.50 or higher) or S/4 Private (Standard ABAP)
 * installation can be performed using [**abapGit**](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png)
-
-_Running into problems or found a bug? Create an issue [**here**](https://github.com/abap2UI5/abap2UI5/issues)_
   
 #### Functionality
 <img width="800" alt="Bildschirmfoto 2023-12-26 um 11 31 11" src="https://github.com/abap2UI5/abap2UI5-launchpad_on_premise/assets/102328295/6c4b5977-61ec-40e9-a246-b223387666d5">
