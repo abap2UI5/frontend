@@ -15,8 +15,8 @@ _Running into problems or found a bug? Create an issue [**here**](https://github
 
 #### Installation
 After the installation with abapGit, three ICF nodes are created (1) HTTP Service and (2)(3) for the UI5 App. Check in transaction SICF if they are available and activated. Launch the UI5 app from this provided node:<br>
-<img width="500" alt="image" src="https://github.com/abap2UI5/abap2UI5-launchpad_on_premise/assets/102328295/48ccfcce-4f20-49f4-8687-652327e25687"><br>
-<img width="500" alt="Bildschirm­foto 2023-08-06 um 14 52 42" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/1ddaba83-70d8-49b1-8a19-60cdd7d3b748">
+<img width="500" alt="image" src="https://github.com/abap2UI5/abap2UI5-proxy_app_launchpad/assets/102328295/93567dbe-dcd3-4487-b78a-1d4dd21a0c8d"><br>
+<img width="800" alt="Bildschirmfoto 2024-03-28 um 10 30 46" src="https://github.com/abap2UI5/abap2UI5-proxy_app_launchpad/assets/102328295/dfcf0ca3-c2e5-4feb-a01c-f818a8e108e3">
 
 Use this app for the launchpad integration as described [**here.**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/launchpad_setup.md)
 For more installation guidelines, check out this [**link.**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/installation.md)
