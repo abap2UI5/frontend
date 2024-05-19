@@ -28,7 +28,7 @@ Maintain the following start parameters:
 | APP_START  | classname of the app for the initial call |
 | APP_TITLE  | title which is set via frontend  (optional) |
 
-_If your classname is developed in a custom namespace, use -MY_NS-CL_MY_CLASS instead of /MY_NS/CL_MY_CLASS, "-" is mapped to "/" automatically_
+_If your classname is developed in a custom namespace, use -NS-CL_MY_CLASS instead of /NS/CL_MY_CLASS, "-" is mapped to "/" automatically_
 #### FAQ
 * check out the [**documentation**](https://github.com/abap2UI5/abap2UI5-documentation) for installation & configuration guidelines
 * your comments, questions, wishes and bugs are welcome, please create an [**issue**](https://github.com/abap2UI5/integration-fiori_launchpad_on_premise/issues)
