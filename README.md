@@ -18,8 +18,7 @@ After the installation with abapGit, three ICF nodes are created (1) HTTP Servic
 <img width="500" alt="image" src="https://github.com/abap2UI5/abap2UI5-proxy_app_launchpad/assets/102328295/93567dbe-dcd3-4487-b78a-1d4dd21a0c8d"><br>
 <img width="800" alt="Bildschirmfoto 2024-03-28 um 10 30 46" src="https://github.com/abap2UI5/abap2UI5-proxy_app_launchpad/assets/102328295/dfcf0ca3-c2e5-4feb-a01c-f818a8e108e3">
 
-Use this app for the launchpad integration as described [**here.**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/launchpad_setup.md)
-For more installation guidelines, check out this [**link.**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/installation.md)
+For more installation guidelines, check out this [**link.**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/installation.md) Use this app for the launchpad integration as described [**here.**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/launchpad_setup.md)
 
 #### Parameters
 Maintain the following start parameters:
