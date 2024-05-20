@@ -2,6 +2,8 @@
 
 _Running into problems or found a bug? Create an issue [**here**](https://github.com/abap2UI5/abap2UI5/issues)_
 
+Compatibility: R/3 NetWeaver AS ABAP, S/4 Private Cloud
+
 #### Key Features
 * enables the integration of abap2UI5 Apps into SAP Fiori Launchpads (On-Premise)
 * the repository contains an UI5 App (BSP) and a HTTP Service for the communication with abap2UI5
