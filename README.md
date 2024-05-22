@@ -17,7 +17,7 @@ An UI5 app (BSP Application) is installed with abapGit which can be added multip
 #### Installation
 Check out the following guidelines: <br>
 [**(1) Installation with abapGit**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/installation.md) <br>
-[**(2) Configuration of the Launchpad**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/configuration.md) <br>
+[**(2) Configuration of the Fiori Launchpad**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/configuration.md) <br>
 [**(3) Setup Startup Parameters & Title**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/startup_params.md) <br>
 
 #### FAQ
