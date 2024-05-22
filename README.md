@@ -5,7 +5,7 @@ _Running into problems or found a bug? Create an issue [**here**](https://github
 #### Key Features
 * Integrate your abap2UI5 Apps into SAP Fiori Launchpads (On-Premise)
 * User-Friendly: Launch different backend apps simply by adjusting the start parameter "app_start"
-* Framework Consistency: The framework and all abap2UI5 apps can remain unchanged in your ABAP backend system
+* Framework Consistency: All abap2UI5 apps can remain unchanged in your ABAP backend system
 * Compatible with SAP Netweaver (v.7.30 or higher) or S/4 Private (Standard ABAP)
 * Easy-Installation with [**abapGit**](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png)
   
