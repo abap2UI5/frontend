@@ -7,7 +7,7 @@ _Running into problems or found a bug? Create an issue [**here**](https://github
 * **User-Friendly:** Launch different apps simply by adjusting the start parameter "app_start"
 * **Project Consistency:** All abap2UI5 apps can remain unchanged in your ABAP system
 * **Compatibility:** Runs with SAP Netweaver (v.7.30 or higher) or S/4 Private (Standard ABAP)
-* **Easy-Installation:** Use [**abapGit**](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png)
+* **Installation:** Use [**abapGit**](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png)
   
 #### Functionality
 An UI5 app (BSP Application) is installed with abapGit which can be added multiple time as a tile to your launchpad. Each tile starts a different abap2UI5 app: <br>
