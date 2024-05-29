@@ -1,16 +1,16 @@
-## abap2UI5 - Connector SAP Fiori Launchpad (On-Premise) <img src="https://github.com/abap2UI5/abap2UI5/assets/102328295/52ac0bb6-a219-4e9d-9e4f-62698dab3063" width="30">
+## abap2UI5 - Connector SAP Fiori Launchpad <img src="https://github.com/abap2UI5/abap2UI5/assets/102328295/52ac0bb6-a219-4e9d-9e4f-62698dab3063" width="30">
 
 _Running into problems or found a bug? Create an issue [**here**](https://github.com/abap2UI5/abap2UI5/issues)_
 
 #### Key Features
-* Integrate your abap2UI5 Apps into SAP Fiori Launchpads (On-Premise)
-* User-Friendly: Launch different backend apps simply by adjusting the start parameter "app_start"
-* Framework Consistency: All abap2UI5 apps can remain unchanged in your ABAP backend system
+* Host your abap2UI5 Apps on SAP Fiori Launchpads (On-Premise)
+* User-Friendly: Launch different apps simply by adjusting the start parameter "app_start"
+* Framework Consistency: All abap2UI5 apps can remain unchanged in your ABAP system
 * Compatible with SAP Netweaver (v.7.30 or higher) or S/4 Private (Standard ABAP)
 * Easy-Installation with [**abapGit**](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png)
   
 #### Functionality
-An UI5 app (BSP Application) is installed with abapGit which can be added multiple time as a tile to your launchpad. Each tile can start a different abap2UI5 app: <br>
+An UI5 app (BSP Application) is installed with abapGit which can be added multiple time as a tile to your launchpad. Each tile starts a different abap2UI5 app: <br>
 <img width="800" alt="Bildschirmfoto 2023-12-26 um 11 31 11" src="https://github.com/abap2UI5/abap2UI5-launchpad_on_premise/assets/102328295/6c4b5977-61ec-40e9-a246-b223387666d5">
 <img width="700" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/17c375e8-10cd-471e-83f8-d62ed27224e3">
 
