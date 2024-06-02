@@ -12,6 +12,7 @@ _Running into problems or found a bug? Create an issue [**here**](https://github
 #### Functionality
 
 <img width="700" alt="Screenshot 2024-06-02 at 16 05 28" src="https://github.com/abap2UI5/abap2UI5-connector_sap_fiori_launchpad/assets/102328295/7a66b131-0516-473d-a4ad-9468bdc5fdfb"><br>
+___[Link Architecture](https://excalidraw.com/#json=n4Y2VdcMD32F0LvuJWs4-,NREoe051wicmP4XJfOSv5Q)___<br>
 Install with [abapGit](https://abapgit.org) and you will find an UI5 app (BSP Application) in your system. Add it multiple time to your launchpad and maintain different ABAP classes as starting parameter. Each tile will then call a different abap2UI5 app.
 
 #### Preview
