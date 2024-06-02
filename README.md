@@ -7,13 +7,12 @@ _Running into problems or found a bug? Create an issue [**here**](https://github
 * **User-Friendly:** Launch different apps simply by adjusting the start parameter "app_start"
 * **Project Consistency:** All abap2UI5 apps can remain unchanged in your ABAP system
 * **Compatibility:** Runs with SAP Netweaver (v.7.30 or higher) or S/4 Private (Standard ABAP)
-* **Installation:** Use [**abapGit**](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png)
   
 #### Functionality
 
 <img width="700" alt="Screenshot 2024-06-02 at 16 05 28" src="https://github.com/abap2UI5/abap2UI5-connector_sap_fiori_launchpad/assets/102328295/7a66b131-0516-473d-a4ad-9468bdc5fdfb"><br>
 ___[Link Architecture](https://excalidraw.com/#json=n4Y2VdcMD32F0LvuJWs4-,NREoe051wicmP4XJfOSv5Q)___<br>
-Install with [abapGit](https://abapgit.org), and you will find a UI5 app (BSP Application) in your system. Add it multiple times to your launchpad and maintain different ABAP classes as starting parameters. Each tile will then call a different abap2UI5 app.
+Install with [abapGit](https://abapgit.org) ![abapGit](https://docs.abapgit.org/img/favicon.png), and you will find a UI5 app (BSP Application) in your system. Add it multiple times to your launchpad and maintain different ABAP classes as starting parameters. Each tile will then call a different abap2UI5 app.
 
 #### Preview
 <img width="700" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/17c375e8-10cd-471e-83f8-d62ed27224e3">
