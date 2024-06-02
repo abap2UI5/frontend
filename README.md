@@ -11,7 +11,10 @@ _Running into problems or found a bug? Create an issue [**here**](https://github
   
 #### Functionality
 An UI5 app (BSP Application) is installed with abapGit which can be added multiple time as a tile to your launchpad. Each tile starts a different abap2UI5 app: <br>
-<img width="800" alt="Bildschirmfoto 2023-12-26 um 11 31 11" src="https://github.com/abap2UI5/abap2UI5-launchpad_on_premise/assets/102328295/6c4b5977-61ec-40e9-a246-b223387666d5">
+<img width="700" alt="Screenshot 2024-06-02 at 16 05 28" src="https://github.com/abap2UI5/abap2UI5-connector_sap_fiori_launchpad/assets/102328295/7a66b131-0516-473d-a4ad-9468bdc5fdfb">
+
+
+#### Preview
 <img width="700" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/17c375e8-10cd-471e-83f8-d62ed27224e3">
 
 #### Installation
