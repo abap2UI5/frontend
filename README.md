@@ -18,7 +18,6 @@ Install with [abapGit](https://abapgit.org) and you will find an UI5 app (BSP Ap
 <img width="700" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/17c375e8-10cd-471e-83f8-d62ed27224e3">
 
 #### Installation
-Check out the following guidelines: <br>
 [**(1) Installation with abapGit**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/installation.md) <br>
 [**(2) Configuration of the Fiori Launchpad**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/configuration.md) <br>
 [**(3) Setup Startup Parameters & Title**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/startup_params.md) <br>
