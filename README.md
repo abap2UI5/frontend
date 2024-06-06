@@ -18,8 +18,9 @@ Install with [abapGit](https://abapgit.org) ![abapGit](https://docs.abapgit.org/
 <img width="700" alt="image" src="https://github.com/abap2UI5/ext-fiori_launchpad_on_premise/assets/102328295/17c375e8-10cd-471e-83f8-d62ed27224e3">
 
 #### Installation
-[**(1) Installation with abapGit**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/installation.md) <br>
-[**(2) Configuration of the Fiori Launchpad**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/configuration.md) <br>
+
+[**(1) Installation**](https://www.linkedin.com/pulse/copy-abap2ui5-host-your-apps-sap-fiori-launchpad-abap2ui5-ocn2e/) <br>
+[**(2) Features: Title, Parameters, Navigation**](https://www.linkedin.com/pulse/abap2ui5-host-your-apps-sap-fiori-launchpad-23-features-abap2ui5-upche/) <br>
 [**(3) Setup Startup Parameters & Title**](https://github.com/abap2UI5/abap2UI5-documentation/blob/main/docs/ext-fiori_launchpad_integration/startup_params.md) <br>
 
 #### FAQ
