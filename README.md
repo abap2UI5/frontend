@@ -19,9 +19,9 @@ Install with [abapGit](https://abapgit.org) ![abapGit](https://docs.abapgit.org/
 
 #### Installation & Usage
 
-[**(1) Installation**](https://www.linkedin.com/pulse/copy-abap2ui5-host-your-apps-sap-fiori-launchpad-abap2ui5-ocn2e/) <br>
+[**(1) Installation & Configuration**](https://www.linkedin.com/pulse/copy-abap2ui5-host-your-apps-sap-fiori-launchpad-abap2ui5-ocn2e/) <br>
 [**(2) Features: Title, Parameters, Navigation**](https://www.linkedin.com/pulse/abap2ui5-host-your-apps-sap-fiori-launchpad-23-features-abap2ui5-upche/) <br>
-[**(3) KPIs**](https://www.linkedin.com/pulse/abap2ui5-host-your-apps-sap-fiori-launchpad-33-kpis-abap2ui5-uuxxe/) <br>
+[**(3) Integration of KPIs**](https://www.linkedin.com/pulse/abap2ui5-host-your-apps-sap-fiori-launchpad-33-kpis-abap2ui5-uuxxe/) <br>
 
 #### FAQ
 * check out the [**documentation**](https://github.com/abap2UI5/abap2UI5-documentation) for installation & configuration guidelines
