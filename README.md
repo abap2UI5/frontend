@@ -1,6 +1,4 @@
-## abap2UI5 - Connector SAP Fiori Launchpad <img src="https://github.com/abap2UI5/abap2UI5/assets/102328295/52ac0bb6-a219-4e9d-9e4f-62698dab3063" width="30">
-
-_Running into problems or found a bug? Create an issue [**here**](https://github.com/abap2UI5/abap2UI5/issues)_
+## abap2UI5 - Connector SAP Fiori Launchpad
 
 #### Key Features
 * **Launchpad Connector:** Host your abap2UI5 Apps on SAP Fiori Launchpad
