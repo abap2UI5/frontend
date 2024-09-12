@@ -1,21 +1,21 @@
-class Z2UI5_CL_LAUNCHPAD_HANDLER definition
-  public
-  final
-  create public .
+CLASS z2ui5_cl_launchpad_handler DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  interfaces IF_HTTP_EXTENSION .
+    INTERFACES if_http_extension .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS Z2UI5_CL_LAUNCHPAD_HANDLER IMPLEMENTATION.
+CLASS z2ui5_cl_launchpad_handler IMPLEMENTATION.
 
 
-  METHOD IF_HTTP_EXTENSION~HANDLE_REQUEST.
+  METHOD if_http_extension~handle_request.
 
     server->response->set_cdata( z2ui5_cl_http_handler=>main( server->request->get_cdata( ) ) ).
     server->response->set_header_field( name = `cache-control` value = `no-cache` ).
