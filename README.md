@@ -5,7 +5,9 @@
 * **User-Friendly:** Launch different apps simply by adjusting the start parameter "app_start"
 * **Project Consistency:** All abap2UI5 apps can remain unchanged in your ABAP system
 * **Compatibility:** Runs minimum with SAP Netweaver (v.7.56) or S/4 2021 (Standard ABAP)
-  
+
+_Lower UI5 releases are not supported, but you can try the experimental branch [here.](https://github.com/abap2UI5-connectors/fiori-launchpad-connector-onpremise/tree/low_ui5_release)_
+
 #### Functionality
 
 <img width="700" alt="Screenshot 2024-06-02 at 16 05 28" src="https://github.com/abap2UI5/abap2UI5-connector_sap_fiori_launchpad/assets/102328295/7a66b131-0516-473d-a4ad-9468bdc5fdfb"><br>
