@@ -6,7 +6,7 @@ _Running into problems or found a bug? Create an issue [**here**](https://github
 * **Launchpad Connector:** Host your abap2UI5 Apps on SAP Fiori Launchpad
 * **User-Friendly:** Launch different apps simply by adjusting the start parameter "app_start"
 * **Project Consistency:** All abap2UI5 apps can remain unchanged in your ABAP system
-* **Compatibility:** Runs minimum with SAP Netweaver (v.7.56) or S/4 2021 (Standard ABAP)
+* **Compatibility:** Runs minimum with SAP Netweaver v.7.50 or S/4 2021 (Standard ABAP)
 
 _Lower UI5 releases are not supported, but you can try the experimental branch [here.](https://github.com/abap2UI5-connectors/fiori-launchpad-connector-onpremise/tree/low_ui5_release)_
 
