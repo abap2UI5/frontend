@@ -733,7 +733,8 @@ if (!z2ui5.Timer) {sap.ui.define("z2ui5/Timer" , [
                                   'sap-contextid': sap.z2ui5.contextId,                                                                                                                                                                                        
                                   'sap-contextid-accept': 'header'                                                                                                                                                                                             
                               }                                                                                                                                                                                                                                
-                          });                                                                                                                                                                                                                                  
+                          });   
+                      delete sap.z2ui5.contextId;
                       }                                                                                                                                                                                                                                        
                       if(UIComponent.prototype.exit) UIComponent.prototype.exit.apply(this, arguments);                                                                                                                                                        
                   },                                                                                                                                                                                                                                           
