@@ -59,7 +59,7 @@ CLASS z2ui5_cl_lp_sample_03 IMPLEMENTATION.
                             press = client->_event_client(
             val    = client->cs_event-cross_app_nav_to_ext
             t_arg  = VALUE #(
-                ( `{ semanticObject: "Z2UI5_CL_DEMO_APP_128",  action: "display" }` )
+                ( `{ semanticObject: "Z2UI5_CL_LP_SAMPLE_04",  action: "display" }` )
 *                ( `{ "Product" : "102343333" }` )
                 ( `$` && client->_bind_edit( nav_params ) )
                  )

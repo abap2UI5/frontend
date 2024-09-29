@@ -62,7 +62,7 @@ CLASS z2ui5_cl_lp_sample_04 IMPLEMENTATION.
                             text  = 'go to app 127'
                             press = client->_event_client(
             val    = client->cs_event-cross_app_nav_to_ext
-            t_arg  = VALUE #( ( `{ semanticObject: "Z2UI5_CL_DEMO_APP_127",  action: "display" }` ) ( `{ ProductID : "123234" }`) )
+            t_arg  = VALUE #( ( `{ semanticObject: "Z2UI5_CL_LP_SAMPLE_03",  action: "display" }` ) ( `{ ProductID : "123234" }`) )
         )
              )->stringify( ) ).
 
