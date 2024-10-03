@@ -12,7 +12,7 @@ function generateTargetFileName(sourcePath, baseDir) {
     return fileName;
 }
 
-function copyFilesRecursively(source, target, baseDir) {
+function copyFilesRecursively(source, target, baseDir, renameFiles = true) {
     fs.readdir(source, { withFileTypes: true }, (err, entries) => {
         if (err) {
             console.error('Fehler beim Lesen des Verzeichnisses:', err);
@@ -21,12 +21,12 @@ function copyFilesRecursively(source, target, baseDir) {
 
         entries.forEach(entry => {
             const sourcePath = path.join(source, entry.name);
-            const targetFileName = generateTargetFileName(sourcePath, baseDir);
+            const targetFileName = renameFiles ? generateTargetFileName(sourcePath, baseDir) : entry.name;
             const targetPath = path.join(target, targetFileName);
 
             if (entry.isDirectory()) {
                 // Rekursiver Aufruf für Unterordner
-                copyFilesRecursively(sourcePath, target, baseDir);
+                copyFilesRecursively(sourcePath, target, baseDir, renameFiles);
             } else if (entry.isFile()) {
                 // Lese die Quelldatei
                 fs.readFile(sourcePath, 'utf8', (err, data) => {
@@ -84,6 +84,6 @@ fs.mkdir(targetDir, { recursive: true }, (err) => {
     // Starte den Kopiervorgang für den Quellordner
     copyFilesRecursively(sourceDir, targetDir, sourceDir);
 
-    // Starte den Kopiervorgang für den statischen Ordner
-    copyFilesRecursively(staticDir, targetDir, staticDir);
+    // Starte den Kopiervorgang für den statischen Ordner ohne Umbenennung
+    copyFilesRecursively(staticDir, targetDir, staticDir, false);
 });
