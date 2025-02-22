@@ -7,7 +7,6 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/
         "use strict";
         return Controller.extend("z2ui5.controller.View1", {
 
-            
             onInit() {
 
                 z2ui5.oRouter.attachRouteMatched(function (oEvent) {
