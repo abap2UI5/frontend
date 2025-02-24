@@ -7,6 +7,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 
     onInit() {
 
+      // test
       z2ui5.oOwnerComponent = this.getOwnerComponent();
       z2ui5.oConfig.pathname = z2ui5.oOwnerComponent.getManifest()["sap.app"].dataSources.http.uri;
       if (z2ui5?.checkLocal == true) {
