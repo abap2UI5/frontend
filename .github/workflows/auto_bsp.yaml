@@ -10,6 +10,8 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: actions/checkout@v3
+      with:
+        ref: standard
     - uses: actions/setup-node@v3
       with:
         node-version: 20
@@ -21,7 +23,6 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add src
         git commit -m "auto-bsp-changes"
 
     - name: Push Changes
