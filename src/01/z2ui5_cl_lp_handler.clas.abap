@@ -1,4 +1,4 @@
-CLASS z2ui5_cl_launchpad_handler DEFINITION
+CLASS Z2UI5_CL_LP_HANDLER DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC .
@@ -13,7 +13,7 @@ ENDCLASS.
 
 
 
-CLASS z2ui5_cl_launchpad_handler IMPLEMENTATION.
+CLASS Z2UI5_CL_LP_HANDLER IMPLEMENTATION.
 
   METHOD if_http_extension~handle_request.
 
