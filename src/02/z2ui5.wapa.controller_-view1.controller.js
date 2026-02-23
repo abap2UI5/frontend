@@ -7,6 +7,15 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/
         "use strict";
         return Controller.extend("z2ui5.controller.View1", {
 
+            _trackChanges(oModel) {
+                oModel.attachPropertyChange((e) => {
+                    let p = e.getParameter("path");
+                    let c = e.getParameter("context");
+                    if (c && !p.startsWith("/")) p = c.getPath() + "/" + p;
+                    if (p?.startsWith("/XX/")) (z2ui5.xxChangedPaths ??= new Set()).add(p);
+                });
+                return oModel;
+            },
             onInit() {
 
                 z2ui5.oRouter.attachRouteMatched(function (oEvent) {
@@ -113,8 +122,29 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/
                     })
                 }
             },
+            _buildDeltaFromPaths(paths, xx) {
+                let delta = {};
+                for (let path of paths) {
+                    let parts = path.substring(4).split('/');
+                    let attr = parts[0];
+                    if (parts.length >= 3 && !isNaN(parts[1])) {
+                        if (!delta[attr] || !delta[attr]["__delta"]) {
+                            delta[attr] = { "__delta": {} };
+                        }
+                        let rowIdx = parts[1];
+                        if (!delta[attr]["__delta"][rowIdx]) {
+                            delta[attr]["__delta"][rowIdx] = {};
+                        }
+                        delta[attr]["__delta"][rowIdx][parts[2]] = xx[attr]?.[parseInt(rowIdx)]?.[parts[2]];
+                    } else {
+                        delta[attr] = xx[attr];
+                    }
+                }
+                return delta;
+            },
             async displayFragment(xml, viewProp) {
                 let oview_model = new JSONModel(z2ui5.oResponse.OVIEWMODEL);
+                this._trackChanges(oview_model);
                 const oFragment = await Fragment.load({
                     definition: xml,
                     controller: z2ui5.oControllerPopup,
@@ -126,13 +156,14 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/
                 oFragment.open();
             },
             async displayPopover(xml, viewProp, openById) {
-                sap.ui.require(["sap/ui/core/Element"], async function (Element) {
+                sap.ui.require(["sap/ui/core/Element"], async (Element) => {
                     const oFragment = await Fragment.load({
                         definition: xml,
                         controller: z2ui5.oControllerPopover,
                         id: "popoverId"
                     });
                     let oview_model = new JSONModel(z2ui5.oResponse.OVIEWMODEL);
+                    this._trackChanges(oview_model);
                     oFragment.setModel(oview_model);
                     z2ui5[viewProp] = oFragment;
                     z2ui5[viewProp].Fragment = Fragment;
@@ -158,6 +189,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/
             },
             async displayNestedView(xml, viewProp, viewNestId) {
                 let oview_model = new JSONModel(z2ui5.oResponse.OVIEWMODEL);
+                this._trackChanges(oview_model);
                 const oView = await XMLView.create({
                     definition: xml,
                     controller: z2ui5.oControllerNest,
@@ -181,6 +213,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/
             },
             async displayNestedView2(xml, viewProp, viewNestId) {
                 let oview_model = new JSONModel(z2ui5.oResponse.OVIEWMODEL);
+                this._trackChanges(oview_model);
                 const oView = await XMLView.create({
                     definition: xml,
                     controller: z2ui5.oControllerNest2,
@@ -506,28 +539,34 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/
                 z2ui5.isBusy = true;
                 BusyIndicator.show();
                 z2ui5.oBody = {};
+                var oModel;
                 if (args[0][3] || z2ui5.oController == this) {
                     if (z2ui5.oResponse.PARAMS?.S_VIEW?.SWITCH_DEFAULT_MODEL_PATH) {
-                        var oModel = z2ui5.oView.getModel("http");
+                        oModel = z2ui5.oView.getModel("http");
                     } else {
                         oModel = z2ui5.oView.getModel();
                     }
-                    z2ui5.oBody.XX = oModel.getData().XX;
                     z2ui5.oBody.VIEWNAME = 'MAIN';
                 } else if (z2ui5.oControllerPopup == this) {
                     if (z2ui5.oViewPopup) {
-                        z2ui5.oBody.XX = z2ui5.oViewPopup.getModel().getData().XX;
+                        oModel = z2ui5.oViewPopup.getModel();
                     }
                     z2ui5.oBody.VIEWNAME = 'MAIN';
                 } else if (z2ui5.oControllerPopover == this) {
-                    z2ui5.oBody.XX = z2ui5.oViewPopover.getModel().getData().XX;
+                    oModel = z2ui5.oViewPopover.getModel();
                     z2ui5.oBody.VIEWNAME = 'MAIN';
                 } else if (z2ui5.oControllerNest == this) {
-                    z2ui5.oBody.XX = z2ui5.oViewNest.getModel().getData().XX;
+                    oModel = z2ui5.oViewNest.getModel();
                     z2ui5.oBody.VIEWNAME = 'NEST';
                 } else if (z2ui5.oControllerNest2 == this) {
-                    z2ui5.oBody.XX = z2ui5.oViewNest2.getModel().getData().XX;
+                    oModel = z2ui5.oViewNest2.getModel();
                     z2ui5.oBody.VIEWNAME = 'NEST2';
+                }
+                if (oModel && z2ui5.xxChangedPaths?.size > 0) {
+                    let xx = oModel.getData()?.XX;
+                    if (xx) {
+                        z2ui5.oBody.XX = this._buildDeltaFromPaths(z2ui5.xxChangedPaths, xx);
+                    }
                 }
                 z2ui5.onBeforeRoundtrip.forEach(item => {
                     if (item !== undefined) {
@@ -563,6 +602,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/
                 }
                 if (z2ui5.oResponse.PARAMS[paramKey]?.CHECK_UPDATE_MODEL) {
                     let model = new JSONModel(z2ui5.oResponse.OVIEWMODEL);
+                    this._trackChanges(model);
                     if (oView) {
                         oView.setModel(model);
                     }
@@ -624,6 +664,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/
             },
             async displayView(xml, viewModel) {
                 let oview_model = new JSONModel(viewModel);
+                this._trackChanges(oview_model);
                 var oModel = oview_model;
                 if (z2ui5.oResponse.PARAMS.S_VIEW?.SWITCH_DEFAULT_MODEL_PATH) {
                     oModel = new ODataModel({
