@@ -253,7 +253,7 @@ sap.ui.define("z2ui5/Scrolling", ["sap/ui/core/Control"], (Control) => {
           defaultValue: true
         },
         items: {
-          type: "Array"
+          type: "object"
         }
       }
     },
@@ -707,14 +707,14 @@ sap.ui.define("z2ui5/MultiInputExt", ["sap/ui/core/Control", "sap/m/Token", "sap
           type: "String"
         },
         addedTokens: {
-          type: "Array"
+          type: "object"
         },
         checkInit: {
           type: "Boolean",
           defaultValue: false
         },
         removedTokens: {
-          type: "Array"
+          type: "object"
         }
       },
       events: {
@@ -784,8 +784,7 @@ sap.ui.define("z2ui5/MultiInputExt", ["sap/ui/core/Control", "sap/m/Token", "sap
         });
       };
       table.addValidator(fnValidator);
-    },
-    renderer(oRM, oControl) { }
+    }
   });
 }
 );
@@ -800,13 +799,13 @@ sap.ui.define("z2ui5/SmartMultiInputExt", ["sap/ui/core/Control", "sap/m/Token",
           type: "String"
         },
         addedTokens: {
-          type: "Array"
+          type: "object"
         },
         removedTokens: {
-          type: "Array"
+          type: "object"
         },
         rangeData: {
-          type: "Array",
+          type: "object",
           defaultValue: []
         },
         checkInit: {
@@ -957,7 +956,7 @@ sap.ui.define("z2ui5/CameraPicture", [
       var resultb64 = "";
       canvas.width = parseInt( this.getProperty("width") );
       canvas.height = parseInt( this.getProperty("height") );
-      canvas.getContext('2d').drawImage(video, 0, 0, 200, 200);
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
       resultb64 = canvas.toDataURL();
       this.setProperty("value", resultb64);
       this.fireOnPhoto({

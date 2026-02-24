@@ -24,12 +24,13 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/
                 }, this);
 
             },
-            async onAfterRendering() {
+            onAfterRendering() {
 
                 if (!z2ui5.oResponse) {
                     return;
                 }
 
+                (async () => {
                 try {
                     if (!z2ui5.oResponse.PARAMS) {
                         BusyIndicator.hide();
@@ -121,6 +122,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/
                         }
                     })
                 }
+                })();
             },
             _buildDeltaFromPaths(paths, xx) {
                 let delta = {};
@@ -657,7 +659,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/
                             details: params[msgType].DETAILS ? params[msgType].DETAILS : '',
                             closeOnNavigation: params[msgType].CLOSEONNAVIGATION ? true : false
                         };
-                        if (oParams.icon = 'None') { delete oParams.icon };
+                        if (oParams.icon === 'None') { delete oParams.icon };
                         MessageBox[params[msgType].TYPE](params[msgType].TEXT, oParams);
                     }
                 }
