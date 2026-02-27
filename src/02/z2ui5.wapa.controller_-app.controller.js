@@ -3,13 +3,14 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
   "z2ui5/cc/Server",
   "sap/ui/core/routing/HashChanger"
 ], function (BaseController, Controller, Server, HashChanger) {
+  "use strict";
   return BaseController.extend("z2ui5.controller.App", {
 
     onInit() {
 
       z2ui5.oOwnerComponent = this.getOwnerComponent();
       z2ui5.oConfig.pathname = z2ui5.oOwnerComponent.getManifest()["sap.app"].dataSources.http.uri;
-      if (z2ui5?.checkLocal == true) {
+      if (z2ui5?.checkLocal === true) {
         z2ui5.oConfig.pathname = window.location.href;
       };
 
@@ -68,7 +69,7 @@ sap.ui.define("z2ui5/Timer", ["sap/ui/core/Control"], (Control) => {
     onAfterRendering() { },
     delayedCall(oControl) {
 
-      if (oControl.getProperty("checkActive") == false) {
+      if (oControl.getProperty("checkActive") === false) {
         return;
       }
       setTimeout((oControl) => {
@@ -113,17 +114,17 @@ sap.ui.define("z2ui5/Focus", ["sap/ui/core/Control",], (Control) => {
     setFocusId(val) {
       try {
         this.setProperty("focusId", val);
-        var oElement = z2ui5.oView.byId(val);
-        var oFocus = oElement.getFocusInfo();
+        const oElement = z2ui5.oView.byId(val);
+        const oFocus = oElement.getFocusInfo();
         oElement.applyFocusInfo(oFocus);
       } catch (e) { }
     },
     onAfterRendering() {
       if (!this._pendingFocus) return;
       this._pendingFocus = false;
-      var oElement = z2ui5.oView.byId(this.getProperty("focusId"));
+      const oElement = z2ui5.oView.byId(this.getProperty("focusId"));
       if (!oElement) return;
-      var oFocus = oElement.getFocusInfo();
+      const oFocus = oElement.getFocusInfo();
       oFocus.selectionStart = parseInt(this.getProperty("selectionStart"));
       oFocus.selectionEnd = parseInt(this.getProperty("selectionEnd"));
       oElement.applyFocusInfo(oFocus);
@@ -188,6 +189,8 @@ sap.ui.define("z2ui5/LPTitle", ["sap/ui/core/Control"], (Control) => {
       "sap/ushell/services/AppConfiguration"
     ], async (AppConfiguration)  => {
       AppConfiguration.setApplicationFullWidth(z2ui5.ApplicationFullWidth);
+    }, function () {
+      console.error("sap/ushell/services/AppConfiguration not available");
     });
 
   },
@@ -485,7 +488,16 @@ sap.ui.define("z2ui5/Geolocation", ["sap/ui/core/Control"], (Control) => {
 
     async init() {
 
-      navigator.geolocation.getCurrentPosition(this.callbackPosition.bind(this));
+      navigator.geolocation.getCurrentPosition(
+        this.callbackPosition.bind(this),
+        function (error) {
+          console.error("Geolocation error (" + error.code + "): " + error.message);
+        },
+        {
+          enableHighAccuracy: this.getProperty("enableHighAccuracy"),
+          timeout: parseInt(this.getProperty("timeout"))
+        }
+      );
 
     },
 
@@ -551,7 +563,7 @@ sap.ui.define("z2ui5/Storage", ["sap/ui/core/Control", "sap/ui/util/Storage"], (
       let storageValue = oControl.getProperty("value");
       let oStorage = new Storage(storageType, storageKeyPrefix);
       let storedValue = oStorage.get(storageKey);
-      if (storedValue == null) {
+      if (storedValue === null || storedValue === undefined) {
         storedValue = "";
       }
       if (storedValue !== storageValue) {
@@ -658,11 +670,11 @@ sap.ui.define("z2ui5/FileUploader", ["sap/ui/core/Control", "sap/m/Button", "sap
 
             this.setProperty("path", this.oFileUploader.getProperty("value"));
 
-            var file = z2ui5.oUpload.oFileUpload.files[0];
-            var reader = new FileReader();
+            const file = z2ui5.oUpload.oFileUpload.files[0];
+            const reader = new FileReader();
 
             reader.onload = function (evt) {
-              var vContent = evt.currentTarget.result;
+              const vContent = evt.currentTarget.result;
               this.setProperty("value", vContent);
               this.fireUpload();
               //this.getView().byId('picture' ).getDomRef().src = vContent;
@@ -692,7 +704,7 @@ sap.ui.define("z2ui5/FileUploader", ["sap/ui/core/Control", "sap/m/Button", "sap
             return;
           }
 
-          var value = oEvent.getSource().getProperty("value");
+          const value = oEvent.getSource().getProperty("value");
           this.setProperty("path", value);
           if (value) {
             this.oUploadButton.setEnabled();
@@ -708,14 +720,14 @@ sap.ui.define("z2ui5/FileUploader", ["sap/ui/core/Control", "sap/m/Button", "sap
             return;
           }
 
-          var value = oEvent.getSource().getProperty("value");
+          const value = oEvent.getSource().getProperty("value");
           this.setProperty("path", value);
 
-          var file = oEvent.oSource.oFileUpload.files[0];
-          var reader = new FileReader();
+          const file = oEvent.oSource.oFileUpload.files[0];
+          const reader = new FileReader();
 
           reader.onload = function (evt) {
-            var vContent = evt.currentTarget.result;
+            const vContent = evt.currentTarget.result;
             this.setProperty("value", vContent);
             this.fireUpload();
           }
@@ -726,7 +738,7 @@ sap.ui.define("z2ui5/FileUploader", ["sap/ui/core/Control", "sap/m/Button", "sap
           .bind(oControl)
       });
 
-      var hbox = new HBox();
+      const hbox = new HBox();
       hbox.addItem(oControl.oFileUploader);
       hbox.addItem(oControl.oUploadButton);
       oRm.renderControl(hbox);
@@ -795,13 +807,13 @@ sap.ui.define("z2ui5/MultiInputExt", ["sap/ui/core/Control", "sap/m/Token", "sap
       if (!table) {
         return;
       }
-      if (this.getProperty("checkInit") == true) {
+      if (this.getProperty("checkInit") === true) {
         return;
       }
       this.setProperty("checkInit", true);
       table.attachTokenUpdate(this.onTokenUpdate.bind(this));
-      var fnValidator = function (args) {
-        var text = args.text;
+      const fnValidator = function (args) {
+        const text = args.text;
         return new Token({
           key: text,
           text: text
@@ -896,7 +908,7 @@ sap.ui.define("z2ui5/SmartMultiInputExt", ["sap/ui/core/Control", "sap/m/Token",
       if (!input) {
         return;
       }
-      if (this.getProperty("checkInit") == true) {
+      if (this.getProperty("checkInit") === true) {
         return;
       }
       this.setProperty("checkInit", true);
@@ -959,9 +971,9 @@ sap.ui.define("z2ui5/CameraPicture", [
 
     capture: function (oEvent) {
 
-      var video = document.querySelector("#zvideo");
-      var canvas = document.getElementById('zcanvas');
-      var resultb64 = "";
+      const video = document.querySelector("#zvideo");
+      const canvas = document.getElementById('zcanvas');
+      let resultb64 = "";
       canvas.width = parseInt( this.getProperty("width") );
       canvas.height = parseInt( this.getProperty("height") );
       canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -1008,7 +1020,7 @@ sap.ui.define("z2ui5/CameraPicture", [
       }
 
       this._oScanDialog.attachEventOnce("afterOpen", function () {
-        var video = document.querySelector('#zvideo');
+        const video = document.querySelector('#zvideo');
         if (navigator.mediaDevices.getUserMedia) {
           const facingMode = this.getProperty("facingMode");
           const deviceId = this.getProperty("deviceId");
@@ -1036,7 +1048,7 @@ sap.ui.define("z2ui5/CameraPicture", [
 
     renderer: function (oRM, oControl) {
 
-      var oButton = new Button({
+      const oButton = new Button({
         icon: "sap-icon://camera",
         text: "Camera",
         press: oControl.onPicture.bind(oControl),
@@ -1126,27 +1138,27 @@ sap.ui.define("z2ui5/UITableExt", ["sap/ui/core/Control"], (Control) => {
 
     _applyFilters(oTable, aFilters) {
       oTable.getBinding().filter(aFilters);
-      var opSymbols = {
+      const opSymbols = {
         EQ: "", NE: "!", LT: "<", LE: "<=", GT: ">", GE: ">=",
         BT: "...", Contains: "*", StartsWith: "^", EndsWith: "$"
       };
 
       aFilters.forEach(function(oFilter) {
-        var sProperty = oFilter.sPath || oFilter.aFilters?.[0]?.sPath;
+        const sProperty = oFilter.sPath || oFilter.aFilters?.[0]?.sPath;
         if (!sProperty) return;
 
         oTable.getColumns().forEach(function(oCol) {
           if (oCol.getFilterProperty && oCol.getFilterProperty() === sProperty) {
-            var operator = oFilter.sOperator;
-            var vValue = oFilter.oValue1 !== undefined ? oFilter.oValue1 : oFilter.oValue2;
+            const operator = oFilter.sOperator;
+            let vValue = oFilter.oValue1 !== undefined ? oFilter.oValue1 : oFilter.oValue2;
 
             if (vValue === undefined && oFilter.aFilters && oFilter.aFilters[0].oValue1 !== undefined) {
               vValue = oFilter.aFilters[0].oValue1;
             }
 
-            var display;
+            let display;
             if (operator === "BT") {
-              var vValue2 = oFilter.oValue2 !== undefined ? oFilter.oValue2 : "";
+              const vValue2 = oFilter.oValue2 !== undefined ? oFilter.oValue2 : "";
               display = (vValue != null ? vValue : "") + opSymbols["BT"] + (vValue2 != null ? vValue2 : "");
             } else if (operator === "Contains") {
               display = "*" + (vValue != null ? vValue : "") + "*";
