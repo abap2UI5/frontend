@@ -1,5 +1,6 @@
 sap.ui.define(["sap/ui/core/UIComponent", "z2ui5/model/models", "z2ui5/cc/Server", "sap/ui/VersionInfo", "z2ui5/cc/DebugTool"
 ], function (UIComponent, Models, Server, VersionInfo, DebugTool) {
+    "use strict";
     return UIComponent.extend("z2ui5.Component", {
         metadata: {
             manifest: "json",
@@ -15,14 +16,14 @@ sap.ui.define(["sap/ui/core/UIComponent", "z2ui5/model/models", "z2ui5/cc/Server
 
             UIComponent.prototype.init.apply(this, arguments);
 
-            if (typeof z2ui5 == 'undefined') {
+            if (typeof z2ui5 === 'undefined') {
                 z2ui5 = {};
             }
-            if (z2ui5?.checkLocal == false) {
+            if (z2ui5?.checkLocal === false) {
                 z2ui5 = {};
             }
 
-            if (typeof z2ui5.oConfig == 'undefined') {
+            if (typeof z2ui5.oConfig === 'undefined') {
                 z2ui5.oConfig = {};
             }
             z2ui5.oDeviceModel = Models.createDeviceModel();
@@ -49,16 +50,17 @@ sap.ui.define(["sap/ui/core/UIComponent", "z2ui5/model/models", "z2ui5/cc/Server
             this._unloadEvent = /iPad|iPhone/.test(navigator.platform) ? "pagehide" : "beforeunload";
             window.addEventListener(this._unloadEvent, this._boundUnload);
 
-            document.addEventListener("keydown", function (zEvent) {
+            this._boundKeydown = function (zEvent) {
                 if (zEvent?.ctrlKey && zEvent?.key === "F12") {
                     if (!z2ui5.debugTool) {
                         z2ui5.debugTool = new DebugTool();
                     }
                     z2ui5.debugTool.toggle();
                 }
-            });
+            };
+            document.addEventListener("keydown", this._boundKeydown);
 
-            window.addEventListener("popstate", (event) => {
+            this._boundPopstate = (event) => {
                 delete event?.state?.response?.PARAMS?.SET_PUSH_STATE;
                 delete event?.state?.response?.PARAMS?.SET_APP_STATE_ACTIVE;
                 if (event?.state?.view) {
@@ -66,7 +68,8 @@ sap.ui.define(["sap/ui/core/UIComponent", "z2ui5/model/models", "z2ui5/cc/Server
                     z2ui5.oResponse = event.state.response;
                     z2ui5.oController.displayView(event.state.view, event.state.model);
                 }
-            });
+            };
+            window.addEventListener("popstate", this._boundPopstate);
 
             z2ui5.oRouter = this.getRouter();
             z2ui5.oRouter.initialize();
@@ -80,6 +83,8 @@ sap.ui.define(["sap/ui/core/UIComponent", "z2ui5/model/models", "z2ui5/cc/Server
         },
 
         exit: function () {
+            document.removeEventListener("keydown", this._boundKeydown);
+            window.removeEventListener("popstate", this._boundPopstate);
             Server.endSession();
             if (UIComponent.prototype.exit)
                 UIComponent.prototype.exit.apply(this, arguments);
