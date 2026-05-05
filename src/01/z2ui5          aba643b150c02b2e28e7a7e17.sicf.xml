@@ -10,7 +10,7 @@
    <ICFDOCU>
     <ICF_NAME>Z2UI5</ICF_NAME>
     <ICF_LANGU>E</ICF_LANGU>
-    <ICF_DOCU>abap2UI5 - Launchpad HTTP Service</ICF_DOCU>
+    <ICF_DOCU>abap2UI5 - Frontend HTTP Service</ICF_DOCU>
    </ICFDOCU>
    <ICFHANDLER_TABLE>
     <ICFHANDLER>
