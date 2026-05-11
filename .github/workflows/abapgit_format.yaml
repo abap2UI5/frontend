@@ -1,0 +1,59 @@
+name: abapgit_format
+
+on:
+  push:
+    branches: [standard]
+    paths:
+      - 'src/**/*.wapa.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  abapgit_format:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: standard
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pad WAPA files to 255-char lines (abapgit format)
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          WIDTH = 255
+          changed = []
+          for path in sorted(Path('src').rglob('*.wapa.*.*')):
+              if not path.is_file():
+                  continue
+              original = path.read_bytes()
+              text = original.replace(b'\r\n', b'\n')
+              if text.endswith(b'\n'):
+                  text = text[:-1]
+              lines = text.split(b'\n')
+              padded = [line.ljust(WIDTH, b' ') for line in lines]
+              out = b'\n'.join(padded)
+              if out != original:
+                  path.write_bytes(out)
+                  changed.append(str(path))
+
+          for c in changed:
+              print(f"reformatted: {c}")
+          print(f"total: {len(changed)} file(s) reformatted")
+          PY
+
+      - name: Commit and push if changed
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "no formatting changes — nothing to commit"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m "chore: fix abapgit formatting [skip ci]"
+          git push origin standard
