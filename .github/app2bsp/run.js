@@ -32,6 +32,31 @@ function escapeXml(value) {
     return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+// BSP pages are stored on the SAP system as fixed-width 255-character lines.
+// abapGit serializes them back exactly like that: every line space-padded to
+// 255 characters, lines longer than that wrapped into 255-character chunks,
+// LF line endings and no newline after the last line. Emit the same format so
+// pulling into SAP and re-serializing produces no diff.
+const bspLineWidth = 255;
+
+function toBspPageFormat(content) {
+    const lines = content.split(/\r\n|\r|\n/);
+    if (lines.length > 1 && lines[lines.length - 1] === '') {
+        lines.pop();
+    }
+    const padded = [];
+    for (const line of lines) {
+        if (line.length <= bspLineWidth) {
+            padded.push(line.padEnd(bspLineWidth));
+        } else {
+            for (let offset = 0; offset < line.length; offset += bspLineWidth) {
+                padded.push(line.slice(offset, offset + bspLineWidth).padEnd(bspLineWidth));
+            }
+        }
+    }
+    return padded.join('\n');
+}
+
 function buildPageItem(pageName) {
     // The start page carries MIMETYPE/IS_START_PAGE instead of PAGETYPE,
     // matching the abapGit WAPA serializer output.
@@ -89,7 +114,8 @@ fs.mkdirSync(targetDir, { recursive: true });
 const webappFiles = collectFilesRecursively(sourceDir);
 for (const relativePath of webappFiles) {
     const targetFileName = generateTargetFileName(relativePath);
-    fs.copyFileSync(path.join(sourceDir, relativePath), path.join(targetDir, targetFileName));
+    const content = fs.readFileSync(path.join(sourceDir, relativePath), 'utf8');
+    fs.writeFileSync(path.join(targetDir, targetFileName), toBspPageFormat(content), 'utf8');
     console.log(`Copied ${relativePath} as ${targetFileName}.`);
 }
 
