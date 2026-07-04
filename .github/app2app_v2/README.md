@@ -5,7 +5,7 @@ classic webapp coding over **1:1** and adapting only the bootstrap layer so it
 runs on the legacy-free OpenUI5 build.
 
 ```
-cloud/app/webapp ──▶ patchIndexHtml + patchManifest ──▶ .github/app2bsp ──▶ bsp_rename(Z2UI5_V2) ──▶ src/
+cloud/app/webapp ──▶ patchIndexHtml + patchManifest ──▶ .github/app2bsp ──▶ [bsp_rename, nur mit --name] ──▶ src/
 ```
 
 The result is published to the [`frontend-legacy-free`](https://github.com/abap2UI5/frontend-legacy-free) repo
@@ -29,8 +29,11 @@ existing `.github/app2bsp` + `bsp_rename` tooling. Nothing else is touched.
 | `index.html` | load `1.142.0-legacy-free` SDK (CDN); 2.x config attributes `resource-roots` / `on-init` / `compat-version` / `frame-options`; `preconnect`; `libs=sap.m` | bootstrap the legacy-free build |
 | `manifest.json` | `minUI5Version 1.136.0`, `_version 2.0.0` | legacy-free starts at 1.136 |
 
-Deployment identity is renamed to `Z2UI5_V2` (parallel install). Backend handler
-is shared (`/sap/bc/z2ui5`) by default; pass `--own-backend` for an isolated one.
+Deployment identity stays `Z2UI5` — same name as the classic frontend, so the
+legacy-free variant is a drop-in replacement (install either `standard` or
+`standard_v2`, not both). Pass `--name Z2UI5_V2` to rename for a parallel
+install; with a rename the backend handler is still shared (`/sap/bc/z2ui5`)
+by default, `--own-backend` keeps an isolated one.
 
 > The classic frontend JS is already forward-compatible (no jQuery.sap, no
 > sync APIs, guarded `getCore()` fallbacks) — so no code changes are needed,
