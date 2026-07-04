@@ -1,4 +1,4 @@
-# legacy_free
+# app2app_v2
 
 Generates the **legacy-free (UI5 2.0) variant** of this frontend, taking the
 classic webapp coding over **1:1** and adapting only the bootstrap layer so it
@@ -8,12 +8,15 @@ runs on the legacy-free OpenUI5 build.
 cloud/app/webapp ──▶ patchIndexHtml + patchManifest ──▶ .github/app2bsp ──▶ bsp_rename(Z2UI5_V2) ──▶ src/
 ```
 
-The result is published to the [`frontend-legacy-free`](https://github.com/abap2UI5/frontend-legacy-free) repo.
+The result is published to the [`frontend-legacy-free`](https://github.com/abap2UI5/frontend-legacy-free) repo
+and to the [`standard_v2`](https://github.com/abap2UI5/frontend/tree/standard_v2) branch of this repo
+(kept up to date by the `auto_bsp_v2` workflow).
 
 ## Run
 
 ```bash
-npm run build_legacy_free      # -> legacy_free/out/src
+npm run build_legacy_free      # -> .github/app2app_v2/out/src
+npm run build_bsp_v2           # -> src/ (used on the standard_v2 branch)
 ```
 
 This clones the `cloud` webapp, applies the bootstrap patch and reuses the

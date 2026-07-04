@@ -5,7 +5,8 @@
     "description": "Layout Management for abap2UI5.",
     "scripts": {
       "build_bsp" : "git clone --branch cloud https://github.com/abap2UI5/frontend && rm -rf src/02/* && node .github/app2bsp/run.js && npm run cleanup",
-      "build_legacy_free" : "rm -rf lf_cloud && git clone --depth 1 --branch cloud https://github.com/abap2UI5/frontend lf_cloud && node legacy_free/build-legacy-free.mjs . lf_cloud/app/webapp legacy_free/out && rm -rf lf_cloud",
+      "build_legacy_free" : "rm -rf lf_cloud && git clone --depth 1 --branch cloud https://github.com/abap2UI5/frontend lf_cloud && node .github/app2app_v2/build-legacy-free.mjs . lf_cloud/app/webapp .github/app2app_v2/out && rm -rf lf_cloud",
+      "build_bsp_v2" : "npm run build_legacy_free && rm -rf src && mkdir src && cp -r .github/app2app_v2/out/src/. src/ && rm -rf .github/app2app_v2/out",
       "cleanup" : "rm -rf frontend && rm -rf app "
     },
     "repository": {

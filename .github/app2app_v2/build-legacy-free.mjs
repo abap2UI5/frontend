@@ -6,7 +6,7 @@
 //   cloud/app/webapp -> [Bootstrap-Patch] -> app2bsp/run.js -> bsp_rename(Z2UI5_V2)
 //
 // Nur index.html + manifest.json werden angepasst (alles andere bleibt 1:1).
-// Aufruf:  node build-legacy-free.mjs <frontend-repo> <cloud-webapp> <out-dir> [--own-backend]
+// Aufruf:  node .github/app2app_v2/build-legacy-free.mjs <frontend-repo> <cloud-webapp> <out-dir> [--own-backend]
 
 import { execFileSync } from "node:child_process";
 import { cpSync, rmSync, mkdirSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
@@ -43,7 +43,7 @@ const work = join(outDir, "_work");
 rmSync(outDir, { recursive: true, force: true }); mkdirSync(work, { recursive: true });
 
 // 1) Tooling + saubere cloud-Webapp bereitstellen
-cpSync(join(frontendRepo, ".github"), join(work, ".github"), { recursive: true });
+cpSync(join(frontendRepo, ".github/app2bsp"), join(work, ".github/app2bsp"), { recursive: true });
 cpSync(join(frontendRepo, "bsp_rename"), join(work, "bsp_rename"), { recursive: true });
 cpSync(cloudWebapp, join(work, "frontend/app/webapp"), { recursive: true });
 
