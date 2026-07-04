@@ -1,0 +1,35 @@
+name: auto_bsp_v2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [cloud]
+
+jobs:
+  auto_bsp_v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: standard_v2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 20
+    - run: |
+        npm ci
+        npm run build_bsp_v2
+
+    - name: Commit Changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add .
+        git commit -m "auto-bsp-v2-changes"
+
+    - name: Push Changes
+      uses: ad-m/github-push-action@v0.6.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: standard_v2
+        force: true

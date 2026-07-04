@@ -2,5 +2,5 @@ downport
 node_modules
 output
 
-legacy_free/out/
+.github/app2app_v2/out/
 lf_cloud/
