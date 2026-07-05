@@ -39,13 +39,32 @@ function patchIndexHtml(s) {
     .replace(/(data-sap-ui-frameOptions="trusted")/, `data-sap-ui-frame-options="trusted"\n        data-sap-ui-libs="sap.m"`);
 }
 function patchManifest(s) {
-  // "_version" bewusst NICHT auf 2.0.0 anheben: Schema-Version 2 aktiviert die
-  // strikte Manifest-v2-Semantik, in der die v1-Routing-Optionen (viewName/
-  // viewId/viewPath unter sap.ui5/routing/targets) einen Fehler werfen ->
-  // "Failed to load component for container container", leere Seite.
-  // Die legacy-free Runtime akzeptiert Schema v1 unveraendert.
-  return s
-    .replace(/"minUI5Version":\s*"1\.71\.0"/, '"minUI5Version": "1.136.0"');
+  const m = JSON.parse(s);
+  m._version = "2.0.0";
+  m["sap.ui5"].dependencies.minUI5Version = "1.136.0";
+  // Schema-Version 2 aktiviert die strikte Manifest-v2-Semantik: die alten
+  // Routing-Optionen viewPath/viewName/viewId werfen dann beim Erzeugen des
+  // Routers (Targets._validateOptions) -> "Failed to load component for
+  // container container", leere Seite. Deshalb hier auf die modernen
+  // Optionen path/name/id + type "View" umstellen; async erzwingt Schema 2
+  // selbst.
+  const rename = (o, from, to) => {
+    if (o && Object.hasOwn(o, from)) { o[to] = o[from]; delete o[from]; }
+  };
+  const routing = m["sap.ui5"].routing;
+  if (routing?.config) {
+    rename(routing.config, "viewPath", "path");
+    rename(routing.config, "viewName", "name");
+    rename(routing.config, "viewId", "id");
+    routing.config.type ??= "View";
+    delete routing.config.async;
+  }
+  for (const t of Object.values(routing?.targets ?? {})) {
+    rename(t, "viewPath", "path");
+    rename(t, "viewName", "name");
+    rename(t, "viewId", "id");
+  }
+  return JSON.stringify(m, null, 2) + "\n";
 }
 
 // BSP-Page-Format (255-Zeichen-Zeilen, kein Schluss-Newline) – wie app2bsp

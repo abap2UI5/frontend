@@ -36,7 +36,7 @@ existing `.github/app2bsp` + `bsp_rename` tooling. Nothing else is touched.
 | File | Change | Why |
 | --- | --- | --- |
 | `index.html` | load `1.142.0-legacy-free` SDK (CDN); 2.x config attributes `resource-roots` / `on-init` / `compat-version` / `frame-options`; `preconnect`; `libs=sap.m` | bootstrap the legacy-free build |
-| `manifest.json` | `minUI5Version 1.136.0` | legacy-free starts at 1.136 (`_version` stays at 1.65: schema v2 rejects the v1-style `sap.ui5/routing` options and the component fails to load) |
+| `manifest.json` | `minUI5Version 1.136.0`, `_version 2.0.0`, routing options migrated to manifest v2 (`viewPath`/`viewName`/`viewId` → `path`/`name`/`id` + `type: "View"`, `async` dropped) | legacy-free starts at 1.136; schema v2 rejects the v1-style routing options (component would fail to load with a blank page) |
 
 Deployment identity stays `Z2UI5` — same name as the classic frontend, so the
 legacy-free variant is a drop-in replacement (install either `standard` or
