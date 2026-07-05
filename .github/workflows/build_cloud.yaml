@@ -1,0 +1,15 @@
+name: build_cloud
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build_cloud:
+    uses: ./.github/workflows/build_branch.yaml
+    with:
+      branch: cloud
