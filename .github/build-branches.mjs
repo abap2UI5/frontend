@@ -63,6 +63,10 @@ function initBranch(branch, abapgitXml) {
   for (const f of COMMON) if (existsSync(join(repo, f))) cpSync(join(repo, f), join(dir, f));
   writeFileSync(join(dir, "README.md"), banner(branch) + readFileSync(join(repo, "README.md"), "utf8"));
   writeFileSync(join(dir, ".abapgit.xml"), abapgitXml);
+  // abaplint-Config von main, Quellpfad auf /src/ der Output-Branches gedreht;
+  // ohne sie meldet der abaplint-Check auf den Output-Branches immer rot
+  writeFileSync(join(dir, "abaplint.jsonc"),
+    readFileSync(join(repo, "abaplint.jsonc"), "utf8").replaceAll("/abap/cloud/", "/src/"));
   return dir;
 }
 
