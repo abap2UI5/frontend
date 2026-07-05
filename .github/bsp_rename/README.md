@@ -6,6 +6,29 @@ way this repo ships as `Z2UI5` and `frontend-legacy-free` ships as `Z2UI5_V2`.
 
 Dependency-free Node script (Node 16+). Nothing to install.
 
+## Renamed branches via `build_custom` (recommended)
+
+The easiest way to get a renamed install: run the **`build_custom`** GitHub
+workflow (Actions → build_custom → Run workflow), pick the base variant
+(`standard` or `standard_v2`) and enter the new BSP name (e.g. `ZMYUI5`).
+It builds the base branch, applies this rename script to the generated `src`
+tree and pushes the result as branch **`standard_<name>`** /
+**`standard_v2_<name>`** (name lowercased) — ready to pull with abapGit.
+Re-running the workflow with the same name updates the branch to the current
+`main` state.
+
+The same build runs locally with
+
+```bash
+node .github/build-branches.mjs standard_zmyui5      # -> .github/out/standard_zmyui5
+node .github/build-branches.mjs standard_v2_zmyui5   # legacy-free variant
+```
+
+The renamed branch is fully self-contained: BSP, SICF nodes and the ICF
+handler class all carry the new name, so it installs alongside an existing
+`Z2UI5` without touching it (it still requires the abap2UI5 backend, see
+below).
+
 ## Usage
 
 Run it from the **repository root** (so the default `src` path resolves):

@@ -8,10 +8,19 @@
 //   standard     BSP Z2UI5 (app2bsp) + ICF-Handler, klassischer Bootstrap
 //   standard_v2  BSP Z2UI5 legacy-free (build-legacy-free.mjs)
 //
+// Zusaetzlich koennen umbenannte BSP-Varianten gebaut werden (fuer eine
+// Parallelinstallation im selben SAP-System, siehe .github/bsp_rename):
+//
+//   standard_<NAME>     wie standard,    BSP/SICF/Handler auf <NAME> umbenannt
+//   standard_v2_<NAME>  wie standard_v2, BSP/SICF/Handler auf <NAME> umbenannt
+//
+// z.B. standard_zmyui5 -> BSP ZMYUI5. Der GitHub-Workflow build_custom baut
+// und pusht solche Branches on demand.
+//
 // Aufruf:  node .github/build-branches.mjs [branch ...]
-// Ohne Argumente werden alle vier gebaut; mit Argumenten nur die genannten
-// (so baut jeder build_<branch>-Workflow genau seinen Branch). Output je
-// Branch: .github/out/<branch>/
+// Ohne Argumente werden die vier festen Branches gebaut; mit Argumenten nur
+// die genannten (so baut jeder build_<branch>-Workflow genau seinen Branch).
+// Output je Branch: .github/out/<branch>/
 
 import { execFileSync } from "node:child_process";
 import { cpSync, rmSync, mkdirSync, readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
@@ -52,8 +61,9 @@ const ABAPGIT_STANDARD = `﻿<?xml version="1.0" encoding="utf-8"?>
 `;
 
 function banner(branch) {
+  const workflow = BUILDERS[branch] ? `build_${branch}` : "build_custom";
   return `> ⚙️ **Generated branch \`${branch}\`** — built from [\`main\`](../../tree/main) by the ` +
-    "`build_" + branch + "` workflow. Do not commit here, changes belong into `main`.\n\n";
+    "`" + workflow + "` workflow. Do not commit here, changes belong into `main`.\n\n";
 }
 
 function initBranch(branch, abapgitXml) {
@@ -87,8 +97,8 @@ function buildCloudVariant(branch) {
 }
 
 // Klassische BSP via app2bsp + ICF-Handler
-function buildStandard() {
-  const dir = initBranch("standard", ABAPGIT_STANDARD);
+function buildStandard(branch = "standard") {
+  const dir = initBranch(branch, ABAPGIT_STANDARD);
   const work = join(out, "_work_standard");
   cpSync(join(repo, ".github/app2bsp"), join(work, ".github/app2bsp"), { recursive: true });
   cpSync(join(repo, "app/webapp"), join(work, "frontend/app/webapp"), { recursive: true, filter: skipBuildArtifacts });
@@ -99,8 +109,8 @@ function buildStandard() {
 }
 
 // Legacy-free BSP via build-legacy-free.mjs
-function buildStandardV2() {
-  const dir = initBranch("standard_v2", ABAPGIT_STANDARD);
+function buildStandardV2(branch = "standard_v2") {
+  const dir = initBranch(branch, ABAPGIT_STANDARD);
   const work = join(out, "_work_standard_v2");
   execFileSync("node", [join(repo, ".github/app2app_v2/build-legacy-free.mjs"), repo, join(repo, "app/webapp"), work],
     { stdio: "inherit" });
@@ -111,20 +121,43 @@ function buildStandardV2() {
 const BUILDERS = {
   cloud: () => buildCloudVariant("cloud"),
   cloud_v2: () => buildCloudVariant("cloud_v2"),
-  standard: buildStandard,
-  standard_v2: buildStandardV2,
+  standard: () => buildStandard(),
+  standard_v2: () => buildStandardV2(),
 };
+
+// standard_<NAME> / standard_v2_<NAME>: Basis bauen, dann die komplette
+// Deployment-Identitaet (BSP, SICF-Knoten, Handler-Klasse, Dateinamen) im
+// generierten src-Tree auf <NAME> umbenennen. Namensvalidierung (max. 15
+// Zeichen, Z/Y-Namensraum-Warnung) uebernimmt rename-bsp.mjs.
+function renamedBuilder(branch) {
+  for (const base of ["standard_v2", "standard"]) {
+    const prefix = `${base}_`;
+    if (!branch.startsWith(prefix) || branch.length === prefix.length) continue;
+    const name = branch.slice(prefix.length);
+    const buildBase = base === "standard" ? buildStandard : buildStandardV2;
+    return () => {
+      buildBase(branch);
+      execFileSync("node",
+        [join(repo, ".github/bsp_rename/rename-bsp.mjs"), name, "--yes", "--dir", "src"],
+        { cwd: join(out, branch), stdio: "inherit" });
+    };
+  }
+  return null;
+}
 
 const requested = process.argv.slice(2);
 const branches = requested.length ? requested : Object.keys(BUILDERS);
-for (const b of branches) {
-  if (!BUILDERS[b]) {
-    console.error(`Unbekannter Branch '${b}' - erlaubt: ${Object.keys(BUILDERS).join(", ")}`);
+const builds = branches.map((b) => {
+  const build = BUILDERS[b] ?? renamedBuilder(b);
+  if (!build) {
+    console.error(`Unbekannter Branch '${b}' - erlaubt: ${Object.keys(BUILDERS).join(", ")}, standard_<name>, standard_v2_<name>`);
     process.exit(1);
   }
-}
-for (const b of branches) {
-  BUILDERS[b]();
+  return build;
+});
+for (let i = 0; i < branches.length; i++) {
+  builds[i]();
+  const b = branches[i];
   const n = readdirSync(join(out, b), { recursive: true }).length;
   console.log(`OK: ${b} (${n} Eintraege) -> ${join(out, b)}`);
 }
