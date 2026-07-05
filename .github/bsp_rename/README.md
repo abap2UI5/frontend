@@ -10,18 +10,20 @@ Dependency-free Node script (Node 16+). Nothing to install.
 
 The easiest way to get a renamed install: run the **`build_custom`** GitHub
 workflow (Actions → build_custom → Run workflow), pick the base variant
-(`standard` or `standard_v2`) and enter the new BSP name (e.g. `ZMYUI5`).
-It builds the base branch, applies this rename script to the generated `src`
-tree and pushes the result as branch **`standard_<name>`** /
-**`standard_v2_<name>`** (name lowercased) — ready to pull with abapGit.
-Re-running the workflow with the same name updates the branch to the current
-`main` state.
+(`standard` or `standard_v2`) and enter the new BSP name (e.g. `ZMYUI5`, or
+a namespaced name like `/ABAPGIT/`, see below). It builds the base branch,
+applies this rename script to the generated `src` tree and pushes the result
+as branch **`standard_<name>`** / **`standard_v2_<name>`** (name lowercased;
+for namespaced names `/` becomes `#` like in abapGit file names, e.g.
+`standard_#abapgit#ui5`) — ready to pull with abapGit. Re-running the
+workflow with the same name updates the branch to the current `main` state.
 
 The same build runs locally with
 
 ```bash
-node .github/build-branches.mjs standard_zmyui5      # -> .github/out/standard_zmyui5
-node .github/build-branches.mjs standard_v2_zmyui5   # legacy-free variant
+node .github/build-branches.mjs standard_zmyui5        # -> .github/out/standard_zmyui5
+node .github/build-branches.mjs standard_v2_zmyui5     # legacy-free variant
+node .github/build-branches.mjs 'standard_#abapgit#'   # namespaced -> BSP /ABAPGIT/UI5
 ```
 
 The renamed branch is fully self-contained: BSP, SICF nodes and the ICF
@@ -38,6 +40,7 @@ node .github/bsp_rename/rename-bsp.mjs ZMYUI5            # rename, asks for conf
 node .github/bsp_rename/rename-bsp.mjs                   # prompts for the name
 node .github/bsp_rename/rename-bsp.mjs zmyui5 --dry-run  # preview only, writes nothing
 node .github/bsp_rename/rename-bsp.mjs ZMYUI5 --yes      # no confirmation prompt
+node .github/bsp_rename/rename-bsp.mjs /abapgit/         # rename into a registered namespace
 ```
 
 | Option | Meaning |
@@ -53,6 +56,40 @@ at most 15 characters (ICF service / BSP application name limit). A warning is
 printed if it does not start with `Z`/`Y` (SAP customer namespace).
 
 After running, review with `git status` / `git diff`, then commit.
+
+## Namespaced names (`/NS/`)
+
+Instead of a plain name you can rename into a **registered SAP namespace**:
+
+| Input | BSP application | ICF handler class |
+| --- | --- | --- |
+| `/ABAPGIT/` | `/ABAPGIT/UI5` | `/ABAPGIT/CL_LP_HANDLER` |
+| `/ABAPGIT/MYAPP` | `/ABAPGIT/MYAPP` | `/ABAPGIT/MYAPP_CL_LP_HANDLER` |
+
+(The abapGit file-name spelling `#abapgit#myapp` is accepted as input too —
+that is also how the name is encoded in the `build_custom` branch name.)
+
+Namespace max. 8 characters between the slashes, full BSP name max. 15
+characters including the slashes. What happens on top of a plain rename:
+
+- **File names** use the abapGit `#` escaping: `#abapgit#ui5.wapa.*`,
+  `#abapgit#cl_lp_handler.clas.*`.
+- **SICF paths** follow the SAP convention for namespaced BSPs — the
+  namespace replaces the `sap` path segment and is an ICF node of its own:
+  `/sap/bc/abapgit/ui5`, `/sap/bc/bsp/abapgit/ui5`,
+  `/sap/bc/ui5_ui5/abapgit/ui5`. The `<ICF_NAME>` fields carry only the leaf
+  name (`UI5`), since ICF node names cannot contain slashes.
+- **Namespace-level ICF nodes** (`/sap/bc/abapgit`, `/sap/bc/bsp/abapgit`,
+  `/sap/bc/ui5_ui5/abapgit`) do not exist in a vanilla system and abapGit
+  does not create intermediate nodes, so the script **generates** one extra
+  `.sicf.xml` per parent node.
+- The **SMIM** folder URL becomes `/SAP/BC/BSP/<NS>/<NAME>`.
+
+Prerequisite: the `/NS/` namespace must exist in the target system
+(transaction SE03 → Display/Change Namespaces, with a developer/changeable
+license) before the abapGit pull — otherwise the objects cannot be created.
+`--with-namespace` is not available for `/NS/` names (UI5 module ids cannot
+carry a SAP namespace; the `z2ui5` UI5 namespace is kept as usual).
 
 ## What it renames (the "deployment identity")
 

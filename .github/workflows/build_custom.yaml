@@ -2,8 +2,11 @@ name: build_custom
 
 # Baut eine umbenannte BSP-Variante (Parallelinstallation im selben SAP-System,
 # siehe .github/bsp_rename) und pusht sie auf den Branch <base>_<bsp-name>,
-# z.B. standard_zmyui5 oder standard_v2_zmyui5. Erneutes Ausfuehren mit
-# gleichem Namen aktualisiert den Branch mit dem aktuellen main-Stand.
+# z.B. standard_zmyui5 oder standard_v2_zmyui5. Neben einfachen Namen (ZMYUI5)
+# sind Namen in einem registrierten Namespace moeglich (/ABAPGIT/ oder
+# /ABAPGIT/UI5); im Branch-Namen wird "/" wie in abapGit-Dateinamen zu "#"
+# (standard_#abapgit#ui5). Erneutes Ausfuehren mit gleichem Namen aktualisiert
+# den Branch mit dem aktuellen main-Stand.
 
 on:
   workflow_dispatch:
@@ -17,7 +20,7 @@ on:
           - standard_v2
         default: standard
       bsp_name:
-        description: "Neuer BSP-Name (max. 15 Zeichen, Buchstabe + Buchstaben/Ziffern/_, Kundennamensraum Z*/Y*), z.B. ZMYUI5"
+        description: "Neuer BSP-Name (max. 15 Zeichen), z.B. ZMYUI5 - oder ein Namespace wie /ABAPGIT/ bzw. /ABAPGIT/UI5"
         required: true
         type: string
 
@@ -37,8 +40,20 @@ jobs:
         BASE: ${{ inputs.base }}
         BSP_NAME: ${{ inputs.bsp_name }}
       run: |
-        if ! printf '%s' "$BSP_NAME" | grep -Eq '^[A-Za-z][A-Za-z0-9_]{0,14}$'; then
-          echo "::error::Ungueltiger BSP-Name '$BSP_NAME' (max. 15 Zeichen, Buchstabe gefolgt von Buchstaben/Ziffern/_)"
+        if printf '%s' "$BSP_NAME" | grep -Eq '^[A-Za-z][A-Za-z0-9_]{0,14}$'; then
+          : # einfacher Name im Kundennamensraum
+        elif printf '%s' "$BSP_NAME" | grep -Eq '^[/#][A-Za-z0-9][A-Za-z0-9_]{0,7}[/#]([A-Za-z][A-Za-z0-9_]*)?$'; then
+          # Namespace-Name /NS/ bzw. /NS/NAME (auch in abapGit-Schreibweise
+          # #ns#name); ohne Objektname ergaenzt rename-bsp.mjs "UI5".
+          # Gesamtlaenge inkl. Schraegstriche max. 15 Zeichen (BSP-Namenslimit).
+          full="$BSP_NAME"
+          case "$full" in */|*'#') full="${full}UI5";; esac
+          if [ "${#full}" -gt 15 ]; then
+            echo "::error::BSP-Name '$full' hat ${#full} Zeichen; max. 15 inkl. Namespace"
+            exit 1
+          fi
+        else
+          echo "::error::Ungueltiger BSP-Name '$BSP_NAME' (ZMYUI5, /NS/ oder /NS/NAME; Namespace max. 8 Zeichen, Name Buchstabe + Buchstaben/Ziffern/_)"
           exit 1
         fi
         # standard + Name "v2..." ergaebe standard_v2_<rest> und wuerde als
@@ -47,7 +62,8 @@ jobs:
           echo "::error::BSP-Name '$BSP_NAME' ist mit Basis 'standard' mehrdeutig (Branch standard_v2_*) - anderen Namen waehlen"
           exit 1
         fi
-        branch="${BASE}_$(printf '%s' "$BSP_NAME" | tr '[:upper:]' '[:lower:]')"
+        # "/" -> "#" wie in abapGit-Dateinamen, damit der Branch-Name gueltig bleibt
+        branch="${BASE}_$(printf '%s' "$BSP_NAME" | tr '[:upper:]/' '[:lower:]#')"
         case "$branch" in
           cloud|cloud_v2|standard|standard_v2)
             echo "::error::Branch '$branch' kollidiert mit einem festen Output-Branch - anderen Namen waehlen"

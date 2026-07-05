@@ -14,8 +14,11 @@
 //   standard_<NAME>     wie standard,    BSP/SICF/Handler auf <NAME> umbenannt
 //   standard_v2_<NAME>  wie standard_v2, BSP/SICF/Handler auf <NAME> umbenannt
 //
-// z.B. standard_zmyui5 -> BSP ZMYUI5. Der GitHub-Workflow build_custom baut
-// und pusht solche Branches on demand.
+// z.B. standard_zmyui5 -> BSP ZMYUI5. <NAME> darf auch ein Namespace in
+// abapGit-Dateinamen-Schreibweise sein ("/" -> "#"): standard_#abapgit#
+// -> BSP /ABAPGIT/UI5, standard_#abapgit#x -> BSP /ABAPGIT/X (Details in
+// .github/bsp_rename). Der GitHub-Workflow build_custom baut und pusht
+// solche Branches on demand.
 //
 // Aufruf:  node .github/build-branches.mjs [branch ...]
 // Ohne Argumente werden die vier festen Branches gebaut; mit Argumenten nur
@@ -128,7 +131,8 @@ const BUILDERS = {
 // standard_<NAME> / standard_v2_<NAME>: Basis bauen, dann die komplette
 // Deployment-Identitaet (BSP, SICF-Knoten, Handler-Klasse, Dateinamen) im
 // generierten src-Tree auf <NAME> umbenennen. Namensvalidierung (max. 15
-// Zeichen, Z/Y-Namensraum-Warnung) uebernimmt rename-bsp.mjs.
+// Zeichen, Z/Y-Namensraum-Warnung, /NS/-Namen) uebernimmt rename-bsp.mjs;
+// die #ns#name-Schreibweise reicht es unveraendert durch.
 function renamedBuilder(branch) {
   for (const base of ["standard_v2", "standard"]) {
     const prefix = `${base}_`;
@@ -150,7 +154,7 @@ const branches = requested.length ? requested : Object.keys(BUILDERS);
 const builds = branches.map((b) => {
   const build = BUILDERS[b] ?? renamedBuilder(b);
   if (!build) {
-    console.error(`Unbekannter Branch '${b}' - erlaubt: ${Object.keys(BUILDERS).join(", ")}, standard_<name>, standard_v2_<name>`);
+    console.error(`Unbekannter Branch '${b}' - erlaubt: ${Object.keys(BUILDERS).join(", ")}, standard_<name>, standard_v2_<name> (<name> auch als #ns#name)`);
     process.exit(1);
   }
   return build;
