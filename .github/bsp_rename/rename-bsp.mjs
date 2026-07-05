@@ -13,7 +13,7 @@
 //   * ICF handler class ....................... Z2UI5_CL_LP_HANDLER -> <NEW>_CL_LP_HANDLER
 //   * manifest.json data source ............... /sap/bc/z2ui5  (points at the handler above)
 //   * all on-disk file names .................. z2ui5.wapa.*, z2ui5_cl_lp_handler.*,
-//                                               the SICF files (name field only, hash kept)
+//                                               the SICF files (name field + URL hash)
 //
 // WHAT IS DELIBERATELY KEPT (these are protocol contracts with the abap2UI5
 // *backend*; renaming them breaks the app unless you also rebrand the backend):
@@ -49,6 +49,7 @@
 //
 
 import { readFile, writeFile, rename, readdir, stat } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { join, basename, dirname } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout, argv, exit } from "node:process";
@@ -60,12 +61,13 @@ const OLD_LO = "z2ui5";
 const OLD_UP = "Z2UI5";
 
 // SICF on-disk file name layout used by abapGit: a 15-char left-justified
-// ICF name field followed by the 25-char parent-node GUID (the "hash"). The
-// GUID belongs to the PARENT node (/sap/bc/, /sap/bc/bsp/sap/, ...) and does
-// not change when the leaf node is renamed - so we keep it and only swap the
-// name field.
+// ICF name field followed by a 25-char hash. The hash is the first 25 hex
+// chars of SHA1 over the full ICF URL - e.g. sha1("/sap/bc/z2ui5/") starts
+// with "aba643b150c02b2e28e7a7e17". Renaming the node changes its URL, so
+// the hash must be recomputed from the renamed <URL> or abapGit re-serializes
+// the service under a different file name after the pull (-> permanent diff).
 const SICF_NAME_FIELD = 15;
-const SICF_GUID_LEN = 25;
+const SICF_HASH_LEN = 25;
 
 // Maximum length of an ICF service / BSP application name.
 const MAX_NAME_LEN = 15;
@@ -223,11 +225,16 @@ function rawTransformFor(name, NEW_UP, NEW_LO, withNamespace) {
 // ---------------------------------------------------------------------------
 // File-name transform
 // ---------------------------------------------------------------------------
-function renamedBasename(name, NEW_LO) {
+// `content` is the (already transformed) file content - needed for SICF
+// files, whose file-name hash is derived from the renamed <URL>.
+function renamedBasename(name, NEW_LO, content) {
   if (name.endsWith(".sicf.xml")) {
+    const url = /<URL>([^<]+)<\/URL>/.exec(content ?? "")?.[1];
     const stem = name.slice(0, -".sicf.xml".length);
-    const guid = stem.slice(-SICF_GUID_LEN);
-    return NEW_LO.padEnd(SICF_NAME_FIELD, " ") + guid + ".sicf.xml";
+    const hash = url
+      ? createHash("sha1").update(url).digest("hex").slice(0, SICF_HASH_LEN)
+      : stem.slice(-SICF_HASH_LEN); // no <URL> found: keep the old hash
+    return NEW_LO.padEnd(SICF_NAME_FIELD, " ") + hash + ".sicf.xml";
   }
   if (name.toLowerCase().startsWith(OLD_LO)) {
     return NEW_LO + name.slice(OLD_LO.length);
@@ -289,12 +296,13 @@ async function main() {
   for (const path of files) {
     const name = basename(path);
     const tf = contentTransformFor(name, NEW_UP, NEW_LO, opts.withNamespace);
+    let after = null;
     if (tf) {
       const before = await readFile(path, "utf8");
-      const after = tf(before);
+      after = tf(before);
       if (after !== before) contentChanges.push({ path, before, after });
     }
-    const newName = renamedBasename(name, NEW_LO);
+    const newName = renamedBasename(name, NEW_LO, after);
     if (newName !== name) fileRenames.push({ path, to: join(dirname(path), newName) });
   }
 

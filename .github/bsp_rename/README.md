@@ -66,8 +66,10 @@ system:
 - **ICF handler class** `Z2UI5_CL_LP_HANDLER` → `<NEW>_CL_LP_HANDLER`
 - **manifest.json** data source `/sap/bc/z2ui5` (points at the handler above)
 - **all on-disk file names** (`z2ui5.wapa.*`, `z2ui5_cl_lp_handler.*`, and the
-  SICF files — only the 15-char name field; the 25-char parent-node GUID is
-  kept because the parent node does not change when the leaf is renamed)
+  SICF files — both the 15-char name field and the 25-char hash. The hash is
+  the first 25 hex chars of `sha1(<ICF URL>)`, so it changes with the rename;
+  keeping the old hash would make abapGit re-serialize the service under a
+  different file name after the pull, i.e. a permanent diff)
 
 ## What it deliberately keeps
 
