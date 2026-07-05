@@ -20,6 +20,7 @@ sap.ui.define(
     DateUtil,
   ) => {
     "use strict";
+
     return UIComponent.extend("z2ui5.Component", {
       metadata: {
         manifest: "json",
