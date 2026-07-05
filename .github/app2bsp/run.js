@@ -6,84 +6,127 @@ const staticDir = './.github/app2bsp/static_files';
 const targetDir = './src/02';
 const prefix = 'z2ui5.wapa.';
 
-function generateTargetFileName(sourcePath, baseDir) {
-    const relativePath = path.relative(baseDir, sourcePath);
-    const fileName = prefix + relativePath.replace(/\//g, '_-').replace(/\\/g, '_-').toLowerCase();
-    return fileName;
-}
+// Pages that belong to the BSP application but have no source under
+// app/webapp; their content files live in static_files.
+const extraPages = ['UI5RepositoryPathMapping.xml'];
+const startPage = 'index.html';
 
-function copyFilesRecursively(source, target, baseDir, renameFiles = true) {
-    fs.readdir(source, { withFileTypes: true }, (err, entries) => {
-        if (err) {
-            console.error('Fehler beim Lesen des Verzeichnisses:', err);
-            return;
+function collectFilesRecursively(dir, baseDir = dir) {
+    const files = [];
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const entryPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+            files.push(...collectFilesRecursively(entryPath, baseDir));
+        } else if (entry.isFile()) {
+            files.push(path.relative(baseDir, entryPath).split(path.sep).join('/'));
         }
-
-        entries.forEach(entry => {
-            const sourcePath = path.join(source, entry.name);
-            const targetFileName = renameFiles ? generateTargetFileName(sourcePath, baseDir) : entry.name;
-            const targetPath = path.join(target, targetFileName);
-
-            if (entry.isDirectory()) {
-                // Rekursiver Aufruf für Unterordner
-                copyFilesRecursively(sourcePath, target, baseDir, renameFiles);
-            } else if (entry.isFile()) {
-                // Lese die Quelldatei
-                fs.readFile(sourcePath, 'utf8', (err, data) => {
-                    if (err) {
-                        console.error(`Fehler beim Lesen der Quelldatei ${entry.name}:`, err);
-                        return;
-                    }
-
-                    // Erstelle den Zielordner, falls er nicht existiert
-                    fs.mkdir(path.dirname(targetPath), { recursive: true }, (err) => {
-                        if (err) {
-                            console.error('Fehler beim Erstellen des Zielordners:', err);
-                            return;
-                        }
-
-                        // Schreibe den Inhalt in die Zieldatei
-                        fs.writeFile(targetPath, data, 'utf8', (err) => {
-                            if (err) {
-                                console.error(`Fehler beim Schreiben der Zieldatei ${entry.name}:`, err);
-                                return;
-                            }
-                            console.log(`Datei ${entry.name} erfolgreich kopiert als ${targetFileName}.`);
-                        });
-                    });
-                });
-            }
-        });
-    });
+    }
+    return files;
 }
 
-function deleteFilesRecursively(directory) {
-    if (fs.existsSync(directory)) {
-        fs.readdirSync(directory).forEach((file) => {
-            const curPath = path.join(directory, file);
-            if (fs.lstatSync(curPath).isDirectory()) {
-                deleteFilesRecursively(curPath);
-            } else {
-                fs.unlinkSync(curPath);
-            }
-        });
-        fs.rmdirSync(directory);
-    }
+function generateTargetFileName(relativePath) {
+    return prefix + relativePath.replace(/\//g, '_-').toLowerCase();
 }
 
-// Lösche alle Dateien im Zielverzeichnis
-deleteFilesRecursively(targetDir);
+function escapeXml(value) {
+    return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 
-// Erstelle das Zielverzeichnis, falls es nicht existiert
-fs.mkdir(targetDir, { recursive: true }, (err) => {
-    if (err) {
-        console.error('Fehler beim Erstellen des Zielverzeichnisses:', err);
-        return;
+// BSP pages are stored on the SAP system as fixed-width 255-character lines.
+// abapGit serializes them back exactly like that: every line space-padded to
+// 255 characters, lines longer than that wrapped into 255-character chunks,
+// LF line endings and no newline after the last line. Emit the same format so
+// pulling into SAP and re-serializing produces no diff.
+const bspLineWidth = 255;
+
+function toBspPageFormat(content) {
+    const lines = content.split(/\r\n|\r|\n/);
+    if (lines.length > 1 && lines[lines.length - 1] === '') {
+        lines.pop();
     }
+    const padded = [];
+    for (const line of lines) {
+        if (line.length <= bspLineWidth) {
+            padded.push(line.padEnd(bspLineWidth));
+        } else {
+            for (let offset = 0; offset < line.length; offset += bspLineWidth) {
+                padded.push(line.slice(offset, offset + bspLineWidth).padEnd(bspLineWidth));
+            }
+        }
+    }
+    return padded.join('\n');
+}
 
-    // Starte den Kopiervorgang für den Quellordner
-    copyFilesRecursively(sourceDir, targetDir, sourceDir);
+function buildPageItem(pageName) {
+    // The start page carries MIMETYPE/IS_START_PAGE instead of PAGETYPE,
+    // matching the abapGit WAPA serializer output.
+    const typeLines = pageName === startPage
+        ? ['      <MIMETYPE>text/html</MIMETYPE>',
+           '      <IS_START_PAGE>X</IS_START_PAGE>']
+        : ['      <PAGETYPE>X</PAGETYPE>'];
+    return [
+        '    <item>',
+        '     <ATTRIBUTES>',
+        '      <APPLNAME>Z2UI5</APPLNAME>',
+        `      <PAGEKEY>${escapeXml(pageName.toUpperCase())}</PAGEKEY>`,
+        `      <PAGENAME>${escapeXml(pageName)}</PAGENAME>`,
+        ...typeLines,
+        '      <LAYOUTLANGU>E</LAYOUTLANGU>',
+        '      <VERSION>A</VERSION>',
+        '      <LANGU>E</LANGU>',
+        '     </ATTRIBUTES>',
+        '    </item>',
+    ].join('\n');
+}
 
-    // Starte den Kopiervorgang für den statischen Ordner ohne Umbenennung
-    copyFilesRecursively(staticDir, targetDir, staticDir, false);
-});
+function buildWapaXml(pageNames) {
+    const sorted = [...pageNames].sort((a, b) =>
+        a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0);
+    // abapGit serializes XML files with a UTF-8 BOM; emit one so pulling
+    // and re-pushing the repo produces no diff.
+    return '\ufeff' + [
+        '<?xml version="1.0" encoding="utf-8"?>',
+        '<abapGit version="v1.0.0" serializer="LCL_OBJECT_WAPA" serializer_version="v1.0.0">',
+        ' <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">',
+        '  <asx:values>',
+        '   <ATTRIBUTES>',
+        '    <APPLNAME>Z2UI5</APPLNAME>',
+        '    <APPLCLAS>/UI5/CL_UI5_BSP_APPLICATION</APPLCLAS>',
+        '    <APPLEXT>Z2UI5</APPLEXT>',
+        '    <SECURITY>X</SECURITY>',
+        '    <ORIGLANG>E</ORIGLANG>',
+        '    <MODIFLANG>E</MODIFLANG>',
+        '    <TEXT>test</TEXT>',
+        '   </ATTRIBUTES>',
+        '   <PAGES>',
+        ...sorted.map(buildPageItem),
+        '   </PAGES>',
+        '  </asx:values>',
+        ' </asx:abap>',
+        '</abapGit>',
+        '',
+    ].join('\n');
+}
+
+fs.rmSync(targetDir, { recursive: true, force: true });
+fs.mkdirSync(targetDir, { recursive: true });
+
+const webappFiles = collectFilesRecursively(sourceDir);
+for (const relativePath of webappFiles) {
+    const targetFileName = generateTargetFileName(relativePath);
+    const content = fs.readFileSync(path.join(sourceDir, relativePath), 'utf8');
+    fs.writeFileSync(path.join(targetDir, targetFileName), toBspPageFormat(content), 'utf8');
+    console.log(`Copied ${relativePath} as ${targetFileName}.`);
+}
+
+for (const fileName of fs.readdirSync(staticDir)) {
+    fs.copyFileSync(path.join(staticDir, fileName), path.join(targetDir, fileName));
+    console.log(`Copied static file ${fileName}.`);
+}
+
+// Generate the BSP page directory so every webapp file is registered as a
+// page; files missing here would be silently skipped by the abapGit WAPA
+// deserializer and never reach the target system.
+const pageNames = [...webappFiles, ...extraPages];
+fs.writeFileSync(path.join(targetDir, 'z2ui5.wapa.xml'), buildWapaXml(pageNames), 'utf8');
+console.log(`Generated z2ui5.wapa.xml with ${pageNames.length} pages.`);

@@ -4,35 +4,35 @@
     "version": "1.0.0",
     "description": "Layout Management for abap2UI5.",
     "scripts": {
-      "build_bsp" : "git clone --branch cloud https://github.com/abap2UI5/frontend && rm -rf src/02/* && node .github/app2bsp/run.js && npm run cleanup",
-      "cleanup" : "rm -rf frontend && rm -rf app "
+        "build_branches": "node .github/build-branches.mjs",
+        "build_legacy_free": "node .github/app2app_v2/build-legacy-free.mjs . app/webapp .github/app2app_v2/out"
     },
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/abap2UI5-addons/layout-management.git"
+        "type": "git",
+        "url": "git+https://github.com/abap2UI5-addons/layout-management.git"
     },
     "license": "MIT",
     "bugs": {
-      "url": "https://github.com/abap2UI5-addons/layout-management.git"
+        "url": "https://github.com/abap2UI5-addons/layout-management.git"
     },
     "homepage": "https://github.com/abap2UI5-addons/layout-management#readme",
     "devDependencies": {
-      "@abaplint/cli": "^2.113.86",
-      "@abaplint/database-sqlite": "^2.10.20",
-      "@abaplint/runtime": "^2.10.23",
-      "@abaplint/transpiler-cli": "^2.10.23",
-      "@types/node": "^22.10.5",
-      "buffer": "^6.0.3",
-      "copy-webpack-plugin": "^12.0.2",
-      "express": "^4.21.2",
-      "html-webpack-plugin": "^5.6.3",
-      "path-browserify": "^1.0.1",
-      "web-encoding": "^1.1.5",
-      "webpack-cli": "^6.0.1",
-      "webpack-dev-server": "^5.2.0",
-      "@playwright/test": "^1.49.1"
+        "@abaplint/cli": "^2.113.86",
+        "@abaplint/database-sqlite": "^2.10.20",
+        "@abaplint/runtime": "^2.10.23",
+        "@abaplint/transpiler-cli": "^2.10.23",
+        "@types/node": "^22.10.5",
+        "buffer": "^6.0.3",
+        "copy-webpack-plugin": "^12.0.2",
+        "express": "^4.21.2",
+        "html-webpack-plugin": "^5.6.3",
+        "path-browserify": "^1.0.1",
+        "web-encoding": "^1.1.5",
+        "webpack-cli": "^6.0.1",
+        "webpack-dev-server": "^5.2.0",
+        "@playwright/test": "^1.49.1"
     },
     "dependencies": {
-      "npm-check-updates": "^17.1.13"
+        "npm-check-updates": "^17.1.13"
     }
-  }
+}

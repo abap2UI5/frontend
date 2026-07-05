@@ -1,7 +1,4 @@
-[![ABAP_STANDARD](https://github.com/abap2UI5/frontend/actions/workflows/ABAP_STANDARD.yaml/badge.svg?branch=standard)](https://github.com/abap2UI5/frontend/actions/workflows/ABAP_STANDARD.yaml)
-[![ABAP_CLOUD](https://github.com/abap2UI5/frontend/actions/workflows/ABAP_CLOUD.yaml/badge.svg?branch=cloud)](https://github.com/abap2UI5/frontend/actions/workflows/ABAP_CLOUD.yaml)
-<br>
-[![auto_bsp](https://github.com/abap2UI5/frontend/actions/workflows/auto_bsp.yaml/badge.svg?branch=cloud)](https://github.com/abap2UI5/frontend/actions/workflows/auto_bsp.yaml)
+[![build_branches](https://github.com/abap2UI5/frontend/actions/workflows/build_branches.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_branches.yaml)
 
 # abap2UI5-frontend
 
@@ -9,10 +6,14 @@ This repository contains an abap2UI5 HTTP service. By pulling this repository, a
 
 #### Branch
 
-| Name    | System                | 
-|-----------| ----------------------------|
-| cloud     | S/4 Public Cloud, BTP ABAP Environment |
-| standard  | S/4 Private Cloud, S/4 On-Premise, R/3 NetWeaver >750    |
+`main` is the single source (webapp under `app/webapp`, ABAP artifacts, build tooling). All other branches are generated from it by the [`build_branches`](.github/workflows/build_branches.yaml) workflow — pull the one that matches your system:
+
+| Name        | System                                                | UI5     |
+|-------------|-------------------------------------------------------|---------|
+| cloud       | S/4 Public Cloud, BTP ABAP Environment                | classic |
+| cloud_v2    | S/4 Public Cloud, BTP ABAP Environment                | legacy-free (UI5 2.x) |
+| standard    | S/4 Private Cloud, S/4 On-Premise, R/3 NetWeaver >750 | classic |
+| standard_v2 | S/4 Private Cloud, S/4 On-Premise                     | legacy-free (UI5 2.x) |
 
 #### Issues
 For bug reports or feature requests, please open an issue in the [abap2UI5 repository.](https://github.com/abap2UI5/abap2UI5/issues)
