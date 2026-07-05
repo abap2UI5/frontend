@@ -107,6 +107,12 @@ mkdirSync(join(outDir, "src"), { recursive: true });
 cpSync(join(staticFiles, "package.devc.xml"), join(outDir, "src/package.devc.xml"));
 cpSync(join(staticFiles, "01"), join(outDir, "src/01"), { recursive: true });
 cpSync(bsp, join(outDir, "src/02"), { recursive: true });
+// Das SMIM-Serialisat des BSP-MIME-Ordners nicht ausliefern: sein Objekt-
+// schluessel (Dateiname) ist die LOIO-GUID des Ordners auf dem System, das
+// ihn urspruenglich serialisiert hat. Auf jedem anderen System legt der
+// BSP-Pull den MIME-Ordner selbst mit eigener GUID an - das Repo-Objekt
+// existiert dort nie und abapGit zeigt dauerhaft einen Diff.
+rmSync(join(outDir, "src/02/024251849e5a1edfa0b19c97d05e28c2.smim.xml"), { force: true });
 rmSync(work, { recursive: true, force: true });
 const n = readdirSync(join(outDir, "src/02")).length;
 console.log(`OK: legacy-free BSP ${bspName.toUpperCase()} erzeugt (${n} Dateien) in ${join(outDir, "src/02")} ${renamed && ownBackend ? "[eigener Backend-Handler]" : "[Backend-Handler /sap/bc/z2ui5]"}`);
