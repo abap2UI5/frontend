@@ -12,7 +12,7 @@ The output uses the same package layout as the `standard` branch:
 
 ```
 src/package.devc.xml   root package
-src/01/                ICF handler (SICF node + Z2UI5_CL_LP_HANDLER, from static_files/)
+src/01/                ICF handler (SICF node + Z2UI5_CL_LP_HANDLER, from abap/standard)
 src/02/                the BSP page
 ```
 

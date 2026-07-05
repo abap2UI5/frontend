@@ -24,17 +24,18 @@ jobs:
         node-version: 20
     - run: npm ci
 
-    # ABAP-Check der Cloud-Artefakte (src/), wie bisher ABAP_CLOUD
+    # ABAP-Check der Cloud-Artefakte (abap/cloud), wie bisher ABAP_CLOUD
     - run: npx abaplint
 
     - name: Build output branches
       run: node .github/build-branches.mjs
 
     # ABAP-Check des generierten standard-Trees (BSP + On-Prem-Handler),
-    # wie bisher ABAP_STANDARD auf dem standard-Branch
+    # wie bisher ABAP_STANDARD auf dem standard-Branch; gleiche Config,
+    # nur zeigen die Quellen dort unter /src/
     - name: Lint generated standard src
       run: |
-        cp abaplint.jsonc .github/out/standard/abaplint.jsonc
+        sed 's|/abap/cloud/|/src/|' abaplint.jsonc > .github/out/standard/abaplint.jsonc
         (cd .github/out/standard && npx abaplint)
         rm .github/out/standard/abaplint.jsonc
 

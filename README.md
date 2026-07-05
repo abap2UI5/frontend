@@ -6,7 +6,7 @@ This repository contains an abap2UI5 HTTP service. By pulling this repository, a
 
 #### Branch
 
-`main` is the single source (webapp under `app/webapp`, ABAP artifacts, build tooling). All other branches are generated from it by the [`build_branches`](.github/workflows/build_branches.yaml) workflow — pull the one that matches your system:
+`main` is the single source (webapp under `app/webapp`, ABAP artifacts under `abap/cloud` and `abap/standard`, build tooling under `.github/`). All other branches are generated from it by the [`build_branches`](.github/workflows/build_branches.yaml) workflow — pull the one that matches your system:
 
 | Name        | System                                                | UI5     |
 |-------------|-------------------------------------------------------|---------|

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // build-branches.mjs
-// Baut aus dem main-Branch (einzige Quelle: app/webapp + src/ + Tooling)
+// Baut aus dem main-Branch (einzige Quelle: app/webapp + abap/ + Tooling)
 // die vier generierten Output-Branches:
 //
-//   cloud        app/ (Webapp) + src/ (ABAP-Cloud-Artefakte), klassischer Bootstrap
+//   cloud        app/ (Webapp) + abap/cloud (ABAP-Artefakte), klassischer Bootstrap
 //   cloud_v2     wie cloud, Webapp auf legacy-free (UI5 2.0) gepatcht
 //   standard     BSP Z2UI5 (app2bsp) + ICF-Handler, klassischer Bootstrap
 //   standard_v2  BSP Z2UI5 legacy-free (build-legacy-free.mjs)
@@ -71,7 +71,7 @@ rmSync(out, { recursive: true, force: true });
 {
   const dir = initBranch("cloud", ABAPGIT_CLOUD);
   cpSync(join(repo, "app"), join(dir, "app"), { recursive: true, filter: skipBuildArtifacts });
-  cpSync(join(repo, "src"), join(dir, "src"), { recursive: true });
+  cpSync(join(repo, "abap/cloud"), join(dir, "src"), { recursive: true });
 }
 
 // --- cloud_v2: wie cloud, Webapp-Bootstrap auf legacy-free gepatcht ----------
@@ -91,9 +91,7 @@ rmSync(out, { recursive: true, force: true });
   cpSync(join(repo, ".github/app2bsp"), join(work, ".github/app2bsp"), { recursive: true });
   cpSync(join(repo, "app/webapp"), join(work, "frontend/app/webapp"), { recursive: true, filter: skipBuildArtifacts });
   execFileSync("node", [".github/app2bsp/run.js"], { cwd: work, stdio: "ignore" });
-  const statics = join(repo, ".github/app2app_v2/static_files");
-  cpSync(join(statics, "package.devc.xml"), join(dir, "src/package.devc.xml"));
-  cpSync(join(statics, "01"), join(dir, "src/01"), { recursive: true });
+  cpSync(join(repo, "abap/standard"), join(dir, "src"), { recursive: true });
   cpSync(join(work, "src/02"), join(dir, "src/02"), { recursive: true });
   rmSync(work, { recursive: true, force: true });
 }
