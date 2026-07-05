@@ -8,6 +8,14 @@ runs on the legacy-free OpenUI5 build.
 cloud/app/webapp ──▶ patchIndexHtml + patchManifest ──▶ .github/app2bsp ──▶ [bsp_rename, nur mit --name] ──▶ src/
 ```
 
+The output uses the same package layout as the `standard` branch:
+
+```
+src/package.devc.xml   root package
+src/01/                ICF handler (SICF node + Z2UI5_CL_LP_HANDLER, from static_files/)
+src/02/                the BSP page
+```
+
 The result is published to the [`frontend-legacy-free`](https://github.com/abap2UI5/frontend-legacy-free) repo
 and to the [`standard_v2`](https://github.com/abap2UI5/frontend/tree/standard_v2) branch of this repo
 (kept up to date by the `auto_bsp_v2` workflow).
