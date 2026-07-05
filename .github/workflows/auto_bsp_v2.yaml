@@ -25,7 +25,11 @@ jobs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add .
-        git commit -m "auto-bsp-v2-changes"
+        if git diff --cached --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "auto-bsp-v2-changes"
+        fi
 
     - name: Push Changes
       uses: ad-m/github-push-action@v0.6.0
