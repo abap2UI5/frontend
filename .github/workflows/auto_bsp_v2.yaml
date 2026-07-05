@@ -10,9 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+    # Build from standard: it hosts the v2 build tooling (app2app_v2 incl.
+    # the ICF handler static_files), so standard_v2 always gets the same
+    # tooling and package layout as standard instead of rebuilding itself
+    # with its own, potentially stale copy.
     - uses: actions/checkout@v3
       with:
-        ref: standard_v2
+        ref: standard
     - uses: actions/setup-node@v3
       with:
         node-version: 20
