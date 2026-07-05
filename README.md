@@ -14,12 +14,12 @@ This repository contains an abap2UI5 HTTP service. By pulling this repository, a
 
 `main` is the single source (webapp under `app/webapp`, ABAP artifacts under `abap/cloud` and `abap/standard`, build tooling under `.github/`). All other branches are generated from it by the `build_<branch>` workflows ([shared base](.github/workflows/build_branch.yaml)) — pull the one that matches your system:
 
-| Name        | System                                                | UI5     |
-|-------------|-------------------------------------------------------|---------|
-| cloud       | S/4 Public Cloud, BTP ABAP Environment                | classic |
-| cloud_v2    | S/4 Public Cloud, BTP ABAP Environment                | legacy-free (UI5 2.x) |
-| standard    | S/4 Private Cloud, S/4 On-Premise, R/3 NetWeaver >750 | classic |
-| standard_v2 | S/4 Private Cloud, S/4 On-Premise                     | legacy-free (UI5 2.x) |
+| Name        | System                                                | UI5     | Build |
+|-------------|-------------------------------------------------------|---------|-------|
+| cloud       | S/4 Public Cloud, BTP ABAP Environment                | classic | `npm run build_cloud` |
+| cloud_v2    | S/4 Public Cloud, BTP ABAP Environment                | legacy-free (UI5 2.x) | `npm run build_cloud_v2` |
+| standard    | S/4 Private Cloud, S/4 On-Premise, R/3 NetWeaver >750 | classic | `npm run build_standard` |
+| standard_v2 | S/4 Private Cloud, S/4 On-Premise                     | legacy-free (UI5 2.x) | `npm run build_standard_v2` |
 
 #### Issues
 For bug reports or feature requests, please open an issue in the [abap2UI5 repository.](https://github.com/abap2UI5/abap2UI5/issues)
