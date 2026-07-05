@@ -18,7 +18,8 @@ src/02/                the BSP page
 
 The result is published to the [`frontend-legacy-free`](https://github.com/abap2UI5/frontend-legacy-free) repo
 and to the [`standard_v2`](https://github.com/abap2UI5/frontend/tree/standard_v2) branch of this repo
-(kept up to date by the `auto_bsp_v2` workflow).
+(kept up to date by the `auto_bsp_v2` workflow, which builds on a `standard`
+checkout and force-pushes the result to `standard_v2`).
 
 ## Run
 
