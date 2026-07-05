@@ -4,16 +4,37 @@
 // under a different name into the same SAP system (the way `frontend` is
 // `Z2UI5` and `frontend-legacy-free` is `Z2UI5_V2`).
 //
+// The new name is either a plain name in the customer namespace (ZMYUI5) or
+// a name in a registered /NS/ namespace:
+//   * ZMYUI5      ->  BSP ZMYUI5,        handler ZMYUI5_CL_LP_HANDLER
+//   * /ABAPGIT/   ->  BSP /ABAPGIT/UI5,  handler /ABAPGIT/CL_LP_HANDLER
+//   * /ABAPGIT/X  ->  BSP /ABAPGIT/X,    handler /ABAPGIT/X_CL_LP_HANDLER
+// (the abapGit file-name spelling #abapgit#ui5 is accepted as input too)
+//
 // WHAT IS RENAMED (the deployment identity - the things that collide in the
 // SAP system when you try to install a second copy):
 //   * BSP application object .................. Z2UI5      -> <NEW>
 //   * SICF service nodes (3x) ................. /sap/bc/z2ui5, /sap/bc/bsp/sap/z2ui5,
 //                                               /sap/bc/ui5_ui5/sap/z2ui5
 //   * SMIM folder URL ......................... /SAP/BC/BSP/SAP/Z2UI5
-//   * ICF handler class ....................... Z2UI5_CL_LP_HANDLER -> <NEW>_CL_LP_HANDLER
+//   * ICF handler class ....................... Z2UI5_CL_LP_HANDLER -> <NEW handler>
 //   * manifest.json data source ............... /sap/bc/z2ui5  (points at the handler above)
 //   * all on-disk file names .................. z2ui5.wapa.*, z2ui5_cl_lp_handler.*,
-//                                               the SICF files (name field + URL hash)
+//                                               the SICF files (name field + URL hash);
+//                                               "/" in namespaced object names becomes
+//                                               "#" like abapGit serializes it
+//
+// For a namespaced name the SICF/SMIM paths follow the SAP convention for
+// namespaced BSPs - the namespace replaces the "sap" path segment and is an
+// ICF node of its own:
+//   /sap/bc/bsp/sap/z2ui5      -> /sap/bc/bsp/abapgit/ui5
+//   /sap/bc/ui5_ui5/sap/z2ui5  -> /sap/bc/ui5_ui5/abapgit/ui5
+//   /sap/bc/z2ui5              -> /sap/bc/abapgit/ui5
+// The namespace-level ICF nodes (/sap/bc/abapgit, ...) do not exist in a
+// vanilla system, so the script GENERATES one extra .sicf.xml per parent
+// node; abapGit creates them before the leaf nodes (alphabetical order).
+// The /NS/ namespace itself must exist in the target system (SE03,
+// changeable/with developer license) before pulling.
 //
 // WHAT IS DELIBERATELY KEPT (these are protocol contracts with the abap2UI5
 // *backend*; renaming them breaks the app unless you also rebrand the backend):
@@ -30,7 +51,8 @@
 // (resourceroots, module paths, .extend(...), controllerName, custom controls,
 // manifest id/viewPath/viewName). Only use it if you are rebranding the whole
 // stack including the backend - otherwise custom controls and backend-generated
-// views stop working.
+// views stop working. It is not available for /NS/ names (UI5 module ids
+// cannot carry a SAP namespace).
 //
 // Usage:
 //   node rename-bsp.mjs [NEW_NAME] [options]
@@ -44,7 +66,7 @@
 //
 // Examples:
 //   node rename-bsp.mjs ZMYUI5
-//   node rename-bsp.mjs zmyui5 --dry-run
+//   node rename-bsp.mjs /abapgit/ --dry-run
 //   node rename-bsp.mjs ZMYUI5 --with-namespace --yes
 //
 
@@ -59,6 +81,7 @@ import { stdin, stdout, argv, exit } from "node:process";
 // ---------------------------------------------------------------------------
 const OLD_LO = "z2ui5";
 const OLD_UP = "Z2UI5";
+const OLD_HANDLER_LO = "z2ui5_cl_lp_handler";
 
 // SICF on-disk file name layout used by abapGit: a 15-char left-justified
 // ICF name field followed by a 25-char hash. The hash is the first 25 hex
@@ -69,8 +92,15 @@ const OLD_UP = "Z2UI5";
 const SICF_NAME_FIELD = 15;
 const SICF_HASH_LEN = 25;
 
-// Maximum length of an ICF service / BSP application name.
+// Maximum length of an ICF service / BSP application name (for namespaced
+// names this is the FULL name including the /NS/ slashes).
 const MAX_NAME_LEN = 15;
+// Maximum length of an ABAP class name (incl. namespace).
+const MAX_CLASS_LEN = 30;
+// Namespaces are registered with at most 8 characters between the slashes.
+const MAX_NAMESPACE_LEN = 8;
+// BSP object name used when only a namespace is given (/ABAPGIT/ -> /ABAPGIT/UI5).
+const DEFAULT_NS_LEAF = "UI5";
 
 // BSP pages (the z2ui5.wapa.<page> files under src/02 of the generated
 // standard branches) are stored in the abapGit WAPA page format: every line
@@ -103,67 +133,154 @@ const HELP = `rename-bsp.mjs - rename the abap2UI5 frontend BSP (Z2UI5 -> <NEW>)
 Usage:
   node rename-bsp.mjs [NEW_NAME] [options]
 
+NEW_NAME is a plain name (ZMYUI5) or a name in a registered SAP namespace:
+  /ABAPGIT/     ->  BSP /ABAPGIT/UI5, handler class /ABAPGIT/CL_LP_HANDLER
+  /ABAPGIT/X    ->  BSP /ABAPGIT/X,   handler class /ABAPGIT/X_CL_LP_HANDLER
+(#abapgit#ui5, the abapGit file-name spelling, is accepted as well)
+
 Options:
   --dir <paths>        comma-separated roots to process (default: "src")
-  --with-namespace     also rewrite the UI5 namespace (advanced)
+  --with-namespace     also rewrite the UI5 namespace (advanced; not for /NS/ names)
   --dry-run            show what would change, write nothing
   --yes                skip the confirmation prompt
   -h, --help           show this help
 
 Renames the deployment identity (BSP object, SICF nodes, SMIM URL, handler
-class, file names, manifest data source). The UI5 framework namespace
-"z2ui5", the global "z2ui5" runtime object, the "Z2UI5" event constant and
-the backend class z2ui5_cl_http_handler are KEPT, because they are protocol
-contracts with the abap2UI5 backend. Use --with-namespace only when you are
-rebranding the backend as well.`;
+class, file names, manifest data source). For /NS/ names the SICF nodes move
+to /sap/bc/<ns>/<name> etc. and the missing namespace-level ICF nodes are
+generated; "/" becomes "#" in file names like abapGit serializes it. The UI5
+framework namespace "z2ui5", the global "z2ui5" runtime object, the "Z2UI5"
+event constant and the backend class z2ui5_cl_http_handler are KEPT, because
+they are protocol contracts with the abap2UI5 backend. Use --with-namespace
+only when you are rebranding the backend as well.`;
 
 // ---------------------------------------------------------------------------
 // Validation / name derivation
 // ---------------------------------------------------------------------------
+// Returns the full name set the transforms work with:
+//   ns/nsLo ....... namespace without slashes (null for plain names)
+//   up/lo ......... full BSP application name   (Z2UI5 / /ABAPGIT/UI5)
+//   leafUp/leafLo . ICF node name, no slashes   (= up/lo for plain names)
+//   handlerUp/Lo .. ICF handler class name
 function deriveNames(input) {
-  const name = input.trim();
+  const name = input.trim().replace(/#/g, "/"); // accept the abapGit file-name spelling
+  const warnings = [];
+
+  const nsMatch = /^\/([A-Za-z0-9][A-Za-z0-9_]*)\/([A-Za-z][A-Za-z0-9_]*)?$/.exec(name);
+  if (nsMatch) {
+    const ns = nsMatch[1].toUpperCase();
+    if (ns.length > MAX_NAMESPACE_LEN) {
+      throw new Error(`Namespace "/${ns}/" is ${ns.length} chars; max ${MAX_NAMESPACE_LEN} between the slashes.`);
+    }
+    const leafUp = (nsMatch[2] || DEFAULT_NS_LEAF).toUpperCase();
+    const up = `/${ns}/${leafUp}`;
+    if (up.length > MAX_NAME_LEN) {
+      throw new Error(`Name "${up}" is ${up.length} chars; max ${MAX_NAME_LEN} (ICF service / BSP name limit, incl. namespace).`);
+    }
+    // /NS/ alone: the handler is the only class, so it needs no BSP prefix
+    const handlerUp = nsMatch[2] ? `/${ns}/${leafUp}_CL_LP_HANDLER` : `/${ns}/CL_LP_HANDLER`;
+    if (handlerUp.length > MAX_CLASS_LEN) {
+      throw new Error(`Handler class "${handlerUp}" is ${handlerUp.length} chars; max ${MAX_CLASS_LEN} (ABAP class name limit).`);
+    }
+    warnings.push(`namespace /${ns}/ must exist in the target system (SE03, with a developer/changeable license) before the abapGit pull.`);
+    return {
+      ns, nsLo: ns.toLowerCase(),
+      up, lo: up.toLowerCase(),
+      leafUp, leafLo: leafUp.toLowerCase(),
+      handlerUp, handlerLo: handlerUp.toLowerCase(),
+      warnings,
+    };
+  }
+
+  if (name.includes("/")) {
+    throw new Error(`Invalid name "${name}": a namespaced name must look like /NS/ or /NS/NAME (e.g. /ABAPGIT/ or /ABAPGIT/UI5).`);
+  }
   if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(name)) {
-    throw new Error(`Invalid name "${name}": must start with a letter and contain only letters, digits or "_".`);
+    throw new Error(`Invalid name "${name}": must start with a letter and contain only letters, digits or "_" (or /NS/NAME for a namespaced name).`);
   }
   if (name.length > MAX_NAME_LEN) {
     throw new Error(`Name "${name}" is ${name.length} chars; max ${MAX_NAME_LEN} (ICF service / BSP name limit).`);
   }
   const up = name.toUpperCase();
   const lo = name.toLowerCase();
-  const warnings = [];
   if (!/^[ZY]/.test(up)) {
     warnings.push(`"${up}" does not start with Z or Y - that is outside the SAP customer namespace.`);
   }
-  return { up, lo, warnings };
+  return {
+    ns: null, nsLo: null,
+    up, lo,
+    leafUp: up, leafLo: lo,
+    handlerUp: `${up}_CL_LP_HANDLER`, handlerLo: `${lo}_cl_lp_handler`,
+    warnings,
+  };
 }
+
+// abapGit escapes the "/" of namespaced object names as "#" in file names.
+const toFileName = (s) => s.replace(/\//g, "#");
 
 // ---------------------------------------------------------------------------
 // Content transforms (one per file category)
 // ---------------------------------------------------------------------------
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const sicfHash = (url) => createHash("sha1").update(url).digest("hex").slice(0, SICF_HASH_LEN);
 
-// abapGit object files that only ever contain the BSP name as a token - a
-// case-aware blanket replace is safe here.
-function transformBlanket(content, NEW_UP, NEW_LO) {
-  return content.split(OLD_UP).join(NEW_UP).split(OLD_LO).join(NEW_LO);
+// The handler class token contains the BSP token as prefix, so it must be
+// replaced FIRST - with a namespace the two are no longer prefix-compatible
+// (Z2UI5_CL_LP_HANDLER -> /ABAPGIT/CL_LP_HANDLER, Z2UI5 -> /ABAPGIT/UI5).
+function replaceHandler(content, N) {
+  return content
+    .split(OLD_HANDLER_LO.toUpperCase()).join(N.handlerUp)
+    .split(OLD_HANDLER_LO).join(N.handlerLo);
+}
+
+// SICF node: URL, ICF_NAME/ORIG_NAME fields, handler class. For /NS/ names
+// the namespace replaces the "sap" path segment (SAP convention for
+// namespaced BSPs) and the remaining bare tokens are the ICF node name
+// fields, which carry only the leaf name (no slashes allowed).
+function transformSicf(content, N) {
+  let c = replaceHandler(content, N);
+  if (N.ns) {
+    c = c
+      .split(`/bsp/sap/${OLD_LO}/`).join(`/bsp/${N.nsLo}/${N.leafLo}/`)
+      .split(`/ui5_ui5/sap/${OLD_LO}/`).join(`/ui5_ui5/${N.nsLo}/${N.leafLo}/`)
+      .split(`/sap/bc/${OLD_LO}/`).join(`/sap/bc/${N.nsLo}/${N.leafLo}/`);
+    return c.split(OLD_UP).join(N.leafUp).split(OLD_LO).join(N.leafLo);
+  }
+  return c.split(OLD_UP).join(N.up).split(OLD_LO).join(N.lo);
+}
+
+// SMIM folder: the MIME URL of a namespaced BSP is /SAP/BC/BSP/<NS>/<NAME>.
+function transformSmim(content, N) {
+  let c = replaceHandler(content, N);
+  if (N.ns) {
+    c = c
+      .split(`/BSP/SAP/${OLD_UP}`).join(`/BSP/${N.ns}/${N.leafUp}`)
+      .split(`/bsp/sap/${OLD_LO}`).join(`/bsp/${N.nsLo}/${N.leafLo}`);
+  }
+  return c.split(OLD_UP).join(N.up).split(OLD_LO).join(N.lo);
+}
+
+// BSP application descriptor (z2ui5.wapa.xml): APPLNAME/APPLEXT carry the
+// full (possibly namespaced) application name.
+function transformWapa(content, N) {
+  return replaceHandler(content, N).split(OLD_UP).join(N.up).split(OLD_LO).join(N.lo);
 }
 
 // ABAP class source / metadata: rename ONLY our own handler class and KEEP
 // the backend framework class z2ui5_cl_http_handler.
-function transformClass(content, NEW_UP) {
-  return content.replace(/Z2UI5_CL_LP_HANDLER/gi, `${NEW_UP}_CL_LP_HANDLER`);
+function transformClass(content, N) {
+  return content.replace(new RegExp(OLD_HANDLER_LO, "gi"), (m) =>
+    m === OLD_HANDLER_LO ? N.handlerLo : N.handlerUp);
 }
 
 // manifest.json: always repoint the data source at the renamed handler node.
 // Under --with-namespace also rewrite the UI5 app namespace / FLP identifiers.
-function transformManifest(content, NEW_LO, withNamespace) {
-  let out = content.replace(
-    new RegExp(`"/sap/bc/${escapeRe(OLD_LO)}"`, "g"),
-    `"/sap/bc/${NEW_LO}"`,
-  );
+function transformManifest(content, N, withNamespace) {
+  const target = N.ns ? `"/sap/bc/${N.nsLo}/${N.leafLo}"` : `"/sap/bc/${N.lo}"`;
+  let out = content.replace(new RegExp(`"/sap/bc/${escapeRe(OLD_LO)}"`, "g"), target);
   if (withNamespace) {
     // every remaining z2ui5 in the manifest is a namespace / FLP identifier
-    out = out.split(OLD_LO).join(NEW_LO);
+    out = out.split(OLD_LO).join(N.lo);
   }
   return out;
 }
@@ -206,19 +323,19 @@ function renormalizeBspPage(content) {
 }
 
 // Decide how a file's CONTENT must be transformed, based on its name.
-function contentTransformFor(name, NEW_UP, NEW_LO, withNamespace) {
-  const tf = rawTransformFor(name, NEW_UP, NEW_LO, withNamespace);
+function contentTransformFor(name, N, withNamespace) {
+  const tf = rawTransformFor(name, N, withNamespace);
   if (tf && isBspPageFile(name)) return (c) => renormalizeBspPage(tf(c));
   return tf;
 }
 
-function rawTransformFor(name, NEW_UP, NEW_LO, withNamespace) {
-  if (name.endsWith(".sicf.xml")) return (c) => transformBlanket(c, NEW_UP, NEW_LO);
-  if (name.endsWith(".smim.xml")) return (c) => transformBlanket(c, NEW_UP, NEW_LO);
-  if (name.endsWith(".wapa.xml")) return (c) => transformBlanket(c, NEW_UP, NEW_LO); // BSP descriptor only
-  if (name.endsWith(".clas.abap") || name.endsWith(".clas.xml")) return (c) => transformClass(c, NEW_UP);
-  if (name.endsWith("manifest.json")) return (c) => transformManifest(c, NEW_LO, withNamespace);
-  if (withNamespace && /\.(js|xml|html|css|json)$/.test(name)) return (c) => transformNamespace(c, NEW_LO);
+function rawTransformFor(name, N, withNamespace) {
+  if (name.endsWith(".sicf.xml")) return (c) => transformSicf(c, N);
+  if (name.endsWith(".smim.xml")) return (c) => transformSmim(c, N);
+  if (name.endsWith(".wapa.xml")) return (c) => transformWapa(c, N); // BSP descriptor only
+  if (name.endsWith(".clas.abap") || name.endsWith(".clas.xml")) return (c) => transformClass(c, N);
+  if (name.endsWith("manifest.json")) return (c) => transformManifest(c, N, withNamespace);
+  if (withNamespace && /\.(js|xml|html|css|json)$/.test(name)) return (c) => transformNamespace(c, N.lo);
   return null; // no content change
 }
 
@@ -227,19 +344,53 @@ function rawTransformFor(name, NEW_UP, NEW_LO, withNamespace) {
 // ---------------------------------------------------------------------------
 // `content` is the (already transformed) file content - needed for SICF
 // files, whose file-name hash is derived from the renamed <URL>.
-function renamedBasename(name, NEW_LO, content) {
+function renamedBasename(name, N, content) {
   if (name.endsWith(".sicf.xml")) {
     const url = /<URL>([^<]+)<\/URL>/.exec(content ?? "")?.[1];
     const stem = name.slice(0, -".sicf.xml".length);
-    const hash = url
-      ? createHash("sha1").update(url).digest("hex").slice(0, SICF_HASH_LEN)
-      : stem.slice(-SICF_HASH_LEN); // no <URL> found: keep the old hash
-    return NEW_LO.padEnd(SICF_NAME_FIELD, " ") + hash + ".sicf.xml";
+    const hash = url ? sicfHash(url) : stem.slice(-SICF_HASH_LEN); // no <URL> found: keep the old hash
+    return N.leafLo.padEnd(SICF_NAME_FIELD, " ") + hash + ".sicf.xml";
   }
-  if (name.toLowerCase().startsWith(OLD_LO)) {
-    return NEW_LO + name.slice(OLD_LO.length);
+  const lower = name.toLowerCase();
+  if (lower.startsWith(OLD_HANDLER_LO)) {
+    return toFileName(N.handlerLo) + name.slice(OLD_HANDLER_LO.length);
+  }
+  if (lower.startsWith(OLD_LO)) {
+    return toFileName(N.lo) + name.slice(OLD_LO.length);
   }
   return name; // GUID-named SMIM, package.devc.xml, ... keep
+}
+
+// ---------------------------------------------------------------------------
+// Namespace-level ICF nodes (/NS/ names only)
+// ---------------------------------------------------------------------------
+// The renamed SICF leaf nodes live under /sap/bc/<ns>/, /sap/bc/bsp/<ns>/ and
+// /sap/bc/ui5_ui5/<ns>/. Those parent nodes do not exist in a vanilla system
+// and abapGit does not create intermediate nodes, so one .sicf.xml per parent
+// is generated next to its leaf. abapGit pulls them before the leaves (its
+// object list is sorted, "<ns>..." < "<leaf>..." only matters within one
+// package - both land in the same one here).
+function namespaceNodeFile(N, dir, parentUrl) {
+  const content = `﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_SICF" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <URL>${parentUrl}</URL>
+   <ICFSERVICE>
+    <ICF_NAME>${N.ns}</ICF_NAME>
+    <ORIG_NAME>${N.nsLo}</ORIG_NAME>
+   </ICFSERVICE>
+   <ICFDOCU>
+    <ICF_NAME>${N.ns}</ICF_NAME>
+    <ICF_LANGU>E</ICF_LANGU>
+    <ICF_DOCU>abap2UI5 - Namespace ${N.nsLo}</ICF_DOCU>
+   </ICFDOCU>
+  </asx:values>
+ </asx:abap>
+</abapGit>
+`;
+  const name = N.nsLo.padEnd(SICF_NAME_FIELD, " ") + sicfHash(parentUrl) + ".sicf.xml";
+  return { path: join(dir, name), content };
 }
 
 // ---------------------------------------------------------------------------
@@ -270,18 +421,21 @@ async function main() {
   let nameInput = opts.name;
   if (!nameInput) {
     const rl = createInterface({ input: stdin, output: stdout });
-    nameInput = await rl.question("New BSP name (e.g. ZMYUI5): ");
+    nameInput = await rl.question("New BSP name (e.g. ZMYUI5 or /ABAPGIT/): ");
     rl.close();
   }
 
-  let names;
+  let N;
   try {
-    names = deriveNames(nameInput);
+    N = deriveNames(nameInput);
   } catch (err) {
     console.error(`\n  ${err.message}\n`);
     exit(1);
   }
-  const { up: NEW_UP, lo: NEW_LO, warnings } = names;
+  if (opts.withNamespace && N.ns) {
+    console.error(`\n  --with-namespace cannot be combined with a /NS/ name: UI5 module ids cannot carry a SAP namespace.\n`);
+    exit(1);
+  }
 
   // Collect work.
   const files = [];
@@ -293,28 +447,44 @@ async function main() {
 
   const contentChanges = [];
   const fileRenames = [];
+  const fileCreates = []; // namespace-level ICF nodes, /NS/ names only
+  const nsParentUrls = new Set();
   for (const path of files) {
     const name = basename(path);
-    const tf = contentTransformFor(name, NEW_UP, NEW_LO, opts.withNamespace);
+    const tf = contentTransformFor(name, N, opts.withNamespace);
     let after = null;
     if (tf) {
       const before = await readFile(path, "utf8");
       after = tf(before);
       if (after !== before) contentChanges.push({ path, before, after });
     }
-    const newName = renamedBasename(name, NEW_LO, after);
+    const newName = renamedBasename(name, N, after);
     if (newName !== name) fileRenames.push({ path, to: join(dirname(path), newName) });
+    if (N.ns && name.endsWith(".sicf.xml") && after) {
+      // register the (new) parent namespace node of this renamed leaf
+      const url = /<URL>([^<]+)<\/URL>/.exec(after)?.[1];
+      const parentUrl = url?.replace(/[^/]+\/$/, "");
+      if (parentUrl?.endsWith(`/${N.nsLo}/`) && !nsParentUrls.has(parentUrl)) {
+        nsParentUrls.add(parentUrl);
+        fileCreates.push({ ...namespaceNodeFile(N, dirname(path), parentUrl), url: parentUrl });
+      }
+    }
   }
 
   // Report.
-  console.log(`\nRename abap2UI5 BSP:  ${OLD_UP}  ->  ${NEW_UP}   (lowercase ${OLD_LO} -> ${NEW_LO})`);
+  console.log(`\nRename abap2UI5 BSP:  ${OLD_UP}  ->  ${N.up}   (lowercase ${OLD_LO} -> ${N.lo})`);
+  console.log(`ICF handler class:   ${OLD_HANDLER_LO.toUpperCase()}  ->  ${N.handlerUp}`);
   console.log(`Roots:               ${opts.dirs.join(", ")}`);
   console.log(`UI5 namespace:       ${opts.withNamespace ? `ALSO renamed (--with-namespace)` : "kept as z2ui5 (backend contract)"}`);
-  for (const w of warnings) console.log(`  ! ${w}`);
+  for (const w of N.warnings) console.log(`  ! ${w}`);
   console.log(`\nContent edits (${contentChanges.length}):`);
   for (const c of contentChanges) console.log(`  ~ ${c.path}`);
   console.log(`\nFile renames (${fileRenames.length}):`);
   for (const r of fileRenames) console.log(`  > ${basename(r.path)}  ->  ${basename(r.to)}`);
+  if (fileCreates.length) {
+    console.log(`\nNew namespace-level ICF nodes (${fileCreates.length}):`);
+    for (const f of fileCreates) console.log(`  + ${basename(f.path)}   (${f.url})`);
+  }
 
   if (opts.withNamespace) {
     console.log(`\n  WARNING: --with-namespace rewrites the z2ui5 UI5 namespace (incl. custom`);
@@ -322,7 +492,7 @@ async function main() {
     console.log(`  view XML it generates - only use this if the backend is rebranded too.`);
   }
 
-  if (contentChanges.length === 0 && fileRenames.length === 0) {
+  if (contentChanges.length === 0 && fileRenames.length === 0 && fileCreates.length === 0) {
     console.log(`\nNothing to do.\n`);
     return;
   }
@@ -337,11 +507,14 @@ async function main() {
     if (ans !== "y" && ans !== "yes") { console.log("Aborted."); return; }
   }
 
-  // Apply: edit contents first (paths still original), then rename files.
+  // Apply: edit contents first (paths still original), then rename files,
+  // then create the namespace nodes (their names collide with nothing).
   for (const c of contentChanges) await writeFile(c.path, c.after);
   for (const r of fileRenames) await rename(r.path, r.to);
+  for (const f of fileCreates) await writeFile(f.path, f.content);
 
-  console.log(`\nDone. ${contentChanges.length} files edited, ${fileRenames.length} files renamed.`);
+  console.log(`\nDone. ${contentChanges.length} files edited, ${fileRenames.length} files renamed` +
+    (fileCreates.length ? `, ${fileCreates.length} namespace nodes created.` : `.`));
   console.log(`Review with "git status" / "git diff" before committing.\n`);
 }
 
