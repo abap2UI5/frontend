@@ -36,13 +36,10 @@ jobs:
       run: node .github/build-branches.mjs "${{ inputs.branch }}"
 
     # ABAP-Check des generierten standard-Trees (BSP + On-Prem-Handler),
-    # wie bisher ABAP_STANDARD; gleiche Config, Quellen dort unter /src/
+    # wie bisher ABAP_STANDARD; die abaplint.jsonc liegt jetzt im Output
     - name: Lint generated standard src
       if: inputs.branch == 'standard'
-      run: |
-        sed 's|/abap/cloud/|/src/|' abaplint.jsonc > .github/out/standard/abaplint.jsonc
-        (cd .github/out/standard && npx abaplint)
-        rm .github/out/standard/abaplint.jsonc
+      run: (cd .github/out/standard && npx abaplint)
 
     - name: Push ${{ inputs.branch }}
       run: |
