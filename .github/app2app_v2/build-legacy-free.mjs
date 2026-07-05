@@ -39,8 +39,12 @@ function patchIndexHtml(s) {
     .replace(/(data-sap-ui-frameOptions="trusted")/, `data-sap-ui-frame-options="trusted"\n        data-sap-ui-libs="sap.m"`);
 }
 function patchManifest(s) {
+  // "_version" bewusst NICHT auf 2.0.0 anheben: Schema-Version 2 aktiviert die
+  // strikte Manifest-v2-Semantik, in der die v1-Routing-Optionen (viewName/
+  // viewId/viewPath unter sap.ui5/routing/targets) einen Fehler werfen ->
+  // "Failed to load component for container container", leere Seite.
+  // Die legacy-free Runtime akzeptiert Schema v1 unveraendert.
   return s
-    .replace(/"_version":\s*"1\.65\.0"/, '"_version": "2.0.0"')
     .replace(/"minUI5Version":\s*"1\.71\.0"/, '"minUI5Version": "1.136.0"');
 }
 
