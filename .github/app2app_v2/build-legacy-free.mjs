@@ -6,6 +6,10 @@
 //   cloud/app/webapp -> [Bootstrap-Patch] -> app2bsp/run.js [-> bsp_rename(--name)]
 //
 // Nur index.html + manifest.json werden angepasst (alles andere bleibt 1:1).
+// Das Ergebnis hat dieselbe Paketstruktur wie der standard-Branch:
+//   src/package.devc.xml  (Root-Paket)
+//   src/01/               (ICF-Handler, aus static_files)
+//   src/02/               (BSP-Seite)
 // Die BSP heisst per Default Z2UI5 (wie das klassische Frontend, kein Rename);
 // mit --name Z2UI5_V2 wird fuer eine Parallelinstallation umbenannt.
 // Aufruf:  node .github/app2app_v2/build-legacy-free.mjs <frontend-repo> <cloud-webapp> <out-dir> [--name Z2UI5_V2] [--own-backend]
@@ -74,7 +78,12 @@ if (renamed && !ownBackend) {
   writeFileSync(mf, fixed);
 }
 
-cpSync(bsp, join(outDir, "src"), { recursive: true });
+// 6) Paketstruktur wie im standard-Branch: Root-Paket + 01 (ICF-Handler) + 02 (BSP)
+const staticFiles = join(frontendRepo, ".github/app2app_v2/static_files");
+mkdirSync(join(outDir, "src"), { recursive: true });
+cpSync(join(staticFiles, "package.devc.xml"), join(outDir, "src/package.devc.xml"));
+cpSync(join(staticFiles, "01"), join(outDir, "src/01"), { recursive: true });
+cpSync(bsp, join(outDir, "src/02"), { recursive: true });
 rmSync(work, { recursive: true, force: true });
-const n = readdirSync(join(outDir, "src")).length;
-console.log(`OK: legacy-free BSP ${bspName.toUpperCase()} erzeugt (${n} Dateien) in ${join(outDir, "src")} ${renamed && ownBackend ? "[eigener Backend-Handler]" : "[Backend-Handler /sap/bc/z2ui5]"}`);
+const n = readdirSync(join(outDir, "src/02")).length;
+console.log(`OK: legacy-free BSP ${bspName.toUpperCase()} erzeugt (${n} Dateien) in ${join(outDir, "src/02")} ${renamed && ownBackend ? "[eigener Backend-Handler]" : "[Backend-Handler /sap/bc/z2ui5]"}`);
