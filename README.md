@@ -1,0 +1,25 @@
+> ⚙️ **Generated branch `cloud_v2`** — built from [`main`](../../tree/main) by the `build_cloud_v2` workflow. Do not commit here, changes belong into `main`.
+
+[![build_cloud](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud.yaml)
+[![build_cloud_v2](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud_v2.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud_v2.yaml)
+<br>
+[![build_standard](https://github.com/abap2UI5/frontend/actions/workflows/build_standard.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_standard.yaml)
+[![build_standard_v2](https://github.com/abap2UI5/frontend/actions/workflows/build_standard_v2.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_standard_v2.yaml)
+
+# abap2UI5-frontend
+
+This repository contains an abap2UI5 HTTP service. By pulling this repository, abap2UI5 runs out of the box eliminating the need for any manual configuration steps. Additionally, this repository includes a BSP and an app for cloud environments, enabling the integration of abap2UI5 apps into SAP Fiori Launchpads. For more information on installation, check out the [installation guide.](https://abap2ui5.github.io/docs/configuration/installation.html)
+
+#### Branch
+
+`main` is the single source (webapp under `app/webapp`, ABAP artifacts under `abap/cloud` and `abap/standard`, build tooling under `.github/`). All other branches are generated from it by the `build_<branch>` workflows ([shared base](.github/workflows/build_branch.yaml)) — pull the one that matches your system:
+
+| Name        | System                                                | UI5     |
+|-------------|-------------------------------------------------------|---------|
+| cloud       | S/4 Public Cloud, BTP ABAP Environment                | classic |
+| cloud_v2    | S/4 Public Cloud, BTP ABAP Environment                | legacy-free (UI5 2.x) |
+| standard    | S/4 Private Cloud, S/4 On-Premise, R/3 NetWeaver >750 | classic |
+| standard_v2 | S/4 Private Cloud, S/4 On-Premise                     | legacy-free (UI5 2.x) |
+
+#### Issues
+For bug reports or feature requests, please open an issue in the [abap2UI5 repository.](https://github.com/abap2UI5/abap2UI5/issues)
