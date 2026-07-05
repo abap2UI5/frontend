@@ -2,8 +2,10 @@ name: build_branch
 
 # Wiederverwendbarer Basis-Workflow: baut EINEN generierten Output-Branch
 # aus main und pusht ihn als Commit oben auf die bestehende Branch-Historie
-# (ohne inhaltliche Aenderung wird nichts gepusht). Aufgerufen von den
-# vier build_<branch>-Workflows.
+# (ohne inhaltliche Aenderung wird nichts gepusht). Der main-Commit wird als
+# zweiter Parent mitgefuehrt, damit GitHub den Branch als "ahead" statt
+# "behind" gegenueber main anzeigt. Aufgerufen von den vier
+# build_<branch>-Workflows.
 
 on:
   workflow_call:
@@ -57,6 +59,6 @@ jobs:
           echo "$b: keine Aenderungen"
           exit 0
         fi
-        commit=$(git commit-tree "$tree" ${parent:+-p "$parent"} -m "build: $b from $GITHUB_SHA")
+        commit=$(git commit-tree "$tree" ${parent:+-p "$parent"} -p "$GITHUB_SHA" -m "build: $b from $GITHUB_SHA")
         git push origin "$commit:refs/heads/$b"
         echo "$b: $commit gepusht"
