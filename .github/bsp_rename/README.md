@@ -11,10 +11,10 @@ Dependency-free Node script (Node 16+). Nothing to install.
 Run it from the **repository root** (so the default `src` path resolves):
 
 ```bash
-node bsp_rename/rename-bsp.mjs ZMYUI5            # rename, asks for confirmation
-node bsp_rename/rename-bsp.mjs                   # prompts for the name
-node bsp_rename/rename-bsp.mjs zmyui5 --dry-run  # preview only, writes nothing
-node bsp_rename/rename-bsp.mjs ZMYUI5 --yes      # no confirmation prompt
+node .github/bsp_rename/rename-bsp.mjs ZMYUI5            # rename, asks for confirmation
+node .github/bsp_rename/rename-bsp.mjs                   # prompts for the name
+node .github/bsp_rename/rename-bsp.mjs zmyui5 --dry-run  # preview only, writes nothing
+node .github/bsp_rename/rename-bsp.mjs ZMYUI5 --yes      # no confirmation prompt
 ```
 
 | Option | Meaning |

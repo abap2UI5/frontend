@@ -5,6 +5,10 @@
     "description": "Layout Management for abap2UI5.",
     "scripts": {
         "build_branches": "node .github/build-branches.mjs",
+        "build_cloud": "node .github/build-branches.mjs cloud",
+        "build_cloud_v2": "node .github/build-branches.mjs cloud_v2",
+        "build_standard": "node .github/build-branches.mjs standard",
+        "build_standard_v2": "node .github/build-branches.mjs standard_v2",
         "build_legacy_free": "node .github/app2app_v2/build-legacy-free.mjs . app/webapp .github/app2app_v2/out"
     },
     "repository": {
