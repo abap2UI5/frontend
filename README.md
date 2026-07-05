@@ -1,4 +1,8 @@
-[![build_branches](https://github.com/abap2UI5/frontend/actions/workflows/build_branches.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_branches.yaml)
+[![build_cloud](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud.yaml)
+[![build_cloud_v2](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud_v2.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud_v2.yaml)
+<br>
+[![build_standard](https://github.com/abap2UI5/frontend/actions/workflows/build_standard.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_standard.yaml)
+[![build_standard_v2](https://github.com/abap2UI5/frontend/actions/workflows/build_standard_v2.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_standard_v2.yaml)
 
 # abap2UI5-frontend
 
@@ -6,7 +10,7 @@ This repository contains an abap2UI5 HTTP service. By pulling this repository, a
 
 #### Branch
 
-`main` is the single source (webapp under `app/webapp`, ABAP artifacts under `abap/cloud` and `abap/standard`, build tooling under `.github/`). All other branches are generated from it by the [`build_branches`](.github/workflows/build_branches.yaml) workflow — pull the one that matches your system:
+`main` is the single source (webapp under `app/webapp`, ABAP artifacts under `abap/cloud` and `abap/standard`, build tooling under `.github/`). All other branches are generated from it by the `build_<branch>` workflows ([shared base](.github/workflows/build_branch.yaml)) — pull the one that matches your system:
 
 | Name        | System                                                | UI5     |
 |-------------|-------------------------------------------------------|---------|

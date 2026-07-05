@@ -17,7 +17,7 @@ src/02/                the BSP page
 ```
 
 The result is published as the [`standard_v2`](https://github.com/abap2UI5/frontend/tree/standard_v2)
-branch by the `build_branches` workflow, which builds all output branches
+branch by the `build_standard_v2` workflow (shared base `build_branch.yaml`), which builds the output branches
 (`cloud`, `cloud_v2`, `standard`, `standard_v2`) from `main`. The `cloud_v2`
 branch applies the same bootstrap patch (`patch-v2.mjs`) directly to the
 webapp instead of building a BSP.
@@ -26,7 +26,7 @@ webapp instead of building a BSP.
 
 ```bash
 npm run build_legacy_free      # -> .github/app2app_v2/out/src
-npm run build_branches         # -> .github/out/{cloud,cloud_v2,standard,standard_v2}
+npm run build_branches         # alle vier; einzeln: node .github/build-branches.mjs standard_v2
 ```
 
 ## The only adaptations (everything else is 1:1)

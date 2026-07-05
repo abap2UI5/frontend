@@ -1,0 +1,15 @@
+name: build_standard_v2
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build_standard_v2:
+    uses: ./.github/workflows/build_branch.yaml
+    with:
+      branch: standard_v2
