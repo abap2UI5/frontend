@@ -14,7 +14,7 @@
 // Branch: .github/out/<branch>/
 
 import { execFileSync } from "node:child_process";
-import { cpSync, rmSync, mkdirSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
+import { cpSync, rmSync, mkdirSync, readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { patchIndexHtml, patchManifest } from "./app2app_v2/patch-v2.mjs";
@@ -22,7 +22,8 @@ import { patchIndexHtml, patchManifest } from "./app2app_v2/patch-v2.mjs";
 const repo = join(dirname(fileURLToPath(import.meta.url)), "..");
 const out = join(repo, ".github/out");
 
-// Dateien, die jeder Output-Branch von main erbt (kein Tooling, kein CI)
+// Dateien, die jeder Output-Branch von main erbt (kein Tooling, kein CI);
+// nicht (mehr) vorhandene werden uebersprungen
 const COMMON = [".gitignore", "CODE_OF_CONDUCT.md", "LICENSE", "README.md", "SECURITY.md"];
 
 // abapGit-Deskriptoren wie auf den bisherigen Branches
@@ -59,7 +60,7 @@ function initBranch(branch, abapgitXml) {
   const dir = join(out, branch);
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
-  for (const f of COMMON) cpSync(join(repo, f), join(dir, f));
+  for (const f of COMMON) if (existsSync(join(repo, f))) cpSync(join(repo, f), join(dir, f));
   writeFileSync(join(dir, "README.md"), banner(branch) + readFileSync(join(repo, "README.md"), "utf8"));
   writeFileSync(join(dir, ".abapgit.xml"), abapgitXml);
   return dir;
