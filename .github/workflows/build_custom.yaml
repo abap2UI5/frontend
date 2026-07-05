@@ -1,0 +1,63 @@
+name: build_custom
+
+# Baut eine umbenannte BSP-Variante (Parallelinstallation im selben SAP-System,
+# siehe .github/bsp_rename) und pusht sie auf den Branch <base>_<bsp-name>,
+# z.B. standard_zmyui5 oder standard_v2_zmyui5. Erneutes Ausfuehren mit
+# gleichem Namen aktualisiert den Branch mit dem aktuellen main-Stand.
+
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "Basis-Variante"
+        required: true
+        type: choice
+        options:
+          - standard
+          - standard_v2
+        default: standard
+      bsp_name:
+        description: "Neuer BSP-Name (max. 15 Zeichen, Buchstabe + Buchstaben/Ziffern/_, Kundennamensraum Z*/Y*), z.B. ZMYUI5"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  # Branch-Namen ableiten und Eingabe validieren, bevor gebaut wird
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.derive.outputs.branch }}
+    steps:
+    - name: Derive branch name
+      id: derive
+      env:
+        BASE: ${{ inputs.base }}
+        BSP_NAME: ${{ inputs.bsp_name }}
+      run: |
+        if ! printf '%s' "$BSP_NAME" | grep -Eq '^[A-Za-z][A-Za-z0-9_]{0,14}$'; then
+          echo "::error::Ungueltiger BSP-Name '$BSP_NAME' (max. 15 Zeichen, Buchstabe gefolgt von Buchstaben/Ziffern/_)"
+          exit 1
+        fi
+        # standard + Name "v2..." ergaebe standard_v2_<rest> und wuerde als
+        # standard_v2-Variante gebaut - eindeutigen Namen verlangen
+        if [ "$BASE" = "standard" ] && printf '%s' "$BSP_NAME" | grep -Eiq '^v2(_|$)'; then
+          echo "::error::BSP-Name '$BSP_NAME' ist mit Basis 'standard' mehrdeutig (Branch standard_v2_*) - anderen Namen waehlen"
+          exit 1
+        fi
+        branch="${BASE}_$(printf '%s' "$BSP_NAME" | tr '[:upper:]' '[:lower:]')"
+        case "$branch" in
+          cloud|cloud_v2|standard|standard_v2)
+            echo "::error::Branch '$branch' kollidiert mit einem festen Output-Branch - anderen Namen waehlen"
+            exit 1;;
+        esac
+        echo "branch=$branch" >> "$GITHUB_OUTPUT"
+        echo "Baue Branch: $branch"
+
+  build_custom:
+    needs: prepare
+    uses: ./.github/workflows/build_branch.yaml
+    with:
+      branch: ${{ needs.prepare.outputs.branch }}

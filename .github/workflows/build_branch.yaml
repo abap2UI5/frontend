@@ -5,13 +5,14 @@ name: build_branch
 # (ohne inhaltliche Aenderung wird nichts gepusht). Der main-Commit wird als
 # zweiter Parent mitgefuehrt, damit GitHub den Branch als "ahead" statt
 # "behind" gegenueber main anzeigt. Aufgerufen von den vier
-# build_<branch>-Workflows.
+# build_<branch>-Workflows sowie von build_custom (umbenannte BSP-Varianten
+# standard_<name> / standard_v2_<name>).
 
 on:
   workflow_call:
     inputs:
       branch:
-        description: "Output-Branch: cloud | cloud_v2 | standard | standard_v2"
+        description: "Output-Branch: cloud | cloud_v2 | standard | standard_v2 | standard_<name> | standard_v2_<name>"
         required: true
         type: string
 
@@ -22,6 +23,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      BRANCH: ${{ inputs.branch }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -33,17 +36,18 @@ jobs:
     - run: npx abaplint
 
     - name: Build ${{ inputs.branch }}
-      run: node .github/build-branches.mjs "${{ inputs.branch }}"
+      run: node .github/build-branches.mjs "$BRANCH"
 
     # ABAP-Check des generierten standard-Trees (BSP + On-Prem-Handler),
-    # wie bisher ABAP_STANDARD; die abaplint.jsonc liegt jetzt im Output
+    # wie bisher ABAP_STANDARD; die abaplint.jsonc liegt jetzt im Output.
+    # Gilt auch fuer umbenannte standard_<name>-Varianten (nicht fuer v2).
     - name: Lint generated standard src
-      if: inputs.branch == 'standard'
-      run: (cd .github/out/standard && npx abaplint)
+      if: startsWith(inputs.branch, 'standard') && !startsWith(inputs.branch, 'standard_v2')
+      run: (cd ".github/out/$BRANCH" && npx abaplint)
 
     - name: Push ${{ inputs.branch }}
       run: |
-        b="${{ inputs.branch }}"
+        b="$BRANCH"
         git config user.name 'github-actions[bot]'
         git config user.email 'github-actions[bot]@users.noreply.github.com'
         git fetch origin "$b" --depth 1 2>/dev/null || true

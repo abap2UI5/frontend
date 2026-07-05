@@ -70,6 +70,13 @@ const SICF_GUID_LEN = 25;
 // Maximum length of an ICF service / BSP application name.
 const MAX_NAME_LEN = 15;
 
+// BSP pages (the z2ui5.wapa.<page> files under src/02 of the generated
+// standard branches) are stored in the abapGit WAPA page format: every line
+// space-padded to exactly 255 characters, longer lines wrapped into 255-char
+// chunks, no trailing newline (see .github/app2bsp/run.js). A content edit
+// changes line lengths, so edited page files must be re-padded afterwards.
+const BSP_LINE_WIDTH = 255;
+
 // ---------------------------------------------------------------------------
 // Argument parsing
 // ---------------------------------------------------------------------------
@@ -170,8 +177,40 @@ function transformNamespace(content, NEW_LO) {
     .replace(new RegExp(`(["'])${escapeRe(OLD_LO)}\\1`, "g"), `$1${NEW_LO}$1`); // "z2ui5"
 }
 
+// A BSP page content file (fixed-width format, see BSP_LINE_WIDTH). The page
+// directory z2ui5.wapa.xml is a normal abapGit XML and NOT in page format.
+function isBspPageFile(name) {
+  return name.startsWith(`${OLD_LO}.wapa.`) && name !== `${OLD_LO}.wapa.xml`;
+}
+
+// Re-pad a BSP page after a content edit. Only lines whose length deviates
+// from 255 are touched (those are exactly the edited ones); an over-long line
+// is re-wrapped into 255-char chunks like app2bsp/run.js does. Limitation:
+// if the renamed token sits inside an already-wrapped logical line (>255
+// chars) the chunk layout cannot be reconstructed - irrelevant in practice,
+// since the only page edited without --with-namespace is the pretty-printed
+// manifest.json whose lines are far below 255 chars.
+function renormalizeBspPage(content) {
+  const out = [];
+  for (const line of content.split("\n")) {
+    if (line.length === BSP_LINE_WIDTH) { out.push(line); continue; }
+    const text = line.replace(/ +$/, "");
+    if (text.length === 0) { out.push("".padEnd(BSP_LINE_WIDTH)); continue; }
+    for (let o = 0; o < text.length; o += BSP_LINE_WIDTH) {
+      out.push(text.slice(o, o + BSP_LINE_WIDTH).padEnd(BSP_LINE_WIDTH));
+    }
+  }
+  return out.join("\n");
+}
+
 // Decide how a file's CONTENT must be transformed, based on its name.
 function contentTransformFor(name, NEW_UP, NEW_LO, withNamespace) {
+  const tf = rawTransformFor(name, NEW_UP, NEW_LO, withNamespace);
+  if (tf && isBspPageFile(name)) return (c) => renormalizeBspPage(tf(c));
+  return tf;
+}
+
+function rawTransformFor(name, NEW_UP, NEW_LO, withNamespace) {
   if (name.endsWith(".sicf.xml")) return (c) => transformBlanket(c, NEW_UP, NEW_LO);
   if (name.endsWith(".smim.xml")) return (c) => transformBlanket(c, NEW_UP, NEW_LO);
   if (name.endsWith(".wapa.xml")) return (c) => transformBlanket(c, NEW_UP, NEW_LO); // BSP descriptor only
