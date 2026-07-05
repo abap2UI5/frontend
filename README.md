@@ -1,7 +1,10 @@
-[![ABAP_STANDARD](https://github.com/abap2UI5/frontend/actions/workflows/ABAP_STANDARD.yaml/badge.svg?branch=standard)](https://github.com/abap2UI5/frontend/actions/workflows/ABAP_STANDARD.yaml)
-[![ABAP_CLOUD](https://github.com/abap2UI5/frontend/actions/workflows/ABAP_CLOUD.yaml/badge.svg?branch=cloud)](https://github.com/abap2UI5/frontend/actions/workflows/ABAP_CLOUD.yaml)
+> ⚙️ **Generated branch `cloud`** — built from [`main`](../../tree/main) by the `build_cloud` workflow. Do not commit here, changes belong into `main`.
+
+[![build_cloud](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud.yaml)
+[![build_cloud_v2](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud_v2.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud_v2.yaml)
 <br>
-[![auto_bsp](https://github.com/abap2UI5/frontend/actions/workflows/auto_bsp.yaml/badge.svg?branch=cloud)](https://github.com/abap2UI5/frontend/actions/workflows/auto_bsp.yaml)
+[![build_standard](https://github.com/abap2UI5/frontend/actions/workflows/build_standard.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_standard.yaml)
+[![build_standard_v2](https://github.com/abap2UI5/frontend/actions/workflows/build_standard_v2.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_standard_v2.yaml)
 
 # abap2UI5-frontend
 
@@ -9,10 +12,14 @@ This repository contains an abap2UI5 HTTP service. By pulling this repository, a
 
 #### Branch
 
-| Name    | System                | 
-|-----------| ----------------------------|
-| cloud     | S/4 Public Cloud, BTP ABAP Environment |
-| standard  | S/4 Private Cloud, S/4 On-Premise, R/3 NetWeaver >750    |
+`main` is the single source (webapp under `app/webapp`, ABAP artifacts under `abap/cloud` and `abap/standard`, build tooling under `.github/`). All other branches are generated from it by the `build_<branch>` workflows ([shared base](.github/workflows/build_branch.yaml)) — pull the one that matches your system:
+
+| Name        | System                                                | UI5     |
+|-------------|-------------------------------------------------------|---------|
+| cloud       | S/4 Public Cloud, BTP ABAP Environment                | classic |
+| cloud_v2    | S/4 Public Cloud, BTP ABAP Environment                | legacy-free (UI5 2.x) |
+| standard    | S/4 Private Cloud, S/4 On-Premise, R/3 NetWeaver >750 | classic |
+| standard_v2 | S/4 Private Cloud, S/4 On-Premise                     | legacy-free (UI5 2.x) |
 
 #### Issues
 For bug reports or feature requests, please open an issue in the [abap2UI5 repository.](https://github.com/abap2UI5/abap2UI5/issues)
