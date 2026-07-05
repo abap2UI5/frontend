@@ -19,6 +19,9 @@ This repository contains an abap2UI5 frontend artefacts service. For more inform
 | standard    | S/4 Private Cloud, S/4 On-Premise, R/3 NetWeaver >750 | classic | `npm run build_standard` |
 | standard_v2 | S/4 Private Cloud, S/4 On-Premise                     | legacy-free (UI5 2.x) | `npm run build_standard_v2` |
 
+
+#### Renaming
+
 Need the BSP under a **different name** (e.g. a second copy in the same system)? Run the [`build_custom` workflow](https://github.com/abap2UI5/frontend/actions/workflows/build_custom.yaml) with a base variant and the new BSP name — it generates and pushes a branch `standard_<name>` / `standard_v2_<name>` with the whole deployment identity (BSP, SICF nodes, handler class) renamed. Details in [`.github/bsp_rename`](.github/bsp_rename).
 
 #### Issues
