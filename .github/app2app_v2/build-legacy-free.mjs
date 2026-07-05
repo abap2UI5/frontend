@@ -36,7 +36,7 @@ rmSync(outDir, { recursive: true, force: true }); mkdirSync(work, { recursive: t
 
 // 1) Tooling + saubere cloud-Webapp bereitstellen
 cpSync(join(frontendRepo, ".github/app2bsp"), join(work, ".github/app2bsp"), { recursive: true });
-cpSync(join(frontendRepo, "bsp_rename"), join(work, "bsp_rename"), { recursive: true });
+cpSync(join(frontendRepo, ".github/bsp_rename"), join(work, ".github/bsp_rename"), { recursive: true });
 cpSync(cloudWebapp, join(work, "frontend/app/webapp"), { recursive: true });
 
 // 2) Bootstrap-Patch
@@ -47,7 +47,7 @@ writeFileSync(join(wa, "manifest.json"), patchManifest(readFileSync(join(wa, "ma
 // 3) app2bsp  +  4) optionales Rename (nur mit --name, z.B. Z2UI5_V2)
 execFileSync("node", [".github/app2bsp/run.js"], { cwd: work, stdio: "ignore" });
 if (renamed) {
-  execFileSync("node", ["bsp_rename/rename-bsp.mjs", bspName, "--dir", "src/02", "--yes"], { cwd: work, stdio: "ignore" });
+  execFileSync("node", [".github/bsp_rename/rename-bsp.mjs", bspName, "--dir", "src/02", "--yes"], { cwd: work, stdio: "ignore" });
 }
 
 // 5) Backend-Datasource: default geteilt (/sap/bc/z2ui5), --own-backend = /sap/bc/<name>
