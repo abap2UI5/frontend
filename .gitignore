@@ -1,6 +1,4 @@
 downport
 node_modules
 output
-
-.github/app2app_v2/out/
-lf_cloud/
+.github/out
