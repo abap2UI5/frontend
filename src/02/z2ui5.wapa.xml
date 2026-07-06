@@ -431,17 +431,6 @@
       <LANGU>E</LANGU>
      </ATTRIBUTES>
     </item>
-    <item>
-     <ATTRIBUTES>
-      <APPLNAME>Z2UI5</APPLNAME>
-      <PAGEKEY>VIEW/VIEW1.VIEW.XML</PAGEKEY>
-      <PAGENAME>view/View1.view.xml</PAGENAME>
-      <PAGETYPE>X</PAGETYPE>
-      <LAYOUTLANGU>E</LAYOUTLANGU>
-      <VERSION>A</VERSION>
-      <LANGU>E</LANGU>
-     </ATTRIBUTES>
-    </item>
    </PAGES>
   </asx:values>
  </asx:abap>
