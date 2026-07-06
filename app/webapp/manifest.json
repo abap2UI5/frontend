@@ -76,35 +76,6 @@
         }
       ]
     },
-    "routing": {
-      "config": {
-        "routerClass": "sap.m.routing.Router",
-        "viewType": "XML",
-        "controlAggregation": "pages",
-        "controlId": "app",
-        "clearControlAggregation": false,
-        "path": "z2ui5.view",
-        "type": "View"
-      },
-      "routes": [
-        {
-          "name": "RouteView1",
-          "pattern": ":?query:",
-          "target": [
-            "TargetView1"
-          ]
-        }
-      ],
-      "targets": {
-        "TargetView1": {
-          "viewType": "XML",
-          "transition": "flip",
-          "clearControlAggregation": false,
-          "name": "View1",
-          "id": "View1"
-        }
-      }
-    },
     "rootView": {
       "viewName": "z2ui5.view.App",
       "type": "XML",
