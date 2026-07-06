@@ -34,7 +34,16 @@ npm run build_branches         # alle vier; einzeln: node .github/build-branches
 | File | Change | Why |
 | --- | --- | --- |
 | `index.html` | load `1.142.0-legacy-free` SDK (CDN); 2.x config attributes `resource-roots` / `on-init` / `compat-version` / `frame-options`; `preconnect`; `libs=sap.m` | bootstrap the legacy-free build |
-| `manifest.json` | `minUI5Version 1.136.0`, `_version 2.0.0`, routing options migrated to manifest v2 (`viewPath`/`viewName`/`viewId` → `path`/`name`/`id` + `type: "View"`, `async` dropped) | legacy-free starts at 1.136; schema v2 rejects the v1-style routing options (component would fail to load with a blank page) |
+| `manifest.json` | `minUI5Version 1.136.0`, `_version 2.0.0` | legacy-free starts at 1.136 |
+
+> The webapp ships **no routing section** anymore (removed upstream in
+> abap2UI5/abap2UI5 - the shell controller starts the app directly), so
+> nothing routing-related needs patching. `patchManifest` still carries a
+> transitional migration of the classic routing options
+> (`viewPath`/`viewName`/`viewId` → `path`/`name`/`id` + `type: "View"`) as a
+> safeguard for building from a webapp state that predates the removal -
+> schema v2 rejects the v1-style options (blank page). It is a no-op for
+> current deploys and can be deleted once `main`'s webapp is synced.
 
 Deployment identity stays `Z2UI5` — same name as the classic frontend, so the
 legacy-free variant is a drop-in replacement (install either `standard` or
