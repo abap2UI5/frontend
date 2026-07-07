@@ -1,4 +1,4 @@
-name: build_custom
+name: build_rename
 
 # Baut eine umbenannte BSP-Variante (Parallelinstallation im selben SAP-System,
 # siehe .github/bsp_rename) und pusht sie auf den Branch <base>_<bsp-name>,
@@ -72,7 +72,7 @@ jobs:
         echo "branch=$branch" >> "$GITHUB_OUTPUT"
         echo "Baue Branch: $branch"
 
-  build_custom:
+  build_rename:
     needs: prepare
     uses: ./.github/workflows/build_branch.yaml
     with:
