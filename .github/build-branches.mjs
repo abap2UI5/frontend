@@ -17,7 +17,7 @@
 // z.B. standard_zmyui5 -> BSP ZMYUI5. <NAME> darf auch ein Namespace in
 // abapGit-Dateinamen-Schreibweise sein ("/" -> "#"): standard_#abapgit#
 // -> BSP /ABAPGIT/UI5, standard_#abapgit#x -> BSP /ABAPGIT/X (Details in
-// .github/bsp_rename). Der GitHub-Workflow build_custom baut und pusht
+// .github/bsp_rename). Der GitHub-Workflow build_rename baut und pusht
 // solche Branches on demand.
 //
 // Aufruf:  node .github/build-branches.mjs [branch ...]
@@ -64,7 +64,7 @@ const ABAPGIT_STANDARD = `﻿<?xml version="1.0" encoding="utf-8"?>
 `;
 
 function banner(branch) {
-  const workflow = BUILDERS[branch] ? `build_${branch}` : "build_custom";
+  const workflow = BUILDERS[branch] ? `build_${branch}` : "build_rename";
   return `> ⚙️ **Generated branch \`${branch}\`** — built from [\`main\`](../../tree/main) by the ` +
     "`" + workflow + "` workflow. Do not commit here, changes belong into `main`.\n\n";
 }

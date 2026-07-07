@@ -5,7 +5,7 @@ name: build_branch
 # (ohne inhaltliche Aenderung wird nichts gepusht). Der main-Commit wird als
 # zweiter Parent mitgefuehrt, damit GitHub den Branch als "ahead" statt
 # "behind" gegenueber main anzeigt. Aufgerufen von den vier
-# build_<branch>-Workflows sowie von build_custom (umbenannte BSP-Varianten
+# build_<branch>-Workflows sowie von build_rename (umbenannte BSP-Varianten
 # standard_<name> / standard_v2_<name>).
 
 on:
@@ -26,8 +26,8 @@ jobs:
     env:
       BRANCH: ${{ inputs.branch }}
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - uses: actions/checkout@v5
+    - uses: actions/setup-node@v5
       with:
         node-version: 20
     - run: npm ci

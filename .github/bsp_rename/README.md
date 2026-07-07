@@ -6,10 +6,10 @@ way this repo ships as `Z2UI5` and `frontend-legacy-free` ships as `Z2UI5_V2`.
 
 Dependency-free Node script (Node 16+). Nothing to install.
 
-## Renamed branches via `build_custom` (recommended)
+## Renamed branches via `build_rename` (recommended)
 
-The easiest way to get a renamed install: run the **`build_custom`** GitHub
-workflow (Actions → build_custom → Run workflow), pick the base variant
+The easiest way to get a renamed install: run the **`build_rename`** GitHub
+workflow (Actions → build_rename → Run workflow), pick the base variant
 (`standard` or `standard_v2`) and enter the new BSP name (e.g. `ZMYUI5`, or
 a namespaced name like `/ABAPGIT/`, see below). It builds the base branch,
 applies this rename script to the generated `src` tree and pushes the result
@@ -67,7 +67,7 @@ Instead of a plain name you can rename into a **registered SAP namespace**:
 | `/ABAPGIT/MYAPP` | `/ABAPGIT/MYAPP` | `/ABAPGIT/MYAPP_CL_LP_HANDLER` |
 
 (The abapGit file-name spelling `#abapgit#myapp` is accepted as input too —
-that is also how the name is encoded in the `build_custom` branch name.)
+that is also how the name is encoded in the `build_rename` branch name.)
 
 Namespace max. 8 characters between the slashes, full BSP name max. 15
 characters including the slashes. What happens on top of a plain rename:
