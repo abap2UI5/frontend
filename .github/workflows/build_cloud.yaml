@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  issues: write  # to report failed scheduled runs
 
 concurrency:
   group: build_cloud

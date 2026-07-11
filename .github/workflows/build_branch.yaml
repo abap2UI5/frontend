@@ -18,6 +18,7 @@ on:
 
 permissions:
   contents: write
+  issues: write  # to report failed scheduled runs
 
 jobs:
   build:
@@ -64,3 +65,7 @@ jobs:
         commit=$(git commit-tree "$tree" ${parent:+-p "$parent"} -p "$GITHUB_SHA" -m "build: $b from $GITHUB_SHA")
         git push origin "$commit:refs/heads/$b"
         echo "$b: $commit gepusht"
+
+    - name: Report scheduled failure as issue
+      if: failure() && github.event_name == 'schedule'
+      uses: abap2UI5/abap2UI5/.github/actions/report-scheduled-failure@main
