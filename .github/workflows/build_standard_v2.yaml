@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # monthly safety net in case a create_frontend push is lost
+  schedule:
+    - cron: '0 5 1 * *'
 
 permissions:
   contents: write
