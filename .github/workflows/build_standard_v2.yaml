@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: build_standard_v2
+  cancel-in-progress: false
+
 jobs:
   build_standard_v2:
     uses: ./.github/workflows/build_branch.yaml
