@@ -18,6 +18,7 @@ on:
 
 permissions:
   contents: write
+  issues: write  # to report failed scheduled runs
 
 jobs:
   build:
@@ -26,10 +27,11 @@ jobs:
     env:
       BRANCH: ${{ inputs.branch }}
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-node@v5
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+    - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
       with:
-        node-version: 20
+        node-version: '22'
+        cache: 'npm'
     - run: npm ci
 
     # ABAP-Check der Cloud-Artefakte (abap/cloud), wie bisher ABAP_CLOUD
@@ -63,3 +65,7 @@ jobs:
         commit=$(git commit-tree "$tree" ${parent:+-p "$parent"} -p "$GITHUB_SHA" -m "build: $b from $GITHUB_SHA")
         git push origin "$commit:refs/heads/$b"
         echo "$b: $commit gepusht"
+
+    - name: Report scheduled failure as issue
+      if: failure() && github.event_name == 'schedule'
+      uses: abap2UI5/abap2UI5/.github/actions/report-scheduled-failure@main
