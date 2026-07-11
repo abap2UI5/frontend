@@ -9,14 +9,9 @@
   ],
   "main": "webapp/index.html",
   "devDependencies": {
-    "@abaplint/cli": "^2.113.30",
-    "@sap/ui5-builder-webide-extension": "^1.1.9",
     "@sap/ux-ui5-tooling": "1",
     "@ui5/cli": "^3.0.0",
-    "@ui5/linter": "^1.0.0",
-    "mbt": "^1.2.27",
-    "rimraf": "^5.0.5",
-    "ui5-task-zipper": "^3.1.3"
+    "rimraf": "^5.0.5"
   },
   "scripts": {
     "start": "fiori run --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#z2ui5-display\"",
@@ -30,9 +25,7 @@
     "int-tests": "fiori run --open 'test/integration/opaTests.qunit.html'",
     "undeploy": "cf undeploy z2ui5 --delete-services --delete-service-keys --delete-service-brokers",
     "deploy-test": "npm run build && fiori deploy --config ui5-deploy.yaml --testMode true",
-    "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
-    "transform": "node ../ci/app2string/trans2abap.js && abaplint --fix ../ci/app2string/abaplint.jsonc",
-    "build:mta": "rimraf resources mta_archives && mbt build"
+    "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo"
   },
   "sapuxLayer": "CUSTOMER_BASE",
   "sapux": true
