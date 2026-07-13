@@ -10,7 +10,7 @@ This repository contains an abap2UI5 frontend artefacts service. For more inform
 
 #### Branch
 
-`main` is the single source (webapp under `app/webapp`, ABAP artifacts under `abap/cloud` and `abap/standard`, build tooling under `.github/`). All other branches are generated from it by the `build_<branch>` workflows ([shared base](.github/workflows/build_branch.yaml)) — pull the one that matches your system:
+`main` is the single source (webapp under `app/webapp`, ABAP artefacts under `abap/cloud` and `abap/standard`, build tooling under `.github/`). All other branches are generated from it by the `build_<branch>` workflows ([shared base](.github/workflows/build_branch.yaml)) — pull the one that matches your system:
 
 | Name        | System                                                | UI5     | Build |
 |-------------|-------------------------------------------------------|---------|-------|

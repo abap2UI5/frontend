@@ -15,6 +15,7 @@
     },
     "rules": {
       "downport": true,
+      "definitions_top": true,
       "begin_end_names": true,
       "check_ddic": true,
       "check_include": true,
