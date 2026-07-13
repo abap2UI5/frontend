@@ -1,26 +1,29 @@
 {
-    "name": "abap2ui5-layout-variant-management",
-    "private": true,
-    "version": "1.0.0",
-    "description": "Layout Management for abap2UI5.",
-    "scripts": {
-        "build_branches": "node .github/build-branches.mjs",
-        "build_cloud": "node .github/build-branches.mjs cloud",
-        "build_cloud_v2": "node .github/build-branches.mjs cloud_v2",
-        "build_standard": "node .github/build-branches.mjs standard",
-        "build_standard_v2": "node .github/build-branches.mjs standard_v2",
-        "build_legacy_free": "node .github/app2app_v2/build-legacy-free.mjs . app/webapp .github/app2app_v2/out"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/abap2UI5-addons/layout-management.git"
-    },
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/abap2UI5-addons/layout-management.git"
-    },
-    "homepage": "https://github.com/abap2UI5-addons/layout-management#readme",
-    "devDependencies": {
-        "@abaplint/cli": "^2.113.86"
-    }
+  "name": "abap2ui5-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Frontend for abap2UI5.",
+  "scripts": {
+    "build_branches": "node .github/build-branches.mjs",
+    "build_cloud": "node .github/build-branches.mjs cloud",
+    "build_cloud_v2": "node .github/build-branches.mjs cloud_v2",
+    "build_standard": "node .github/build-branches.mjs standard",
+    "build_standard_v2": "node .github/build-branches.mjs standard_v2",
+    "build_legacy_free": "node .github/app2app_v2/build-legacy-free.mjs . app/webapp .github/app2app_v2/out"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abap2UI5/frontend.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/abap2UI5/abap2UI5/issues"
+  },
+  "homepage": "https://github.com/abap2UI5/frontend#readme",
+  "devDependencies": {
+    "@abaplint/cli": "^2.119.66"
+  },
+  "engines": {
+    "node": ">=22"
+  }
 }

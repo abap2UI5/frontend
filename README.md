@@ -10,7 +10,7 @@ This repository contains an abap2UI5 frontend artefacts service. For more inform
 
 #### Branch
 
-`main` is the single source (webapp under `app/webapp`, ABAP artifacts under `abap/cloud` and `abap/standard`, build tooling under `.github/`). All other branches are generated from it by the `build_<branch>` workflows ([shared base](.github/workflows/build_branch.yaml)) — pull the one that matches your system:
+`main` is the single source (webapp under `app/webapp`, ABAP artefacts under `abap/cloud` and `abap/standard`, build tooling under `.github/`). All other branches are generated from it by the `build_<branch>` workflows ([shared base](.github/workflows/build_branch.yaml)) — pull the one that matches your system:
 
 | Name        | System                                                | UI5     | Build |
 |-------------|-------------------------------------------------------|---------|-------|
@@ -23,6 +23,9 @@ This repository contains an abap2UI5 frontend artefacts service. For more inform
 #### Renaming
 
 Need the BSP under a **different name** (e.g. a second copy in the same system)? Run the [`build_rename` workflow](https://github.com/abap2UI5/frontend/actions/workflows/build_rename.yaml) with a base variant and the new BSP name — plain (`ZMYUI5`) or in a registered namespace (`/ABAPGIT/` → BSP `/ABAPGIT/UI5`, handler `/ABAPGIT/CL_LP_HANDLER`) — it generates and pushes a branch `standard_<name>` / `standard_v2_<name>` with the whole deployment identity (BSP, SICF nodes, handler class) renamed. Details in [`.github/bsp_rename`](.github/bsp_rename).
+
+#### Dependencies
+* [abap2UI5](https://github.com/abap2UI5/abap2UI5) — the frontend artefacts pair with the abap2UI5 framework installed in the backend
 
 #### Issues
 For bug reports or feature requests, please open an issue in the [abap2UI5 repository.](https://github.com/abap2UI5/abap2UI5/issues)
