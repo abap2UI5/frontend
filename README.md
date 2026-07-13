@@ -24,5 +24,8 @@ This repository contains an abap2UI5 frontend artefacts service. For more inform
 
 Need the BSP under a **different name** (e.g. a second copy in the same system)? Run the [`build_rename` workflow](https://github.com/abap2UI5/frontend/actions/workflows/build_rename.yaml) with a base variant and the new BSP name — plain (`ZMYUI5`) or in a registered namespace (`/ABAPGIT/` → BSP `/ABAPGIT/UI5`, handler `/ABAPGIT/CL_LP_HANDLER`) — it generates and pushes a branch `standard_<name>` / `standard_v2_<name>` with the whole deployment identity (BSP, SICF nodes, handler class) renamed. Details in [`.github/bsp_rename`](.github/bsp_rename).
 
+#### Dependencies
+* [abap2UI5](https://github.com/abap2UI5/abap2UI5) — the frontend artefacts pair with the abap2UI5 framework installed in the backend
+
 #### Issues
 For bug reports or feature requests, please open an issue in the [abap2UI5 repository.](https://github.com/abap2UI5/abap2UI5/issues)
