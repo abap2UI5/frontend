@@ -390,6 +390,17 @@
     <item>
      <ATTRIBUTES>
       <APPLNAME>Z2UI5</APPLNAME>
+      <PAGEKEY>MODEL/FORMATTER.JS</PAGEKEY>
+      <PAGENAME>model/formatter.js</PAGENAME>
+      <PAGETYPE>X</PAGETYPE>
+      <LAYOUTLANGU>E</LAYOUTLANGU>
+      <VERSION>A</VERSION>
+      <LANGU>E</LANGU>
+     </ATTRIBUTES>
+    </item>
+    <item>
+     <ATTRIBUTES>
+      <APPLNAME>Z2UI5</APPLNAME>
       <PAGEKEY>MODEL/MODELS.JS</PAGEKEY>
       <PAGENAME>model/models.js</PAGENAME>
       <PAGETYPE>X</PAGETYPE>
