@@ -345,6 +345,17 @@
     <item>
      <ATTRIBUTES>
       <APPLNAME>Z2UI5</APPLNAME>
+      <PAGEKEY>CORE/ROUTER.JS</PAGEKEY>
+      <PAGENAME>core/Router.js</PAGENAME>
+      <PAGETYPE>X</PAGETYPE>
+      <LAYOUTLANGU>E</LAYOUTLANGU>
+      <VERSION>A</VERSION>
+      <LANGU>E</LANGU>
+     </ATTRIBUTES>
+    </item>
+    <item>
+     <ATTRIBUTES>
+      <APPLNAME>Z2UI5</APPLNAME>
       <PAGEKEY>CORE/SERVER.JS</PAGEKEY>
       <PAGENAME>core/Server.js</PAGENAME>
       <PAGETYPE>X</PAGETYPE>
