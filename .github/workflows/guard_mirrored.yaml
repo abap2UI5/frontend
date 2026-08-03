@@ -1,0 +1,55 @@
+name: guard_mirrored
+
+# Guard against edits to content this repository does not own.
+#
+# Two kinds of content here are produced elsewhere and force-overwritten:
+#
+#   app/webapp/**   mirrored from abap2UI5 by its create_frontend workflow on
+#                   every push to abap2UI5 main (see the "deploy: abap2UI5/
+#                   abap2UI5@<sha>" commits). A change made here survives only
+#                   until the next sync.
+#   every branch    the cloud / cloud_v2 / standard / standard_v2 branches (and
+#   except main     the renamed standard_<name> variants) are rebuilt from main
+#                   by build_branch.yaml, which pushes a fresh tree directly.
+#
+# Both mistakes are easy to make and invisible afterwards - the change simply
+# disappears on the next automated run. Fail the pull request instead.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Only main accepts pull requests
+        env:
+          BASE: ${{ github.base_ref }}
+        run: |
+          if [ "$BASE" != "main" ]; then
+            echo "::error::'$BASE' is a generated branch - build_branch.yaml rebuilds it from main and pushes the result directly, so a commit made here is discarded on the next build. Target main instead."
+            exit 1
+          fi
+
+      - name: app/webapp is mirrored from abap2UI5
+        env:
+          BASE: ${{ github.base_ref }}
+        run: |
+          git fetch --quiet origin "$BASE"
+          changed=$(git diff --name-only "origin/$BASE...HEAD" -- 'app/webapp')
+          if [ -n "$changed" ]; then
+            echo "::error::app/webapp/ is mirrored from abap2UI5 and is force-overwritten by its create_frontend workflow on every push to abap2UI5 main. Make the change in abap2UI5/app/webapp instead, run 'npm run app2abap' there to regenerate src/01/03, and let the sync deliver it here."
+            echo ""
+            echo "Files that must not be changed in this repository:"
+            echo "$changed" | sed 's/^/  /'
+            exit 1
+          fi
+          echo "no mirrored files touched"
