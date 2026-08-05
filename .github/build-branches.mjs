@@ -65,8 +65,52 @@ const ABAPGIT_STANDARD = `﻿<?xml version="1.0" encoding="utf-8"?>
 
 function banner(branch) {
   const workflow = BUILDERS[branch] ? `build_${branch}` : "build_rename";
+  const origin = CORE_SHA
+    ? ` Frontend state: \`abap2UI5/abap2UI5@${CORE_SHA.slice(0, 12)}\`${CORE_VERSION ? ` (framework ${CORE_VERSION})` : ""} — see \`VERSION\`.`
+    : "";
   return `> ⚙️ **Generated branch \`${branch}\`** — built from [\`main\`](../../tree/main) by the ` +
-    "`" + workflow + "` workflow. Do not commit here, changes belong into `main`.\n\n";
+    "`" + workflow + "` workflow. Do not commit here, changes belong into `main`." + origin + "\n\n";
+}
+
+// Provenance: which framework state this branch was built from. The webapp
+// arrives here through mirror commits "deploy: abap2UI5/abap2UI5@<sha>"
+// (create_frontend.yaml in the core repo) — that sha, and the framework
+// version constant read from it, are stamped into each generated branch so a
+// pulled branch can be matched to a backend release. Deliberately no
+// timestamp: identical sources must produce identical trees, or
+// build_branch.yaml would push an empty rebuild on every run.
+function coreDeploySha() {
+  try {
+    const subject = execFileSync(
+      "git", ["log", "-1", "--format=%s", "--", "app/webapp"],
+      { cwd: repo, encoding: "utf8" }
+    ).trim();
+    return /deploy: abap2UI5\/abap2UI5@([0-9a-f]{7,40})/.exec(subject)?.[1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function coreVersionOf(sha) {
+  if (!sha) return null;
+  try {
+    const res = await fetch(`https://raw.githubusercontent.com/abap2UI5/abap2UI5/${sha}/src/02/z2ui5_if_app.intf.abap`);
+    if (!res.ok) return null;
+    return /CONSTANTS\s+version\s+TYPE\s+string\s+VALUE\s+`([^`]+)`/i.exec(await res.text())?.[1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+const CORE_SHA = coreDeploySha();
+const CORE_VERSION = await coreVersionOf(CORE_SHA);
+
+function versionStamp() {
+  return [
+    "Generated abap2UI5-frontend branch — provenance",
+    `webapp mirror commit: ${CORE_SHA ? `abap2UI5/abap2UI5@${CORE_SHA}` : "unknown"}`,
+    CORE_VERSION ? `abap2UI5 framework version: ${CORE_VERSION}` : null,
+  ].filter(Boolean).join("\n") + "\n";
 }
 
 function initBranch(branch, abapgitXml) {
@@ -162,6 +206,7 @@ const builds = branches.map((b) => {
 for (let i = 0; i < branches.length; i++) {
   builds[i]();
   const b = branches[i];
+  writeFileSync(join(out, b, "VERSION"), versionStamp());
   const n = readdirSync(join(out, b), { recursive: true }).length;
   console.log(`OK: ${b} (${n} Eintraege) -> ${join(out, b)}`);
 }
