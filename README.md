@@ -1,4 +1,4 @@
-> ⚙️ **Generated branch `standard`** — built from [`main`](../../tree/main) by the `build_standard` workflow. Do not commit here, changes belong into `main`. Frontend state: `abap2UI5/abap2UI5@db37737eba5b` (framework 1.142.0) — see `VERSION`.
+> ⚙️ **Generated branch `standard`** — built from [`main`](../../tree/main) by the `build_standard` workflow. Do not commit here, changes belong into `main`. Frontend state: `abap2UI5/abap2UI5@4690f29b25d2` (framework 1.142.0) — see `VERSION`.
 
 [![build_cloud](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud.yaml)
 [![build_cloud_v2](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud_v2.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud_v2.yaml)
