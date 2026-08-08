@@ -37,6 +37,17 @@ So a frontend change belongs in abap2UI5: edit `app/webapp` there, run `npm run 
 
 Need the BSP under a **different name** (e.g. a second copy in the same system)? Run the [`build_rename` workflow](https://github.com/abap2UI5/frontend/actions/workflows/build_rename.yaml) with a base variant and the new BSP name — plain (`ZMYUI5`) or in a registered namespace (`/ABAPGIT/` → BSP `/ABAPGIT/UI5`, handler `/ABAPGIT/CL_LP_HANDLER`) — it generates and pushes a branch `standard_<name>` / `standard_v2_<name>` with the whole deployment identity (BSP, SICF nodes, handler class) renamed. Details in [`.github/bsp_rename`](.github/bsp_rename).
 
+#### Sibling BSPs
+
+`app/webapp/manifest.json` reserves two resourceRoots that point **next to** this BSP, so a system can add frontend artefacts without a change here:
+
+| resourceRoot | Sibling BSP | Built from |
+|---|---|---|
+| `z2ui5cc` | `Z2UI5CC` | [abap2UI5-addons/custom-controls](https://github.com/abap2UI5-addons/custom-controls) — community custom controls |
+| `z2ui5ext` | `Z2UI5EXT` | [abap2UI5/customer-frontend-extension](https://github.com/abap2UI5/customer-frontend-extension) — a customer's own reuse library, icon font or CSS |
+
+Neither BSP has to be installed: the browser requests nothing from a resourceRoot until a view names the namespace. Both entries come from abap2UI5 `app/webapp` and are synced here — see "Where to change what" above.
+
 #### Dependencies
 * [abap2UI5](https://github.com/abap2UI5/abap2UI5) — the frontend artefacts pair with the abap2UI5 framework installed in the backend
 
