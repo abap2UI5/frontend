@@ -1,4 +1,4 @@
-> ⚙️ **Generated branch `cloud_v2`** — built from [`main`](../../tree/main) by the `build_cloud_v2` workflow. Do not commit here, changes belong into `main`. Frontend state: `abap2UI5/abap2UI5@e256d7f6f9f5` (framework 1.142.0) — see `VERSION`.
+> ⚙️ **Generated branch `cloud_v2`** — built from [`main`](../../tree/main) by the `build_cloud_v2` workflow. Do not commit here, changes belong into `main`. Frontend state: `abap2UI5/abap2UI5@2bebca6a5c21` (framework 1.142.0) — see `VERSION`.
 
 [![build_cloud](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud.yaml)
 [![build_cloud_v2](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud_v2.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/frontend/actions/workflows/build_cloud_v2.yaml)
