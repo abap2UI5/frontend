@@ -8,6 +8,21 @@
 
 This repository contains an abap2UI5 frontend artefacts service. For more information on installation, check out the [installation guide.](https://abap2ui5.github.io/docs/configuration/installation.html)
 
+> ### This repository is generated — it does not take manual pull requests
+>
+> It is not where the frontend is written, it is where the frontend is *published*. Everything it ships is produced elsewhere and written here by automation, so **frontend changes belong in [abap2UI5](https://github.com/abap2UI5/abap2UI5)** and bug reports belong in [its issues](https://github.com/abap2UI5/abap2UI5/issues). The `guard_mirrored` check fails every pull request opened here by default; maintaining this repository's own `abap/`, `.github/` and docs is the one exception, unlocked by a maintainer with the `maintenance` label. Full rationale: [CONTRIBUTING.md](CONTRIBUTING.md).
+>
+> ```
+> abap2UI5/abap2UI5                    abap2UI5/frontend
+>                      create_frontend                     build_branch
+>   app/webapp/  ───────────────────▶  main  ─────────────────────────▶  cloud
+>                   on every push to     │                               cloud_v2
+>                   abap2UI5 main        │                               standard
+>                                        │                               standard_v2
+>                                        └── abap/, .github/, docs        standard_<name>
+>                                            (maintained here)
+> ```
+
 #### Branch
 
 `main` is the branch every other branch is built from (webapp under `app/webapp`, ABAP artefacts under `abap/cloud` and `abap/standard`, build tooling under `.github/`). All other branches are generated from it by the `build_<branch>` workflows ([shared base](.github/workflows/build_branch.yaml)) — pull the one that matches your system:
@@ -29,7 +44,9 @@ Only `abap/`, `.github/` and the repository docs are maintained here. Two kinds 
 | `app/webapp/**` | [abap2UI5](https://github.com/abap2UI5/abap2UI5) (`app/webapp` there) | its `create_frontend` workflow, on every push to abap2UI5 `main` — the `deploy: abap2UI5/abap2UI5@<sha>` commits |
 | every branch except `main` | `main` | `build_branch.yaml`, which pushes a freshly built tree |
 
-So a frontend change belongs in abap2UI5: edit `app/webapp` there, run `npm run app2abap` to regenerate the embedded ABAP resources under `src/01/03`, and let the sync deliver it here. The `guard_mirrored` workflow fails any pull request that gets this wrong.
+So a frontend change belongs in abap2UI5: edit `app/webapp` there, run `npm run app2abap` to regenerate the embedded ABAP resources under `src/01/03`, and let the sync deliver it here.
+
+Because neither overwrite is loud — the change is merged, works, and vanishes on some later unrelated run — the convention is enforced rather than trusted: the `guard_mirrored` workflow fails **every** pull request opened here, and a change to the owned areas is unlocked by a maintainer applying the `maintenance` label. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 #### Renaming
 
