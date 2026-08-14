@@ -8,9 +8,9 @@ name: guard_mirrored
 #   app/webapp/**    mirrored from abap2UI5/abap2UI5 by its create_frontend
 #                    workflow, force-pushed on every push to abap2UI5 main
 #                    (the "deploy: abap2UI5/abap2UI5@<sha>" commits).
-#   cloud, cloud_v2, generated from main by build_branch.yaml, which pushes a
-#   standard,        freshly built tree straight onto the branch.
-#   standard_v2,
+#   cloud, cloud_v2, built in abap2UI5/abap2UI5 from app/webapp + frontend/ and
+#   standard,        pushed here by its frontend_deploy workflow, a freshly
+#   standard_v2,     built tree straight onto the branch.
 #   standard_<name>
 #
 # None of that arrives through a pull request. A pull request here is by
@@ -22,10 +22,11 @@ name: guard_mirrored
 # below states that default out loud instead of letting people discover it
 # weeks later.
 #
-# The one exception is the repository's own substance - the ABAP ICF/BSP
-# handlers in abap/, the build tooling in .github/ and the docs. Nothing
-# generates those, so they have to be maintainable here. Such a pull request
-# opts out of the lock by carrying the label:
+# The one exception is the repository's own docs - README, CONTRIBUTING,
+# AGENTS.md, the issue templates. Nothing generates those, so they have to be
+# maintainable here. (The ABAP handlers and the build tooling used to be that
+# exception too; both live in abap2UI5/frontend now.) Such a pull request opts
+# out of the lock by carrying the label:
 #
 #     maintenance
 #
@@ -70,7 +71,7 @@ jobs:
           BASE: ${{ github.base_ref }}
         run: |
           if [ "$BASE" != "main" ]; then
-            echo "::error::'$BASE' is a generated branch - build_branch.yaml rebuilds it from main and pushes the result directly, so a commit made here is discarded on the next build. Target main instead."
+            echo "::error::'$BASE' is a generated branch - abap2UI5/abap2UI5 rebuilds it from app/webapp + frontend/ and pushes the result directly, so a commit made here is discarded on the next build. Change it there instead."
             exit 1
           fi
 
