@@ -9,8 +9,8 @@ sap.ui.define(
   (Fragment, Lib, AppState) => {
     "use strict";
 
-    // `key`    short slot name used in frontend events and S_FRONT.VIEW
-    // `param`  key of the slot in the backend response PARAMS
+    // `key`    short slot name used in frontend event args and as the
+    //           request's S_SCROLL keys
     // `prop` / `controllerProp`  AppState fields holding the live instances
     // `fragmentId`  only on the fragment-based slots (popup/popover): the
     //               id their inner controls are registered under, and the
@@ -18,32 +18,39 @@ sap.ui.define(
     const slots = [
       {
         key: "MAIN",
-        param: "S_VIEW",
+        // holds its own JSON model - NEST/NEST2 are inserted into
+        // the MAIN control tree and inherit theirs by UI5 propagation
+        ownsModel: true,
+        // ...and they die with it: destroy() routes these through the same
+        // teardown before MAIN goes down (see there)
+        dependentSlots: ["NEST", "NEST2"],
         prop: "oView",
         controllerProp: "oController",
       },
       {
         key: "NEST",
-        param: "S_VIEW_NEST",
         prop: "oViewNest",
         controllerProp: "oControllerNest",
       },
       {
         key: "NEST2",
-        param: "S_VIEW_NEST2",
         prop: "oViewNest2",
         controllerProp: "oControllerNest2",
       },
       {
         key: "POPUP",
-        param: "S_POPUP",
+        // holds its own JSON model - opened standalone, outside the MAIN
+        // control tree
+        ownsModel: true,
         prop: "oViewPopup",
         controllerProp: "oControllerPopup",
         fragmentId: "popupId",
       },
       {
         key: "POPOVER",
-        param: "S_POPOVER",
+        // holds its own JSON model - opened standalone, outside the MAIN
+        // control tree
+        ownsModel: true,
         prop: "oViewPopover",
         controllerProp: "oControllerPopover",
         fragmentId: "popoverId",
@@ -51,10 +58,9 @@ sap.ui.define(
     ];
 
     // Constant-time lookups for the frequently used resolutions (byId,
-    // getView, paramByKey run on every roundtrip and scroll/focus capture)
+    // getView run on every roundtrip and scroll/focus capture)
     // instead of a linear find() per call.
     const slotsByKey = new Map(slots.map((s) => [s.key, s]));
-    const slotsByParam = new Map(slots.map((s) => [s.param, s]));
 
     function byKey(key) {
       return slotsByKey.get(key);
@@ -66,11 +72,31 @@ sap.ui.define(
       return slot ? AppState.state[slot.prop] : undefined;
     }
 
-    function setView(key, view) {
+    // Fill a slot. `xml` is the view XML the slot was built from; it is
+    // recorded next to the live instance because neither a Fragment nor an
+    // XMLView created from a `definition` keeps its source (mProperties.
+    // viewContent stays empty), and the developer tools have no other way
+    // back to it. Recorded HERE and dropped in destroy(), so the record
+    // follows the slot itself - not the response that happened to fill it.
+    function setView(key, view, xml) {
       const slot = byKey(key);
       if (!slot) return;
       AppState.state[slot.prop] = view;
+      slotXmlStore()[key] = xml;
       attachSharedModels(view);
+    }
+
+    // The XML a slot currently holds, undefined once it was torn down.
+    function getViewXml(key) {
+      return slotXmlStore()[key];
+    }
+
+    // The record lives on AppState (so an app restart resets it with
+    // everything else); create it on first use so a state object that
+    // predates the field still works.
+    function slotXmlStore() {
+      if (!AppState.state.slotXml) AppState.state.slotXml = {};
+      return AppState.state.slotXml;
     }
 
     // Attach the models every slot shares: the one device model (created
@@ -97,17 +123,6 @@ sap.ui.define(
     function getController(key) {
       const slot = byKey(key);
       return slot ? AppState.state[slot.controllerProp] : undefined;
-    }
-
-    // Returns the slot key for a response param key ("S_VIEW" -> "MAIN").
-    function keyByParam(param) {
-      return slotsByParam.get(param)?.key;
-    }
-
-    // Returns the response param key for a slot key ("MAIN" -> "S_VIEW").
-    function paramByKey(key) {
-      const slot = byKey(key);
-      return slot ? slot.param : undefined;
     }
 
     // Returns the key of the slot whose controller is `controller` -
@@ -177,6 +192,22 @@ sap.ui.define(
     function destroy(key) {
       const slot = byKey(key);
       if (!slot) return;
+      // The nested views live INSIDE the MAIN control tree, so MAIN's
+      // view.destroy() below would cascade to their controls anyway - but
+      // the slot references and the messaging registration would stay
+      // behind, leaving getView("NEST") truthy long after an app switch
+      // (stale shortcut slot scopes, developer tools showing the previous
+      // app's nest XML). Route the dependent slots through this same
+      // teardown first, BEFORE the open-check: it keeps unregisterObject
+      // symmetric to attachSharedModels and clears a stale nest reference
+      // even when MAIN itself is already gone.
+      for (const dep of slot.dependentSlots ?? []) destroy(dep);
+      // Drop the recorded XML BEFORE the empty-slot exit below: a slot whose
+      // live instance is already gone (an app restart reset AppState, a
+      // fragment load that failed after recording) must not keep a stale
+      // source behind - the developer tools read "is this slot filled" off
+      // this record.
+      delete slotXmlStore()[key];
       const view = AppState.state[slot.prop];
       if (!view) return;
       if (slot.fragmentId) {
@@ -207,10 +238,9 @@ sap.ui.define(
     return {
       slots,
       getView,
+      getViewXml,
       setView,
       getController,
-      keyByParam,
-      paramByKey,
       keyOfController,
       byId,
       byIdOfOwner,
