@@ -4,11 +4,12 @@
   abap2UI5/frontend is a delivery repository. Its content is written by
   automation, not by hand:
 
-    any branch     other than main is BUILT in abap2UI5/abap2UI5 and pushed
-                   here by its frontend_deploy workflow, a fresh tree over
-                   whatever is on the branch. Change it there: the webapp in
-                   app/webapp/ (then run 'npm run app2abap'), the ABAP
-                   artefacts in frontend/, the build in tools/.
+    any branch     other than main is GENERATED in abap2UI5/abap2UI5, where it
+                   is committed under build/<branch>, and pushed here by its
+                   frontend_deploy workflow over whatever is on the branch.
+                   Change it there: the webapp in app/webapp/ (then run
+                   'npm run app2abap'), the ABAP artefacts in frontend/, the
+                   build in tools/ - and commit the rebuilt build/ with it.
     main           carries this repository's own docs and nothing else.
 
   A change made in the wrong place is not rejected - it is silently discarded

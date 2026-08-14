@@ -21,9 +21,10 @@ Before you change anything, work out where the change belongs:
   [`frontend/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend), the
   scripts that turn them into a branch in
   [`tools/`](https://github.com/abap2UI5/abap2UI5/tree/main/tools).
-* **Any branch except `main`** → not here. `cloud`, `cloud_v2`, `standard`,
-  `standard_v2` and `standard_<name>` are built in abap2UI5 by its
-  `frontend_deploy` workflow, which pushes a fresh tree over whatever is there.
+* **Any branch except `main`** → not here. `cloud`, `cloud_v2`, `standard` and
+  `standard_v2` are committed trees in abap2UI5 (`build/<branch>`) that its
+  `frontend_deploy` workflow pushes over whatever is here; `standard_<name>` is
+  built by that workflow on demand.
 * **The repository docs** → here, and only here — nothing generates
   them. This is a *maintenance* change: it targets `main`, adds no source
   files, and stays blocked until a **human maintainer** applies the
@@ -45,12 +46,15 @@ comments — keep new text English.)
 
 ## Nothing Here Is a Source
 
-Every branch of this repository is built in
+Every branch of this repository is generated in
 [abap2UI5](https://github.com/abap2UI5/abap2UI5) and pushed in by its
 `frontend_deploy` workflow — the webapp from `app/webapp/` there, everything
 else a branch is made of from
 [`frontend/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend), driven
-by [`tools/`](https://github.com/abap2UI5/abap2UI5/tree/main/tools).
+by [`tools/`](https://github.com/abap2UI5/abap2UI5/tree/main/tools) into
+[`build/`](https://github.com/abap2UI5/abap2UI5/tree/main/build). The four
+published branches are committed there as finished trees and delivered here as
+they stand — the deploy does not build what it ships.
 
 `main` carries only the repository's own face: README, CONTRIBUTING, AGENTS.md,
 the issue and pull request templates, and the `guard_mirrored` workflow. There

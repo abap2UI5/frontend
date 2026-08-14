@@ -11,11 +11,11 @@ here by a machine:
 ```
 abap2UI5/abap2UI5                                   abap2UI5/frontend
                                    frontend_deploy
-  app/webapp/  ──▶  frontend/  ───────────────────────▶  cloud
-  (the webapp)      (everything                          cloud_v2
-                     else a branch                       standard
-                     is built from)                      standard_v2
-                                                         standard_<name>
+  app/webapp/  ──▶  build/  ──────────────────────────▶  cloud
+  (the webapp)      (each branch                         cloud_v2
+   + frontend/       as a committed                      standard
+                     tree, pushed                        standard_v2
+                     as it stands)                       standard_<name>
 
                                                          main
                                                          (the docs, maintained here)
@@ -25,7 +25,7 @@ One consequence, and it is the whole reason this page exists:
 
 | Content | Written by | A hand-made change here … |
 |---|---|---|
-| every generated branch | abap2UI5's `frontend_deploy` workflow, which pushes a freshly built tree | is discarded on the next build |
+| every generated branch | abap2UI5's `frontend_deploy` workflow, which pushes the tree committed in its `build/` | is discarded on the next delivery |
 
 The failure is not loud. The change is reviewed, merged, and works — until an
 unrelated build in abap2UI5 wipes it, days or weeks later, with nothing in the
