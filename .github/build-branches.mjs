@@ -8,6 +8,11 @@
 //   standard     BSP Z2UI5 (app2bsp) + ICF-Handler, klassischer Bootstrap
 //   standard_v2  BSP Z2UI5 legacy-free (build-legacy-free.mjs)
 //
+// The two BSP branches additionally get the UI5 component preload bundle
+// (app2bsp/preload.js), which folds the ~50 single requests of an app start
+// into one. The cloud branches ship the webapp as a source project instead -
+// there the developer runs the build.
+//
 // Zusaetzlich koennen umbenannte BSP-Varianten gebaut werden (fuer eine
 // Parallelinstallation im selben SAP-System, siehe .github/bsp_rename):
 //
@@ -149,6 +154,7 @@ function buildStandard(branch = "standard") {
   const work = join(out, "_work_standard");
   cpSync(join(repo, ".github/app2bsp"), join(work, ".github/app2bsp"), { recursive: true });
   cpSync(join(repo, "app/webapp"), join(work, "frontend/app/webapp"), { recursive: true, filter: skipBuildArtifacts });
+  execFileSync("node", [".github/app2bsp/preload.js"], { cwd: work, stdio: "inherit" });
   execFileSync("node", [".github/app2bsp/run.js"], { cwd: work, stdio: "ignore" });
   cpSync(join(repo, "abap/standard"), join(dir, "src"), { recursive: true });
   cpSync(join(work, "src/02"), join(dir, "src/02"), { recursive: true });

@@ -21,7 +21,8 @@
   },
   "homepage": "https://github.com/abap2UI5/frontend#readme",
   "devDependencies": {
-    "@abaplint/cli": "^2.119.66"
+    "@abaplint/cli": "^2.119.66",
+    "@ui5/cli": "^4.0.57"
   },
   "engines": {
     "node": ">=22"
