@@ -3,7 +3,7 @@
 // Erzeugt den legacy-free (UI5 2.0) BSP-Stand 1:1 aus dem klassischen
 // abap2UI5-Frontend (cloud/app/webapp) + minimalem Bootstrap-Patch.
 //
-//   cloud/app/webapp -> [Bootstrap-Patch] -> app2bsp/run.js [-> bsp_rename(--name)]
+//   cloud/app/webapp -> [Bootstrap-Patch] -> app2bsp/preload.js -> app2bsp/run.js [-> bsp_rename(--name)]
 //
 // Nur index.html + manifest.json werden angepasst (alles andere bleibt 1:1).
 // Das Ergebnis hat dieselbe Paketstruktur wie der standard-Branch:
@@ -44,7 +44,8 @@ const wa = join(work, "frontend/app/webapp");
 writeFileSync(join(wa, "index.html"), patchIndexHtml(readFileSync(join(wa, "index.html"), "utf8")));
 writeFileSync(join(wa, "manifest.json"), patchManifest(readFileSync(join(wa, "manifest.json"), "utf8")));
 
-// 3) app2bsp  +  4) optionales Rename (nur mit --name, z.B. Z2UI5_V2)
+// 3) preload.js  +  app2bsp  +  4) optionales Rename (nur mit --name, z.B. Z2UI5_V2)
+execFileSync("node", [".github/app2bsp/preload.js"], { cwd: work, stdio: "inherit" });
 execFileSync("node", [".github/app2bsp/run.js"], { cwd: work, stdio: "ignore" });
 if (renamed) {
   execFileSync("node", [".github/bsp_rename/rename-bsp.mjs", bspName, "--dir", "src/02", "--yes"], { cwd: work, stdio: "ignore" });
