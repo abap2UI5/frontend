@@ -10,8 +10,8 @@
 //
 // The two BSP branches additionally get the UI5 component preload bundle
 // (app2bsp/preload.js), which folds the ~50 single requests of an app start
-// into one. The cloud branches ship the webapp as a source project instead -
-// there the developer runs the build.
+// into one and boots the app from it. The cloud branches ship the webapp as a
+// source project instead - there the developer runs the build.
 //
 // Zusaetzlich koennen umbenannte BSP-Varianten gebaut werden (fuer eine
 // Parallelinstallation im selben SAP-System, siehe .github/bsp_rename):

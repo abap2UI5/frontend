@@ -293,7 +293,8 @@ function transformNamespace(content, NEW_LO) {
   return content
     .replace(new RegExp(`(["'])${escapeRe(OLD_LO)}/`, "g"), `$1${NEW_LO}/`) // "z2ui5/core/Lib"
     .replace(new RegExp(`(["'])${escapeRe(OLD_LO)}\\.`, "g"), `$1${NEW_LO}.`) // "z2ui5.cc.X", controllerName="z2ui5.controller.App"
-    .replace(new RegExp(`(["'])${escapeRe(OLD_LO)}\\1`, "g"), `$1${NEW_LO}$1`); // "z2ui5"
+    .replace(new RegExp(`(["'])${escapeRe(OLD_LO)}\\1`, "g"), `$1${NEW_LO}$1`) // "z2ui5"
+    .replace(new RegExp(`module:${escapeRe(OLD_LO)}/`, "g"), `module:${NEW_LO}/`); // data-sap-ui-oninit="module:z2ui5/preload"
 }
 
 // A BSP page content file (fixed-width format, see BSP_LINE_WIDTH). The page
