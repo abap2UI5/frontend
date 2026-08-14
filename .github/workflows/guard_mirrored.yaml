@@ -1,22 +1,57 @@
 name: guard_mirrored
 
-# Guard against edits to content this repository does not own.
+# The convention gate of this repository.
 #
-# Two kinds of content here are produced elsewhere and force-overwritten:
+# abap2UI5/frontend is a DELIVERY repository: everything it ships is produced
+# somewhere else and written here by a machine.
 #
-#   app/webapp/**   mirrored from abap2UI5 by its create_frontend workflow on
-#                   every push to abap2UI5 main (see the "deploy: abap2UI5/
-#                   abap2UI5@<sha>" commits). A change made here survives only
-#                   until the next sync.
-#   every branch    the cloud / cloud_v2 / standard / standard_v2 branches (and
-#   except main     the renamed standard_<name> variants) are rebuilt from main
-#                   by build_branch.yaml, which pushes a fresh tree directly.
+#   app/webapp/**    mirrored from abap2UI5/abap2UI5 by its create_frontend
+#                    workflow, force-pushed on every push to abap2UI5 main
+#                    (the "deploy: abap2UI5/abap2UI5@<sha>" commits).
+#   cloud, cloud_v2, generated from main by build_branch.yaml, which pushes a
+#   standard,        freshly built tree straight onto the branch.
+#   standard_v2,
+#   standard_<name>
 #
-# Both mistakes are easy to make and invisible afterwards - the change simply
-# disappears on the next automated run. Fail the pull request instead.
+# None of that arrives through a pull request. A pull request here is by
+# definition a hand-written change, and a hand-written change to generated
+# content is an invisible failure: it survives review, it survives merge, and
+# it disappears without a trace on the next automated run.
+#
+# So the default answer to a pull request in this repository is NO. The gate
+# below states that default out loud instead of letting people discover it
+# weeks later.
+#
+# The one exception is the repository's own substance - the ABAP ICF/BSP
+# handlers in abap/, the build tooling in .github/ and the docs. Nothing
+# generates those, so they have to be maintainable here. Such a pull request
+# opts out of the lock by carrying the label:
+#
+#     maintenance
+#
+# A label is used rather than a checkbox in the description on purpose: only
+# accounts with triage or write permission can set one, so a contributor
+# cannot unlock their own pull request. Applying the label re-runs this gate
+# (see the "labeled" trigger below). The label does not exist in the repository
+# yet - the first maintenance pull request creates it from the label picker,
+# or an admin creates it once under Issues > Labels.
+#
+# Consequence worth knowing: this gate has no bot exemption. If dependency
+# automation is ever enabled here, its pull requests need the label too. That
+# is deliberate - an unattended bot merging into a delivery repository is
+# exactly the thing this gate exists to make visible.
+#
+# Enforcement note for repository admins: make the "guard" job a required
+# status check on main so the lock cannot be merged around. Do NOT additionally
+# require pull requests for main - create_frontend pushes there directly with a
+# deploy key, and a blanket pull-request requirement would break the sync
+# instead of the humans it is aimed at.
 
 on:
   pull_request:
+    # labeled/unlabeled are needed on top of the defaults so that adding or
+    # removing the maintenance label re-evaluates the lock.
+    types: [opened, reopened, synchronize, ready_for_review, labeled, unlabeled]
 
 permissions:
   contents: read
@@ -50,6 +85,48 @@ jobs:
             echo ""
             echo "Files that must not be changed in this repository:"
             echo "$changed" | sed 's/^/  /'
+            echo ""
+            echo "The maintenance label does not lift this - app/webapp is never"
+            echo "editable here, not even by a maintainer."
             exit 1
           fi
           echo "no mirrored files touched"
+
+      - name: Pull requests are locked by default
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'maintenance') }}
+        run: |
+          echo "::error::This repository does not take manual pull requests. Its content is written by automation: app/webapp/ is mirrored from abap2UI5, every branch except main is generated from main. Frontend changes belong in abap2UI5/abap2UI5."
+          echo ""
+          echo "  Where a change belongs"
+          echo "  ----------------------"
+          echo "  the UI5 webapp, i.e. app/webapp/**"
+          echo "      -> abap2UI5/abap2UI5, in app/webapp/"
+          echo "         run 'npm run app2abap' there to regenerate src/01/03,"
+          echo "         and the create_frontend workflow delivers it here."
+          echo "  a bug report or a feature request"
+          echo "      -> https://github.com/abap2UI5/abap2UI5/issues"
+          echo "  this repository's own substance: abap/, .github/, docs"
+          echo "      -> here, as a maintenance pull request (see below)."
+          echo ""
+          echo "  Maintenance pull requests"
+          echo "  -------------------------"
+          echo "  Maintaining the ABAP ICF/BSP handlers, the build tooling or the"
+          echo "  docs is the one thing that legitimately happens in this"
+          echo "  repository, because nothing generates those. Such a pull request"
+          echo "  is unlocked by a maintainer adding the label"
+          echo ""
+          echo "      maintenance"
+          echo ""
+          echo "  which re-runs this check. If you believe your change qualifies,"
+          echo "  say so in the description and ask for the label - do not work"
+          echo "  around this gate."
+          echo ""
+          echo "  Full rationale: CONTRIBUTING.md and the README."
+          exit 1
+
+      - name: Maintenance change acknowledged
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'maintenance') }}
+        run: |
+          echo "maintenance label set - treated as a change to this repository's"
+          echo "own substance (abap/, .github/, docs). Mirrored and generated"
+          echo "content stays blocked by the checks above."

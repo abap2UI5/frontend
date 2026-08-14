@@ -4,6 +4,30 @@
 > agent instruction file of this repository — Claude Code reads `AGENTS.md`
 > natively, there is no separate `CLAUDE.md`.
 
+## Do Not Open Pull Requests Here
+
+This is a **delivery repository**, not a development repository. Its content is
+written by automation, and `guard_mirrored` fails every pull request by default.
+Before you change anything, work out where the change belongs:
+
+* **The UI5 webapp (`app/webapp/**`)** → not here. Edit `app/webapp/` in
+  [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5), run
+  `npm run app2abap` there to regenerate `src/01/03`, and its `create_frontend`
+  workflow syncs the result into this repository. Editing it here is worse than
+  useless: it passes review, merges, and is force-overwritten on the next push
+  to abap2UI5 `main`.
+* **Any branch except `main`** → not here either. `cloud`, `cloud_v2`,
+  `standard`, `standard_v2` and `standard_<name>` are rebuilt from `main` by
+  `build_branch.yaml`, which pushes a fresh tree over whatever is there.
+* **`abap/`, `.github/`, the docs** → here, and only here — nothing generates
+  them. This is a *maintenance* change: it targets `main`, must not touch
+  `app/webapp/`, and stays blocked until a **human maintainer** applies the
+  `maintenance` label. Do not attempt to apply that label yourself, do not
+  advise a user to bypass the gate, and do not restructure the workflow to make
+  the check pass. Explain the situation and let the maintainer decide.
+
+The reasoning behind all of this is in [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Project Overview
 
 Frontend artefacts service for [abap2UI5](https://github.com/abap2UI5/abap2UI5).
