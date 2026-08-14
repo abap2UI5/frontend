@@ -105,11 +105,41 @@ async function coreVersionOf(sha) {
 const CORE_SHA = coreDeploySha();
 const CORE_VERSION = await coreVersionOf(CORE_SHA);
 
+// The build identity the mirrored webapp carries. app/webapp/core/Build.js is
+// generated in abap2UI5/abap2UI5 by .github/app2abap/trans2abap.js and arrives
+// here with the rest of the mirror; the backend embeds the same two values and
+// sends them on the first roundtrip, so a frontend that is not the one the
+// backend ships reports itself in the developer tools.
+//
+// Read out of the webapp rather than recomputed: a value computed here would
+// be a SECOND opinion about what this build is, and the two would eventually
+// disagree - at which point the report says the copies drifted when only the
+// two stamping rules did.
+//
+// It goes into VERSION so a pulled branch answers the question without loading
+// the app: the field to compare against a "Frontend Build" reported from a
+// system is right there next to the framework version.
+function webappBuild() {
+  try {
+    const source = readFileSync(join(repo, "app/webapp/core/Build.js"), "utf8");
+    const version = /VERSION:\s*"([^"]*)"/.exec(source)?.[1];
+    const hash = /HASH:\s*"([^"]*)"/.exec(source)?.[1];
+    return version && hash ? `${version} / ${hash}` : null;
+  } catch {
+    // A mirror from before Build.js existed has no such file - the stamp then
+    // simply omits the line, exactly as it omits an unknown framework version.
+    return null;
+  }
+}
+
+const WEBAPP_BUILD = webappBuild();
+
 function versionStamp() {
   return [
     "Generated abap2UI5-frontend branch — provenance",
     `webapp mirror commit: ${CORE_SHA ? `abap2UI5/abap2UI5@${CORE_SHA}` : "unknown"}`,
     CORE_VERSION ? `abap2UI5 framework version: ${CORE_VERSION}` : null,
+    WEBAPP_BUILD ? `frontend build (version / hash): ${WEBAPP_BUILD}` : null,
   ].filter(Boolean).join("\n") + "\n";
 }
 
