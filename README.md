@@ -11,16 +11,16 @@ This repository contains an abap2UI5 frontend artefacts service. For more inform
 > ```
 > abap2UI5/abap2UI5                                   abap2UI5/frontend
 >                                    frontend_deploy
->   app/webapp/  ──▶  frontend/  ───────────────────────▶  cloud
->   (the webapp)      (everything                          cloud_v2
->                      else a branch                       standard
->                      is built from)                      standard_v2
->                                                          standard_<name>
+>   app/webapp/  ──▶  build/  ──────────────────────────▶  cloud
+>   (the webapp)      (each branch                         cloud_v2
+>    + frontend/       as a committed                      standard
+>                      tree, pushed                        standard_v2
+>                      as it stands)                       standard_<name>
 > ```
 
 #### Branch
 
-Every branch is generated in [abap2UI5](https://github.com/abap2UI5/abap2UI5) — the webapp lives in `app/webapp` there, everything else a branch is built from in [`frontend/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend) — and pushed here by its `frontend_deploy` workflow. Pull the one that matches your system:
+Every branch is generated in [abap2UI5](https://github.com/abap2UI5/abap2UI5) — the webapp lives in `app/webapp` there, everything else a branch is built from in [`frontend/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend) — and committed there as a finished tree under [`build/`](https://github.com/abap2UI5/abap2UI5/tree/main/build), which its `frontend_deploy` workflow pushes here unchanged. What arrives here is what a pull request over there reviewed. Pull the one that matches your system:
 
 | Name        | System                                                | UI5     | Built by |
 |-------------|-------------------------------------------------------|---------|-------|
