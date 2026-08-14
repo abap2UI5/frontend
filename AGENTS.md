@@ -71,4 +71,4 @@ same system comes from the same workflow with a `standard_<name>` branch
 Nothing is built or linted here any more. abap2UI5's `frontend_check` builds
 every branch variant and lints the generated ABAP on each pull request there —
 including the BSP page invariants, against the webapp being changed. All text
-files are LF-only (`.gitattributes` enforces it).
+files are LF-only.

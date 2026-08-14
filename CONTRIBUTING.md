@@ -74,5 +74,5 @@ Two rules still apply to a labelled pull request:
    that — a source file added here is a second copy of something abap2UI5
    already owns, and nothing would keep it in sync.
 
-All text files are LF-only; `.gitattributes` enforces it. English for code,
-comments, commit messages, pull requests and issues.
+All text files are LF-only. English for code, comments, commit messages,
+pull requests and issues.
