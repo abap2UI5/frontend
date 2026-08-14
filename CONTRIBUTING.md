@@ -10,12 +10,12 @@ here by a machine:
 
 ```
 abap2UI5/abap2UI5                    abap2UI5/frontend
-                     create_frontend                     build_branch
+                                    frontend_deploy
   app/webapp/  ───────────────────▶  main  ─────────────────────────▶  cloud
                   on every push to     │                               cloud_v2
                   abap2UI5 main        │                               standard
                                        │                               standard_v2
-                                       └── abap/, .github/, docs        standard_<name>
+                                                                   standard_<name>
                                            (maintained here)
 ```
 
@@ -24,7 +24,7 @@ Two consequences, and they are the whole reason this page exists:
 | Content | Written by | A hand-made change here … |
 |---|---|---|
 | `app/webapp/**` | abap2UI5's `create_frontend` workflow, on every push to abap2UI5 `main` | is force-overwritten on the next sync |
-| every branch except `main` | `build_branch.yaml`, which pushes a freshly built tree | is discarded on the next build |
+| every branch | abap2UI5's `frontend_deploy` workflow, which pushes a freshly built tree | is discarded on the next build |
 
 Neither failure is loud. The change is reviewed, merged, and works — until an
 unrelated push to abap2UI5 wipes it, days or weeks later, with nothing in the
@@ -37,18 +37,16 @@ by CI (`guard_mirrored`) rather than trusted to good intentions.
 |---|---|
 | change the UI5 webapp, i.e. anything under `app/webapp/` | [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5), directory `app/webapp/` — then run `npm run app2abap` there to regenerate `src/01/03`, and the sync delivers it here |
 | report a bug or request a feature | [abap2UI5 issues](https://github.com/abap2UI5/abap2UI5/issues) |
-| get the BSP under a different name | run the [`build_rename` workflow](https://github.com/abap2UI5/frontend/actions/workflows/build_rename.yaml) — no code change needed, see [`.github/bsp_rename`](.github/bsp_rename) |
+| get the BSP under a different name | run abap2UI5's [`frontend_deploy` workflow](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_deploy.yaml) with a `standard_<name>` branch — no code change needed, see [`frontend/bsp_rename`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend/bsp_rename) |
 | add frontend artefacts without touching this repository | ship a sibling BSP — `Z2UI5CC` or `Z2UI5EXT`, see the README |
-| maintain this repository's own substance | here, as a **maintenance pull request** — read on |
+| maintain this repository's own docs | here, as a **maintenance pull request** — read on |
 
 ## Maintenance pull requests
 
 Three things are genuinely owned by this repository, because nothing generates
 them:
 
-* `abap/cloud/`, `abap/standard/` — the ABAP ICF/BSP handlers
-* `.github/` — the build tooling (`build-branches.mjs`, `app2bsp`, `app2app_v2`,
-  `bsp_rename`) and the workflows
+* the repository docs — README, CONTRIBUTING, AGENTS.md and the issue templates and the workflows
 * the repository docs — `README.md`, `AGENTS.md`, this file
 
 Changing those is the one legitimate reason to open a pull request here. It
@@ -69,6 +67,6 @@ Two rules still apply to a labelled pull request:
 2. It must not touch `app/webapp/`. The label does not lift that — mirrored
    content is never editable here, not even by a maintainer.
 
-Validate ABAP changes with `npx abaplint` (config `abaplint.jsonc`) before
+Validate ABAP changes in abap2UI5 with `npm run frontend:lint` before
 opening the pull request. All text files are LF-only; `.gitattributes` enforces
 it. English for code, comments, commit messages, pull requests and issues.

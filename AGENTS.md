@@ -18,8 +18,9 @@ Before you change anything, work out where the change belongs:
   to abap2UI5 `main`.
 * **Any branch except `main`** → not here either. `cloud`, `cloud_v2`,
   `standard`, `standard_v2` and `standard_<name>` are rebuilt from `main` by
-  `build_branch.yaml`, which pushes a fresh tree over whatever is there.
-* **`abap/`, `.github/`, the docs** → here, and only here — nothing generates
+  abap2UI5's `frontend_deploy` workflow, which pushes a fresh tree over
+  whatever is there.
+* **The repository docs** → here, and only here — nothing generates
   them. This is a *maintenance* change: it targets `main`, must not touch
   `app/webapp/`, and stays blocked until a **human maintainer** applies the
   `maintenance` label. Do not attempt to apply that label yourself, do not
@@ -35,25 +36,26 @@ This repo pairs with the abap2UI5 framework installed in the backend; see the
 [installation guide](https://abap2ui5.github.io/docs/configuration/installation.html).
 
 **Language:** English for all code, comments, commit messages, PRs and issues.
-(The `.github/` build tooling has some German comments — keep new text English.)
+(The build tooling now lives in [abap2UI5/frontend](https://github.com/abap2UI5/abap2UI5/tree/main/frontend) and has some German comments — keep new text English.)
 
-## Single Source vs. Generated Branches
+## Nothing Here Is a Source
 
-`main` is the **single source**:
+Every branch of this repository is built in
+[abap2UI5](https://github.com/abap2UI5/abap2UI5) and pushed in by its
+`frontend_deploy` workflow — the webapp from `app/webapp/` there, everything
+else a branch is made of from
+[`frontend/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend).
 
-* `app/webapp/` — the UI5 webapp (synced from `abap2UI5/abap2UI5`)
-* `abap/cloud/`, `abap/standard/` — the ABAP ICF/BSP handlers
-* `.github/` — the build tooling (`build-branches.mjs`, `app2bsp`, `app2app_v2`,
-  `bsp_rename`)
-
-All other branches (`cloud`, `cloud_v2`, `standard`, `standard_v2`,
-`standard_<name>` …) are **generated** from `main` by the `build_*` workflows.
-**Never commit to a generated branch** — change `main` and let the workflow
-regenerate. The renaming feature (`build_rename`) pushes a namespace-renamed BSP
-branch for a parallel install in the same system (details in `.github/bsp_rename`).
+`main` carries only the repository's own face: README, CONTRIBUTING, AGENTS.md,
+the issue templates, and the `app/webapp/` copy the mirror still refreshes.
+**Never commit to a generated branch** — change the source in abap2UI5 and let
+the build regenerate. A namespace-renamed BSP for a parallel install in the
+same system comes from the same workflow with a `standard_<name>` branch
+(details in [`frontend/bsp_rename`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend/bsp_rename)).
 
 ## Validation
 
-`npx abaplint` (config `abaplint.jsonc`) lints the ABAP handlers. The `build_*`
-workflows build and push the generated branches. All text files are LF-only
-(`.gitattributes` enforces it).
+Nothing is built or linted here any more. abap2UI5's `frontend_check` builds
+every branch variant and lints the generated ABAP on each pull request there —
+including the BSP page invariants, against the webapp being changed. All text
+files are LF-only (`.gitattributes` enforces it).
