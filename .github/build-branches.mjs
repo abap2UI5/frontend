@@ -119,12 +119,15 @@ const CORE_VERSION = await coreVersionOf(CORE_SHA);
 // It goes into VERSION so a pulled branch answers the question without loading
 // the app: the field to compare against a "Frontend Build" reported from a
 // system is right there next to the framework version.
-function webappBuild() {
+//
+// The fingerprint only. Build.js also carries the release it was generated
+// from, but that is the framework version already stamped above - one release
+// per mirror commit, so printing it twice would only invite the reader to
+// wonder which of the two to believe.
+function webappBuildHash() {
   try {
     const source = readFileSync(join(repo, "app/webapp/core/Build.js"), "utf8");
-    const version = /VERSION:\s*"([^"]*)"/.exec(source)?.[1];
-    const hash = /HASH:\s*"([^"]*)"/.exec(source)?.[1];
-    return version && hash ? `${version} / ${hash}` : null;
+    return /HASH:\s*"([^"]*)"/.exec(source)?.[1] ?? null;
   } catch {
     // A mirror from before Build.js existed has no such file - the stamp then
     // simply omits the line, exactly as it omits an unknown framework version.
@@ -132,14 +135,14 @@ function webappBuild() {
   }
 }
 
-const WEBAPP_BUILD = webappBuild();
+const WEBAPP_BUILD_HASH = webappBuildHash();
 
 function versionStamp() {
   return [
     "Generated abap2UI5-frontend branch — provenance",
     `webapp mirror commit: ${CORE_SHA ? `abap2UI5/abap2UI5@${CORE_SHA}` : "unknown"}`,
     CORE_VERSION ? `abap2UI5 framework version: ${CORE_VERSION}` : null,
-    WEBAPP_BUILD ? `frontend build (version / hash): ${WEBAPP_BUILD}` : null,
+    WEBAPP_BUILD_HASH ? `frontend build: ${WEBAPP_BUILD_HASH}` : null,
   ].filter(Boolean).join("\n") + "\n";
 }
 
