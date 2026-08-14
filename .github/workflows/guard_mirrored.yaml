@@ -5,9 +5,6 @@ name: guard_mirrored
 # abap2UI5/frontend is a DELIVERY repository: everything it ships is produced
 # somewhere else and written here by a machine.
 #
-#   app/webapp/**    mirrored from abap2UI5/abap2UI5 by its create_frontend
-#                    workflow, force-pushed on every push to abap2UI5 main
-#                    (the "deploy: abap2UI5/abap2UI5@<sha>" commits).
 #   cloud, cloud_v2, built in abap2UI5/abap2UI5 from app/webapp + frontend/ and
 #   standard,        pushed here by its frontend_deploy workflow, a freshly
 #   standard_v2,     built tree straight onto the branch.
@@ -23,9 +20,12 @@ name: guard_mirrored
 # weeks later.
 #
 # The one exception is the repository's own docs - README, CONTRIBUTING,
-# AGENTS.md, the issue templates. Nothing generates those, so they have to be
-# maintainable here. (The ABAP handlers and the build tooling used to be that
-# exception too; both live in abap2UI5/frontend now.) Such a pull request opts
+# AGENTS.md, the issue templates, this workflow. Nothing generates those, so
+# they have to be maintainable here, and since the frontend build moved into
+# abap2UI5/abap2UI5 they are all that main carries. (The ABAP handlers, the
+# build tooling and the mirrored app/webapp copy used to live here too; all
+# three are in abap2UI5/abap2UI5 now - the ABAP artefacts under frontend/, the
+# tooling under tools/, the webapp under app/webapp.) Such a pull request opts
 # out of the lock by carrying the label:
 #
 #     maintenance
@@ -43,10 +43,7 @@ name: guard_mirrored
 # exactly the thing this gate exists to make visible.
 #
 # Enforcement note for repository admins: make the "guard" job a required
-# status check on main so the lock cannot be merged around. Do NOT additionally
-# require pull requests for main - create_frontend pushes there directly with a
-# deploy key, and a blanket pull-request requirement would break the sync
-# instead of the humans it is aimed at.
+# status check on main so the lock cannot be merged around.
 
 on:
   pull_request:
@@ -75,46 +72,52 @@ jobs:
             exit 1
           fi
 
-      - name: app/webapp is mirrored from abap2UI5
+      # main carries this repository's own docs and nothing else. Anything a
+      # pull request adds outside them is either a file that belongs in
+      # abap2UI5/abap2UI5, or a second copy of one that is already there - and
+      # a second copy is what let the webapp and the build drift apart before.
+      - name: main carries docs only
         env:
           BASE: ${{ github.base_ref }}
         run: |
           git fetch --quiet origin "$BASE"
-          changed=$(git diff --name-only "origin/$BASE...HEAD" -- 'app/webapp')
-          if [ -n "$changed" ]; then
-            echo "::error::app/webapp/ is mirrored from abap2UI5 and is force-overwritten by its create_frontend workflow on every push to abap2UI5 main. Make the change in abap2UI5/app/webapp instead, run 'npm run app2abap' there to regenerate src/01/03, and let the sync deliver it here."
+          stray=$(git diff --name-only --diff-filter=d "origin/$BASE...HEAD" \
+            | grep -Ev '^(\.github/|[A-Z_]+\.md$|LICENSE$|\.gitattributes$|\.nojekyll$)' || true)
+          if [ -n "$stray" ]; then
+            echo "::error::main is documentation only. The frontend source, the ABAP artefacts and the build all live in abap2UI5/abap2UI5 - the webapp in app/webapp/, the ABAP artefacts in frontend/, the tooling in tools/. A file added here would be a second copy that nothing builds from and nothing keeps in sync."
             echo ""
-            echo "Files that must not be changed in this repository:"
-            echo "$changed" | sed 's/^/  /'
+            echo "Files that do not belong in this repository:"
+            echo "$stray" | sed 's/^/  /'
             echo ""
-            echo "The maintenance label does not lift this - app/webapp is never"
-            echo "editable here, not even by a maintainer."
+            echo "The maintenance label does not lift this."
             exit 1
           fi
-          echo "no mirrored files touched"
+          echo "docs only"
 
       - name: Pull requests are locked by default
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'maintenance') }}
         run: |
-          echo "::error::This repository does not take manual pull requests. Its content is written by automation: app/webapp/ is mirrored from abap2UI5, every branch except main is generated from main. Frontend changes belong in abap2UI5/abap2UI5."
+          echo "::error::This repository does not take manual pull requests. Its content is written by automation: every branch except main is built in abap2UI5/abap2UI5 and pushed here. Frontend changes belong there."
           echo ""
           echo "  Where a change belongs"
           echo "  ----------------------"
           echo "  the UI5 webapp, i.e. app/webapp/**"
           echo "      -> abap2UI5/abap2UI5, in app/webapp/"
           echo "         run 'npm run app2abap' there to regenerate src/01/03,"
-          echo "         and the create_frontend workflow delivers it here."
+          echo "         and the frontend_deploy workflow delivers it here."
+          echo "  the ABAP handlers, the packaging, the build"
+          echo "      -> abap2UI5/abap2UI5, in frontend/ and tools/."
           echo "  a bug report or a feature request"
           echo "      -> https://github.com/abap2UI5/abap2UI5/issues"
-          echo "  this repository's own substance: abap/, .github/, docs"
+          echo "  this repository's own docs"
           echo "      -> here, as a maintenance pull request (see below)."
           echo ""
           echo "  Maintenance pull requests"
           echo "  -------------------------"
-          echo "  Maintaining the ABAP ICF/BSP handlers, the build tooling or the"
-          echo "  docs is the one thing that legitimately happens in this"
-          echo "  repository, because nothing generates those. Such a pull request"
-          echo "  is unlocked by a maintainer adding the label"
+          echo "  Maintaining the docs is the one thing that legitimately"
+          echo "  happens in this repository, because nothing generates them."
+          echo "  Such a pull request is unlocked by a maintainer adding the"
+          echo "  label"
           echo ""
           echo "      maintenance"
           echo ""
@@ -129,5 +132,4 @@ jobs:
         if: ${{ contains(github.event.pull_request.labels.*.name, 'maintenance') }}
         run: |
           echo "maintenance label set - treated as a change to this repository's"
-          echo "own substance (abap/, .github/, docs). Mirrored and generated"
-          echo "content stays blocked by the checks above."
+          echo "own docs. Generated content stays blocked by the checks above."
