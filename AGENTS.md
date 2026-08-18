@@ -7,7 +7,7 @@
 ## Do Not Open Pull Requests Here
 
 This is a **delivery repository**, not a development repository. Its content is
-written by automation, and `guard_mirrored` fails every pull request by default.
+written by automation, and `guard` fails every pull request by default.
 Before you change anything, work out where the change belongs:
 
 * **The UI5 webapp** → not here. There is no webapp in this repository any
@@ -57,7 +57,7 @@ published branches are committed there as finished trees and delivered here as
 they stand — the deploy does not build what it ships.
 
 `main` carries only the repository's own face: README, CONTRIBUTING, AGENTS.md,
-the issue and pull request templates, and the `guard_mirrored` workflow. There
+the issue and pull request templates, and the `guard` workflow. There
 is no webapp copy on it any more — it was mirrored here while this repository
 still built the branches itself, and went when the build moved.
 **Never commit to a generated branch** — change the source in abap2UI5 and let

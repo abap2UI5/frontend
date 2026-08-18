@@ -13,7 +13,7 @@
     main           carries this repository's own docs and nothing else.
 
   A change made in the wrong place is not rejected - it is silently discarded
-  on the next automated run, days after it was merged. So the guard_mirrored
+  on the next automated run, days after it was merged. So the guard
   check fails EVERY pull request here by default.
 
   The one exception is this repository's own docs, because nothing generates
