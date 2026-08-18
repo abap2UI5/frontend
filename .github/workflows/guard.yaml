@@ -5,10 +5,14 @@ name: guard
 # abap2UI5/frontend is a DELIVERY repository: everything it ships is produced
 # somewhere else and written here by a machine.
 #
-#   cloud, cloud_v2, built in abap2UI5/abap2UI5 from app/webapp + frontend/ and
-#   standard,        pushed here by its frontend_deploy workflow, a freshly
-#   standard_v2,     built tree straight onto the branch.
-#   standard_<name>
+#   result/<branch>  on main - the four finished trees, written as one commit
+#                    per change by abap2UI5/abap2UI5's frontend_deploy
+#                    workflow, so main's history tracks every delivery.
+#   cloud, cloud_v2, fanned out from result/<branch> by the deliver workflow
+#   standard,        here: each branch is one commit ahead of main, its tree
+#   standard_v2      the content of its result/ folder and nothing else.
+#   standard_<name>  built on demand in abap2UI5/abap2UI5 and pushed straight
+#                    onto the branch by its frontend_deploy dispatch.
 #
 # None of that arrives through a pull request. A pull request here is by
 # definition a hand-written change, and a hand-written change to generated
@@ -20,13 +24,13 @@ name: guard
 # weeks later.
 #
 # The one exception is the repository's own docs - README, CONTRIBUTING,
-# AGENTS.md, the issue templates, this workflow. Nothing generates those, so
-# they have to be maintainable here, and since the frontend build moved into
-# abap2UI5/abap2UI5 they are all that main carries. (The ABAP handlers, the
-# build tooling and the mirrored app/webapp copy used to live here too; all
-# three are in abap2UI5/abap2UI5 now - the ABAP artefacts under frontend/, the
-# tooling under tools/, the webapp under app/webapp.) Such a pull request opts
-# out of the lock by carrying the label:
+# AGENTS.md, the issue templates, the workflows. Nothing generates those, so
+# they have to be maintainable here; besides the machine-written result/ trees
+# they are all that main carries. (The ABAP handlers, the build tooling and
+# the mirrored app/webapp copy used to live here too; all three are in
+# abap2UI5/abap2UI5 now - the ABAP artefacts under frontend/, the tooling
+# under tools/, the webapp under app/webapp.) Such a pull request opts out of
+# the lock by carrying the label:
 #
 #     maintenance
 #
@@ -68,15 +72,19 @@ jobs:
           BASE: ${{ github.base_ref }}
         run: |
           if [ "$BASE" != "main" ]; then
-            echo "::error::'$BASE' is a generated branch - abap2UI5/abap2UI5 rebuilds it from app/webapp + frontend/ and pushes the result directly, so a commit made here is discarded on the next build. Change it there instead."
+            echo "::error::'$BASE' is a generated branch - it is fanned out from main's result/ folder by the deliver workflow (or, for a renamed variant, pushed by abap2UI5/abap2UI5 directly), one commit ahead of main, rewritten on every delivery. A commit made here is discarded on the next one. Change the source in abap2UI5/abap2UI5 instead."
             exit 1
           fi
 
-      # main carries this repository's own docs and nothing else. Anything a
-      # pull request adds outside them is either a file that belongs in
-      # abap2UI5/abap2UI5, or a second copy of one that is already there - and
-      # a second copy is what let the webapp and the build drift apart before.
-      - name: main carries docs only
+      # main carries this repository's own docs, plus the machine-written
+      # result/ trees frontend_deploy commits and the deliver workflow fans
+      # out into the branches. A pull request may touch neither: an edit to
+      # result/ is a hand-made change to generated content (overwritten on the
+      # next delivery), and anything else outside the docs is either a file
+      # that belongs in abap2UI5/abap2UI5, or a second copy of one that is
+      # already there - and a second copy is what let the webapp and the build
+      # drift apart before.
+      - name: hand edits stay within the docs
         env:
           BASE: ${{ github.base_ref }}
         run: |
@@ -84,9 +92,9 @@ jobs:
           stray=$(git diff --name-only --diff-filter=d "origin/$BASE...HEAD" \
             | grep -Ev '^(\.github/|[A-Z_]+\.md$|LICENSE$|\.gitattributes$|\.nojekyll$)' || true)
           if [ -n "$stray" ]; then
-            echo "::error::main is documentation only. The frontend source, the ABAP artefacts and the build all live in abap2UI5/abap2UI5 - the webapp in app/webapp/, the ABAP artefacts in frontend/, the tooling in tools/. A file added here would be a second copy that nothing builds from and nothing keeps in sync."
+            echo "::error::A pull request here may only touch the docs. result/ is machine-written by abap2UI5/abap2UI5's frontend_deploy workflow and overwritten on the next delivery; the frontend source, the ABAP artefacts and the build all live in abap2UI5/abap2UI5 - the webapp in app/webapp/, the ABAP artefacts in frontend/, the tooling in tools/. Any other file added here would be a second copy that nothing builds from and nothing keeps in sync."
             echo ""
-            echo "Files that do not belong in this repository:"
+            echo "Files a pull request may not touch:"
             echo "$stray" | sed 's/^/  /'
             echo ""
             echo "The maintenance label does not lift this."
@@ -97,7 +105,7 @@ jobs:
       - name: Pull requests are locked by default
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'maintenance') }}
         run: |
-          echo "::error::This repository does not take manual pull requests. Its content is written by automation: every branch except main is built in abap2UI5/abap2UI5 and pushed here. Frontend changes belong there."
+          echo "::error::This repository does not take manual pull requests. Its content is written by automation: abap2UI5/abap2UI5 commits the finished trees into main's result/ folders, and the deliver workflow fans them out into the branches. Frontend changes belong there."
           echo ""
           echo "  Where a change belongs"
           echo "  ----------------------"

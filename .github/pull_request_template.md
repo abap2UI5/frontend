@@ -5,12 +5,15 @@
   automation, not by hand:
 
     any branch     other than main is GENERATED in abap2UI5/abap2UI5, where it
-                   is committed under build/<branch>, and pushed here by its
-                   frontend_deploy workflow over whatever is on the branch.
+                   is committed under build/<branch>. Its frontend_deploy
+                   workflow delivers the finished trees into result/<branch>
+                   on main here, and the deliver workflow rewrites each branch
+                   as one commit on top of main with its folder's content.
                    Change it there: the webapp in app/webapp/ (then run
                    'npm run app2abap'), the ABAP artefacts in frontend/, the
                    build in tools/ - and commit the rebuilt build/ with it.
-    main           carries this repository's own docs and nothing else.
+    main           carries this repository's own docs plus the machine-written
+                   result/ trees - the docs are the only thing maintained here.
 
   A change made in the wrong place is not rejected - it is silently discarded
   on the next automated run, days after it was merged. So the guard

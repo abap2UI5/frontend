@@ -21,10 +21,13 @@ Before you change anything, work out where the change belongs:
   [`frontend/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend), the
   scripts that turn them into a branch in
   [`tools/`](https://github.com/abap2UI5/abap2UI5/tree/main/tools).
-* **Any branch except `main`** → not here. `cloud`, `cloud_v2`, `standard` and
-  `standard_v2` are committed trees in abap2UI5 (`build/<branch>`) that its
-  `frontend_deploy` workflow pushes over whatever is here; `standard_<name>` is
-  built by that workflow on demand.
+* **Any branch except `main`, and `result/` on `main`** → not here. `cloud`,
+  `cloud_v2`, `standard` and `standard_v2` are committed trees in abap2UI5
+  (`build/<branch>`) that its `frontend_deploy` workflow delivers into
+  `result/<branch>` on `main` here, and the `deliver` workflow rewrites each
+  branch as one commit on top of `main` carrying its folder's content;
+  `standard_<name>` is built by `frontend_deploy` on demand and pushed onto
+  its branch directly.
 * **The repository docs** → here, and only here — nothing generates
   them. This is a *maintenance* change: it targets `main`, adds no source
   files, and stays blocked until a **human maintainer** applies the
@@ -47,21 +50,26 @@ comments — keep new text English.)
 ## Nothing Here Is a Source
 
 Every branch of this repository is generated in
-[abap2UI5](https://github.com/abap2UI5/abap2UI5) and pushed in by its
-`frontend_deploy` workflow — the webapp from `app/webapp/` there, everything
-else a branch is made of from
+[abap2UI5](https://github.com/abap2UI5/abap2UI5) — the webapp from
+`app/webapp/` there, everything else a branch is made of from
 [`frontend/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend), driven
 by [`tools/`](https://github.com/abap2UI5/abap2UI5/tree/main/tools) into
 [`build/`](https://github.com/abap2UI5/abap2UI5/tree/main/build). The four
-published branches are committed there as finished trees and delivered here as
-they stand — the deploy does not build what it ships.
+published branches are committed there as finished trees; its `frontend_deploy`
+workflow delivers them, stamped, as `result/<branch>` folders in one commit on
+`main` here — the deploy does not build what it ships — and the `deliver`
+workflow of this repository fans each folder out into its branch: one commit
+on top of `main`, tree = the folder's content. So every published branch is
+always exactly one commit ahead of `main`, and `main`'s history tracks every
+delivered change.
 
-`main` carries only the repository's own face: README, CONTRIBUTING, AGENTS.md,
-the issue and pull request templates, and the `guard` workflow. There
-is no webapp copy on it any more — it was mirrored here while this repository
-still built the branches itself, and went when the build moved.
-**Never commit to a generated branch** — change the source in abap2UI5 and let
-the build regenerate. A namespace-renamed BSP for a parallel install in the
+Besides the machine-written `result/` trees, `main` carries only the
+repository's own face: README, CONTRIBUTING, AGENTS.md, the issue and pull
+request templates, and the `guard` and `deliver` workflows. There is no webapp
+copy on it any more — it was mirrored here while this repository still built
+the branches itself, and went when the build moved.
+**Never commit to a generated branch or to `result/`** — change the source in
+abap2UI5 and let the delivery regenerate. A namespace-renamed BSP for a parallel install in the
 same system comes from the same workflow with a `standard_<name>` branch
 (details in
 [`tools/bsp_rename`](https://github.com/abap2UI5/abap2UI5/tree/main/tools/bsp_rename)).

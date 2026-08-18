@@ -9,23 +9,28 @@ system can install. Everything it ships is produced somewhere else and written
 here by a machine:
 
 ```
-abap2UI5/abap2UI5                                   abap2UI5/frontend
-                                   frontend_deploy
-  app/webapp/  ──▶  build/  ──────────────────────────▶  cloud
-  (the webapp)      (each branch                         cloud_v2
-   + frontend/       as a committed                      standard
-                     tree, pushed                        standard_v2
-                     as it stands)                       standard_<name>
+abap2UI5/abap2UI5                       abap2UI5/frontend
+                   frontend_deploy                        deliver
+  app/webapp/  ──▶  build/  ──────────▶  main           ──────────▶  cloud
+  (the webapp)      (each branch         result/<branch>             cloud_v2
+   + frontend/       as a committed      (all four trees,            standard
+                     tree)               one commit per              standard_v2
+                                         change)                     (each: main
+                                                                     + one commit)
 
-                                                         main
-                                                         (the docs, maintained here)
+                                         standard_<name> is built on demand
+                                         and pushed straight onto its branch
+
+                                         main also carries the docs,
+                                         maintained here
 ```
 
 One consequence, and it is the whole reason this page exists:
 
 | Content | Written by | A hand-made change here … |
 |---|---|---|
-| every generated branch | abap2UI5's `frontend_deploy` workflow, which pushes the tree committed in its `build/` | is discarded on the next delivery |
+| `result/` on `main` | abap2UI5's `frontend_deploy` workflow, which commits the trees committed in its `build/` | is overwritten on the next delivery |
+| every generated branch | the `deliver` workflow, which rewrites each branch as one commit on top of `main` carrying its `result/<branch>` content | is discarded on the next delivery |
 
 The failure is not loud. The change is reviewed, merged, and works — until an
 unrelated build in abap2UI5 wipes it, days or weeks later, with nothing in the
@@ -34,8 +39,11 @@ by CI (`guard`) rather than trusted to good intentions.
 
 Note there is no longer a copy of the webapp on `main` either. It used to be
 mirrored here so this repository could build the branches itself; the build
-moved into abap2UI5, and with it the last reason for a second copy. `main`
-carries this repository's own docs and nothing else.
+moved into abap2UI5, and with it the last reason for a second copy. What `main`
+carries besides this repository's own docs — the `result/<branch>` trees — is
+not a source but the finished output, delivered here so its history shows
+every change a branch ever received, one commit per delivery, and so every
+branch can be exactly one commit ahead of it.
 
 ## Where a change belongs
 

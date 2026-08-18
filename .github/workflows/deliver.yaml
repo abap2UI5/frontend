@@ -1,0 +1,87 @@
+name: deliver
+
+# The second half of the delivery relay.
+#
+# abap2UI5/abap2UI5 builds the four published branches, commits them there as
+# reviewed trees (build/<branch>), and its frontend_deploy workflow writes the
+# stamped result as result/<branch> folders into ONE commit on main here. This
+# workflow is what turns those folders into the branches an abapGit repository
+# actually pulls: on every push to main it writes, per branch, one commit
+#
+#     parent = the main commit
+#     tree   = the content of result/<branch>, nothing else
+#
+# and force-pushes it. So every published branch is always exactly one commit
+# ahead of main, and its history IS main's history: every change a branch ever
+# received is one reviewable diff under result/<branch> in main's log. The
+# force is not an accident - the previous tip (old main + its folder) is never
+# an ancestor of the new one (new main + its folder), so a fast-forward does
+# not exist by construction. Nobody develops on these branches, so there is no
+# history to lose; abapGit pulls the tree at the tip and is indifferent to the
+# tip being rewritten.
+#
+# A docs-only commit to main moves the branches too - same tree, new parent -
+# which is exactly the invariant: one commit ahead of main, always, not "one
+# commit ahead of the last main commit that happened to touch result/".
+#
+# What this workflow deliberately does NOT do:
+#
+#   - build anything. The trees arrive finished, stamp included. A build here
+#     could only produce something no pull request in abap2UI5 ever saw.
+#   - touch branches without a result/ folder. Renamed variants
+#     (standard_<name>) are unbounded in number, built on demand by
+#     abap2UI5's frontend_deploy dispatch and pushed by it directly.
+#
+# It runs on GITHUB_TOKEN - main is only ever pushed from abap2UI5 via deploy
+# key or merged into by a maintenance pull request, and both trigger this run;
+# the branches this workflow pushes trigger nothing (branch filter: main).
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deliver
+  cancel-in-progress: false
+
+jobs:
+  fan_out:
+    if: github.repository == 'abap2UI5/frontend'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: One commit per branch, on top of main
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+          for b in cloud cloud_v2 standard standard_v2; do
+            tree=$(git rev-parse --verify --quiet "$GITHUB_SHA:result/$b" || true)
+            if [ -z "$tree" ]; then
+              echo "$b: no result/$b on main, skipped"
+              continue
+            fi
+
+            # Idempotence for re-runs: the tip this push would write is
+            # already there. Read the parent from the raw object - the fetch
+            # is shallow, so the graft would hide it from rev-parse.
+            tip=$(git fetch --quiet --depth 1 origin "$b" 2>/dev/null && git rev-parse FETCH_HEAD || true)
+            if [ -n "$tip" ] \
+              && [ "$(git rev-parse "$tip^{tree}")" = "$tree" ] \
+              && [ "$(git cat-file commit "$tip" | sed -n 's/^parent //p' | head -n 1)" = "$GITHUB_SHA" ]; then
+              echo "$b: already one commit ahead of main, skipped"
+              continue
+            fi
+
+            # The branch commit reuses main's message: the parent link already
+            # says where the content is tracked, the message says what changed.
+            commit=$(git log -1 --format=%B "$GITHUB_SHA" | git commit-tree "$tree" -p "$GITHUB_SHA")
+            git push --force --quiet origin "$commit:refs/heads/$b"
+            echo "$b: pushed $commit"
+          done
