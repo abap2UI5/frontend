@@ -30,7 +30,7 @@ One consequence, and it is the whole reason this page exists:
 The failure is not loud. The change is reviewed, merged, and works — until an
 unrelated build in abap2UI5 wipes it, days or weeks later, with nothing in the
 history to explain why the fix vanished. That is why the convention is enforced
-by CI (`guard_mirrored`) rather than trusted to good intentions.
+by CI (`guard`) rather than trusted to good intentions.
 
 Note there is no longer a copy of the webapp on `main` either. It used to be
 mirrored here so this repository could build the branches itself; the build
@@ -52,11 +52,11 @@ carries this repository's own docs and nothing else.
 
 One thing is genuinely owned by this repository, because nothing generates it:
 its own docs — `README.md`, `CONTRIBUTING.md`, `AGENTS.md`, the issue and pull
-request templates, and the `guard_mirrored` workflow that enforces all of the
+request templates, and the `guard` workflow that enforces all of the
 above.
 
 Changing those is the one legitimate reason to open a pull request here. It
-still starts locked: the `guard_mirrored` check fails every pull request until
+still starts locked: the `guard` check fails every pull request until
 a maintainer applies the label
 
 > `maintenance`
