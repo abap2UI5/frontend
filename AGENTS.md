@@ -50,24 +50,22 @@ comments — keep new text English.)
 ## Nothing Here Is a Source
 
 Every branch of this repository is generated in
-[abap2UI5](https://github.com/abap2UI5/abap2UI5) — the webapp from
-`app/webapp/` there, everything else a branch is made of from
-[`frontend/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend), driven
-by [`tools/`](https://github.com/abap2UI5/abap2UI5/tree/main/tools) into
-[`build/`](https://github.com/abap2UI5/abap2UI5/tree/main/build). The four
-published branches are committed there as finished trees; its `frontend_deploy`
-workflow delivers them, stamped, as `result/<branch>` folders in one commit on
-`main` here — the deploy does not build what it ships — and the `deliver`
-workflow of this repository fans each folder out into its branch: one commit
-on top of `main`, tree = the folder's content. So every published branch is
-always exactly one commit ahead of `main`, and `main`'s history tracks every
-delivered change.
+[abap2UI5](https://github.com/abap2UI5/abap2UI5). [README.md](README.md) draws
+the pipeline and names each step; read it there rather than here. It is the
+copy a gate in abap2UI5 holds byte-identical to `frontend/common/README.md`,
+which is why it is the one to trust — this file is not gated, and a third
+description of the same mechanics is a third thing that can go quietly wrong.
+
+What matters for working here, and is not in the README: `build/` in abap2UI5
+is driven by [`tools/`](https://github.com/abap2UI5/abap2UI5/tree/main/tools),
+the deploy stamps but does not build what it ships, and every published branch
+is therefore exactly one commit ahead of `main`.
 
 Besides the machine-written `result/` trees, `main` carries only the
-repository's own face: README, CONTRIBUTING, AGENTS.md, the issue and pull
-request templates, and the `guard` and `deliver` workflows. There is no webapp
-copy on it any more — it was mirrored here while this repository still built
-the branches itself, and went when the build moved.
+repository's own face: README, CONTRIBUTING, AGENTS.md, CLAUDE.md, the issue
+and pull request templates, and the `guard` and `deliver` workflows. There is
+no webapp copy on it any more — it was mirrored here while this repository
+still built the branches itself, and went when the build moved.
 **Never commit to a generated branch or to `result/`** — change the source in
 abap2UI5 and let the delivery regenerate. A namespace-renamed BSP for a parallel install in the
 same system comes from the same workflow with a `standard_<name>` branch
