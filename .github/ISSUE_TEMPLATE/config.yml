@@ -1,7 +1,7 @@
 # Issues for the frontend are tracked in abap2UI5/abap2UI5, together with the
 # framework they belong to - the frontend artefacts published here are built
 # from that repository, so a report filed here would have to be moved before it
-# could be fixed. Same principle as the pull request lock in guard_mirrored.yaml.
+# could be fixed. Same principle as the pull request lock in guard.yaml.
 blank_issues_enabled: false
 contact_links:
   - name: Bug report or feature request
