@@ -1,4 +1,4 @@
-> ⚙️ **Generated branch `cloud_v2`** — built in [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5) by its `frontend_deploy` workflow and pushed here. Do not commit in this repository; changes belong into abap2UI5. Frontend state: `abap2UI5/abap2UI5@d1fe75241b50` (framework 1.143.0) — see `VERSION`.
+> ⚙️ **Generated branch `cloud_v2`** — built in [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5) by its `frontend_deploy` workflow and pushed here. Do not commit in this repository; changes belong into abap2UI5. Frontend state: `abap2UI5/abap2UI5@a81360005055` (framework 1.143.0) — see `VERSION`.
 
 [![frontend_check](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_check.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_check.yaml)
 [![frontend_deploy](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_deploy.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_deploy.yaml)
