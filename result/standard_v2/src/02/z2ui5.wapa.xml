@@ -687,17 +687,6 @@
     <item>
      <ATTRIBUTES>
       <APPLNAME>Z2UI5</APPLNAME>
-      <PAGEKEY>UTIL.JS</PAGEKEY>
-      <PAGENAME>Util.js</PAGENAME>
-      <PAGETYPE>X</PAGETYPE>
-      <LAYOUTLANGU>E</LAYOUTLANGU>
-      <VERSION>A</VERSION>
-      <LANGU>E</LANGU>
-     </ATTRIBUTES>
-    </item>
-    <item>
-     <ATTRIBUTES>
-      <APPLNAME>Z2UI5</APPLNAME>
       <PAGEKEY>VIEW/APP.VIEW.XML</PAGEKEY>
       <PAGENAME>view/App.view.xml</PAGENAME>
       <PAGETYPE>X</PAGETYPE>
