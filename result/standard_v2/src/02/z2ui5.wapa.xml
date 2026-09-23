@@ -323,17 +323,6 @@
     <item>
      <ATTRIBUTES>
       <APPLNAME>Z2UI5</APPLNAME>
-      <PAGEKEY>CORE/ACTIONS/LEGACYCUSTOMJS.JS</PAGEKEY>
-      <PAGENAME>core/actions/LegacyCustomJs.js</PAGENAME>
-      <PAGETYPE>X</PAGETYPE>
-      <LAYOUTLANGU>E</LAYOUTLANGU>
-      <VERSION>A</VERSION>
-      <LANGU>E</LANGU>
-     </ATTRIBUTES>
-    </item>
-    <item>
-     <ATTRIBUTES>
-      <APPLNAME>Z2UI5</APPLNAME>
       <PAGEKEY>CORE/ACTIONS/SHORTCUTS.JS</PAGEKEY>
       <PAGENAME>core/actions/Shortcuts.js</PAGENAME>
       <PAGETYPE>X</PAGETYPE>
