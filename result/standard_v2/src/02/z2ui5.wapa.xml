@@ -48,6 +48,17 @@
     <item>
      <ATTRIBUTES>
       <APPLNAME>Z2UI5</APPLNAME>
+      <PAGEKEY>CC/EXCELBRIDGE.JS</PAGEKEY>
+      <PAGENAME>cc/ExcelBridge.js</PAGENAME>
+      <PAGETYPE>X</PAGETYPE>
+      <LAYOUTLANGU>E</LAYOUTLANGU>
+      <VERSION>A</VERSION>
+      <LANGU>E</LANGU>
+     </ATTRIBUTES>
+    </item>
+    <item>
+     <ATTRIBUTES>
+      <APPLNAME>Z2UI5</APPLNAME>
       <PAGEKEY>CC/FAVICON.JS</PAGEKEY>
       <PAGENAME>cc/Favicon.js</PAGENAME>
       <PAGETYPE>X</PAGETYPE>
