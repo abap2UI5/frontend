@@ -14,12 +14,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@sap/ux-ui5-tooling": "^1.32.0",
-    "@ui5/cli": "^4.0.70",
+    "@sap/ux-ui5-tooling": "^1.33.0",
+    "@ui5/cli": "^4.0.71",
     "@ui5/linter": "^1.23.7",
-    "eslint": "^10.11.0",
-    "globals": "^17.12.0",
-    "prettier": "^3.9.9",
+    "eslint": "^10.12.0",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10",
     "typescript": "^7.0.2"
   },
   "scripts": {
@@ -28,7 +28,7 @@
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
     "start-noflp": "fiori run --open \"index.html?sap-ui-xx-viewCache=false\"",
     "start-variants-management": "fiori run --open \"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\"",
-    "format": "prettier --write 'webapp/**/*.js'",
+    "format": "prettier --write 'webapp/**/*.js' --cache --cache-strategy content",
     "format:check": "prettier --check 'webapp/**/*.js'",
     "lint": "eslint 'webapp/**/*.js'",
     "typecheck": "tsc -p ."
