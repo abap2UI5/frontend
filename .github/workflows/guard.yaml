@@ -5,12 +5,14 @@ name: guard
 # abap2UI5/frontend is a DELIVERY repository: everything it ships is produced
 # somewhere else and written here by a machine.
 #
-#   result/<branch>  on main - the four finished trees, written as one commit
+#   result/<branch>  on main - the six finished trees, written as one commit
 #                    per change by abap2UI5/abap2UI5's frontend_deploy
 #                    workflow, so main's history tracks every delivery.
 #   cloud, cloud_v2, fanned out from result/<branch> by the deliver workflow
 #   standard,        here: each branch is one commit ahead of main, its tree
-#   standard_v2      the content of its result/ folder and nothing else.
+#   standard_v2,     the content of its result/ folder and nothing else.
+#   cloud_new,
+#   standard_new
 #   standard_<name>  built on demand in abap2UI5/abap2UI5 and pushed straight
 #                    onto the branch by its frontend_deploy dispatch.
 #

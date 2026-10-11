@@ -4,11 +4,11 @@
 [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5) instead.**
 
 `abap2UI5/frontend` is a delivery repository. It is not where the frontend is
-written — it is where the frontend is *published*, in the four flavours an ABAP
+written — it is where the frontend is *published*, in the six flavours an ABAP
 system can install. Everything it ships is produced somewhere else and written
 here by a machine:
 
-[README.md](README.md) draws that pipeline and lists the four branches. It is
+[README.md](README.md) draws that pipeline and lists the six branches. It is
 not repeated here on purpose: the README is held byte-identical to abap2UI5's
 `frontend/common/README.md` by a gate over there, and this file is not. Two
 copies of one diagram means the ungated one goes quietly wrong — which is
@@ -39,6 +39,7 @@ branch can be exactly one commit ahead of it.
 | You want to … | Go to |
 |---|---|
 | change the UI5 webapp | [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5), directory `app/webapp/` — then run `npm run app2abap` there to regenerate `src/01/03`, and the build delivers it here |
+| change the app of `standard_new` and `cloud_new` (the embed control app) | [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5), directory [`frontend/embed/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend/embed) |
 | change the ABAP handlers, the BSP packaging or the build | [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5) — the ABAP artefacts and the files every branch inherits in [`frontend/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend), the scripts in [`tools/`](https://github.com/abap2UI5/abap2UI5/tree/main/tools) |
 | report a bug or request a feature | [abap2UI5 issues](https://github.com/abap2UI5/abap2UI5/issues) |
 | get the BSP under a different name | run abap2UI5's [`frontend_deploy` workflow](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_deploy.yaml) with a `standard_<name>` branch — no code change needed, see [`tools/bsp_rename`](https://github.com/abap2UI5/abap2UI5/tree/main/tools/bsp_rename) |

@@ -2,7 +2,7 @@ name: deliver
 
 # The second half of the delivery relay.
 #
-# abap2UI5/abap2UI5 builds the four published branches, commits them there as
+# abap2UI5/abap2UI5 builds the six published branches, commits them there as
 # reviewed trees (build/<branch>), and its frontend_deploy workflow writes the
 # stamped result as result/<branch> folders into ONE commit on main here. This
 # workflow is what turns those folders into the branches an abapGit repository
@@ -61,7 +61,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
 
-          for b in cloud cloud_v2 standard standard_v2; do
+          for b in cloud cloud_v2 standard standard_v2 cloud_new standard_new; do
             tree=$(git rev-parse --verify --quiet "$GITHUB_SHA:result/$b" || true)
             if [ -z "$tree" ]; then
               echo "$b: no result/$b on main, skipped"
