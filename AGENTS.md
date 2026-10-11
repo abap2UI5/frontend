@@ -24,9 +24,10 @@ Before you change anything, work out where the change belongs:
   scripts that turn them into a branch in
   [`tools/`](https://github.com/abap2UI5/abap2UI5/tree/main/tools).
 * **Any branch except `main`, and `result/` on `main`** → not here. `cloud`,
-  `cloud_v2`, `standard` and `standard_v2` are committed trees in abap2UI5
-  (`build/<branch>`) that its `frontend_deploy` workflow delivers into
-  `result/<branch>` on `main` here, and the `deliver` workflow rewrites each
+  `cloud_v2`, `standard`, `standard_v2`, `cloud_new` and `standard_new` are
+  built in abap2UI5 (`tools/build-branches.mjs`; the app of the `_new`
+  branches is its `frontend/embed`) and its `frontend_deploy` workflow
+  delivers them into `result/<branch>` on `main` here, and the `deliver` workflow rewrites each
   branch as one commit on top of `main` carrying its folder's content;
   `standard_<name>` is built by `frontend_deploy` on demand and pushed onto
   its branch directly.
