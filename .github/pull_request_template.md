@@ -11,7 +11,10 @@
                    deliver workflow rewrites each branch as one commit on top
                    of main with its folder's content. Change it there: the
                    webapp in app/webapp/ (then run 'npm run app2abap'), the
-                   ABAP artefacts in frontend/, the build in tools/.
+                   app of standard_new and cloud_new in frontend/embed/, the
+                   ABAP artefacts in frontend/abap/, the build in tools/.
+                   The embed control those two branches hold
+                   (z2ui5.embed.Container) is abap2UI5/embed-control's.
     main           carries this repository's own docs plus the machine-written
                    result/ trees - the docs are the only thing maintained here.
 

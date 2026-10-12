@@ -18,7 +18,7 @@ What this page adds is the consequence, and it is the whole reason it exists:
 
 | Content | Written by | A hand-made change here … |
 |---|---|---|
-| `result/` on `main` | abap2UI5's `frontend_deploy` workflow, which commits the trees committed in its `build/` | is overwritten on the next delivery |
+| `result/` on `main` | abap2UI5's `frontend_deploy` workflow, which builds the trees on `main` there — the same build `frontend_check` ran on the pull request, into its git-ignored `tools/out/`; no tree is committed on that side | is overwritten on the next delivery |
 | every generated branch | the `deliver` workflow, which rewrites each branch as one commit on top of `main` carrying its `result/<branch>` content | is discarded on the next delivery |
 
 The failure is not loud. The change is reviewed, merged, and works — until an
@@ -39,7 +39,8 @@ branch can be exactly one commit ahead of it.
 | You want to … | Go to |
 |---|---|
 | change the UI5 webapp | [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5), directory `app/webapp/` — then run `npm run app2abap` there to regenerate `src/01/03`, and the build delivers it here |
-| change the app of `standard_new` and `cloud_new` (the embed control app) | [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5), directory [`frontend/embed/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend/embed) |
+| change the app of `standard_new` and `cloud_new` (one view around the embed control) | [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5), directory [`frontend/embed/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend/embed) — its rules are `frontend/embed/AGENTS.md` |
+| change the embed control itself (`z2ui5.embed.Container`, what loads the frontend from the backend) | [abap2UI5/embed-control](https://github.com/abap2UI5/embed-control), published as [`@abap2ui5/embed-control`](https://www.npmjs.com/package/@abap2ui5/embed-control) — the `_new` branches pick up a new version when abap2UI5 bumps the pin in `frontend/embed/package.json` and its root `package.json` |
 | change the ABAP handlers, the BSP packaging or the build | [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5) — the ABAP artefacts and the files every branch inherits in [`frontend/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend), the scripts in [`tools/`](https://github.com/abap2UI5/abap2UI5/tree/main/tools) |
 | report a bug or request a feature | [abap2UI5 issues](https://github.com/abap2UI5/abap2UI5/issues) |
 | get the BSP under a different name | run abap2UI5's [`frontend_deploy` workflow](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_deploy.yaml) with a `standard_<name>` branch — no code change needed, see [`tools/bsp_rename`](https://github.com/abap2UI5/abap2UI5/tree/main/tools/bsp_rename) |

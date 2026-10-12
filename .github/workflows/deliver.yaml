@@ -2,11 +2,13 @@ name: deliver
 
 # The second half of the delivery relay.
 #
-# abap2UI5/abap2UI5 builds the six published branches, commits them there as
-# reviewed trees (build/<branch>), and its frontend_deploy workflow writes the
-# stamped result as result/<branch> folders into ONE commit on main here. This
-# workflow is what turns those folders into the branches an abapGit repository
-# actually pulls: on every push to main it writes, per branch, one commit
+# abap2UI5/abap2UI5 builds the six published branches at deploy time - into
+# its git-ignored tools/out/, the same build its frontend_check gate ran on
+# the pull request; no tree is committed on that side - and its
+# frontend_deploy workflow writes the stamped result as result/<branch>
+# folders into ONE commit on main here. This workflow is what turns those
+# folders into the branches an abapGit repository actually pulls: on every
+# push to main it writes, per branch, one commit
 #
 #     parent = the main commit
 #     tree   = the content of result/<branch>, nothing else
