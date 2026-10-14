@@ -1,4 +1,4 @@
-> ⚙️ **Generated branch `cloud_new`** — built in [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5) by its `frontend_deploy` workflow and pushed here. Do not commit in this repository; changes belong into abap2UI5. Frontend state: `abap2UI5/abap2UI5@610d9ae098b1` (framework 1.148.0) — see `VERSION`.
+> ⚙️ **Generated branch `cloud_new`** — built in [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5) by its `frontend_deploy` workflow and pushed here. Do not commit in this repository; changes belong into abap2UI5. Frontend state: `abap2UI5/abap2UI5@1dee28ba0e65` (framework 1.148.0) — see `VERSION`.
 
 # abap2UI5 frontend (embed control)
 
