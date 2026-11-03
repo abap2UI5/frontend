@@ -466,6 +466,17 @@
     <item>
      <ATTRIBUTES>
       <APPLNAME>Z2UI5</APPLNAME>
+      <PAGEKEY>CORE/WINDOWMODEL.JS</PAGEKEY>
+      <PAGENAME>core/WindowModel.js</PAGENAME>
+      <PAGETYPE>X</PAGETYPE>
+      <LAYOUTLANGU>E</LAYOUTLANGU>
+      <VERSION>A</VERSION>
+      <LANGU>E</LANGU>
+     </ATTRIBUTES>
+    </item>
+    <item>
+     <ATTRIBUTES>
+      <APPLNAME>Z2UI5</APPLNAME>
       <PAGEKEY>CSS/STYLE.CSS</PAGEKEY>
       <PAGENAME>css/style.css</PAGENAME>
       <PAGETYPE>X</PAGETYPE>
