@@ -1,9 +1,11 @@
-# All text files in this repository are LF-only.
-#
-# The rule is stated in CONTRIBUTING.md and AGENTS.md, and it used to be
-# enforced here until .gitattributes was deleted in the 2026-08 cleanup that
-# emptied main. A stated convention nothing enforces is a convention that
-# survives exactly until the first contributor on Windows opens a pull request
-# against the docs, which is the only kind of pull request this repository
-# accepts.
-*  text=auto eol=lf
+# Normalize line endings to LF for all text files (abapGit + tooling expect LF)
+* text=auto eol=lf
+*.abap text eol=lf
+*.xml text eol=lf
+*.json text eol=lf
+*.jsonc text eol=lf
+*.md text eol=lf
+*.mjs text eol=lf
+*.js text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf

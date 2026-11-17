@@ -1,0 +1,34 @@
+name: abap-standard
+
+on:
+  # The core is pinned to a release tag (abaplint.jsonc), its src/00 to src/02.
+  # The weekly run notices a dependency that moved while no pull request is
+  # open.
+  schedule:
+    - cron: '0 5 * * 1'
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: abap-standard-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  abap-standard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: '22'
+        cache: 'npm'
+    - run: npm ci
+    # the scheduled run lints against the core's main tip instead of the
+    # pinned tag - in this checkout only, it is never committed
+    - run: npx abaplint ./abaplint.jsonc

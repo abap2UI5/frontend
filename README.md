@@ -1,82 +1,78 @@
-[![frontend_check](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_check.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_check.yaml)
-[![frontend_deploy](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_deploy.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_deploy.yaml)
+# abap2UI5 extension
 
-# abap2UI5 frontend
+The legacy objects of abap2UI5 that its core no longer ships.
 
-This repository contains an abap2UI5 frontend artefacts service. For more information on installation, check out the [installation guide.](https://abap2ui5.github.io/docs/configuration/installation.html)
+[![abap-standard](https://github.com/abap2UI5/frontend/actions/workflows/abap-standard.yaml/badge.svg)](https://github.com/abap2UI5/frontend/actions/workflows/abap-standard.yaml)
+[![abap-cloud](https://github.com/abap2UI5/frontend/actions/workflows/abap-cloud.yaml/badge.svg)](https://github.com/abap2UI5/frontend/actions/workflows/abap-cloud.yaml)
+[![abap-702](https://github.com/abap2UI5/frontend/actions/workflows/abap-702.yaml/badge.svg)](https://github.com/abap2UI5/frontend/actions/workflows/abap-702.yaml)
 
-> ### This repository is generated — it does not take manual pull requests
->
-> It is not where the frontend is written, it is where the frontend is *published*. **Every** branch here is built in [abap2UI5](https://github.com/abap2UI5/abap2UI5) and pushed in — first as `result/<branch>` folders into one commit on `main`, then fanned out by the `deliver` workflow — so **frontend changes belong there** and bug reports belong in [its issues](https://github.com/abap2UI5/abap2UI5/issues). The `guard` check fails every pull request opened here by default; maintaining this repository's own docs is the one exception, unlocked by a maintainer with the `maintenance` label. Full rationale: [CONTRIBUTING.md](https://github.com/abap2UI5/frontend/blob/main/CONTRIBUTING.md).
->
-> ```
-> abap2UI5/abap2UI5                       abap2UI5/frontend
->                    frontend_deploy                        deliver
->   app/webapp/  ──▶  tools/out/  ──────▶  main           ──────────▶  cloud
->   (the webapp)      (each branch         result/<branch>             cloud_v2
->    + frontend/       built at deploy     (all six trees,             standard
->      abap, embed     time, git-ignored,  one commit per              standard_v2
->                      never committed)    change)                     cloud_new
->                                                                      standard_new
->                                                                      (each: main
->                                                                      + one commit)
->
->                                          standard_<name> is built on demand
->                                          and pushed straight onto its branch
-> ```
+**Install this repository with abapGit next to
+[abap2UI5](https://github.com/abap2UI5/abap2UI5) if your code - or an addon
+you use, or an ICF node - still names one of the objects below.** Everything
+then works as before. New code should not use them.
 
-#### Branch
+## What it holds
 
-Every branch is generated in [abap2UI5](https://github.com/abap2UI5/abap2UI5) — the webapp lives in `app/webapp` there, everything else a branch is built from in [`frontend/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend) — and built there by `tools/build-branches.mjs` into the git-ignored `tools/out/`, never committed on that side. Its `frontend_deploy` workflow writes the six stamped trees as `result/<branch>` folders into one commit on `main` here, and the `deliver` workflow turns each folder into its branch: one commit on top of `main`, carrying the folder's content and nothing else. So every branch is always exactly one commit ahead of `main`, `main`'s history shows every change a branch ever received, and what arrives on a branch is what a pull request over there reviewed. Pull the one that matches your system:
+### The XML view builder and retired names (`src/01`)
 
-| Name        | System                                                | UI5     | Built by |
-|-------------|-------------------------------------------------------|---------|-------|
-| cloud       | S/4 Public Cloud, BTP ABAP Environment                | classic | `npm run frontend:cloud` |
-| cloud_v2    | S/4 Public Cloud, BTP ABAP Environment                | legacy-free (UI5 2.x) | `npm run frontend:cloud_v2` |
-| standard    | S/4 Private Cloud, S/4 On-Premise, R/3 NetWeaver >750 | classic | `npm run frontend:standard` |
-| standard_v2 | S/4 Private Cloud, S/4 On-Premise                     | legacy-free (UI5 2.x) | `npm run frontend:standard_v2` |
-| cloud_new   | S/4 Public Cloud, BTP ABAP Environment                | embed control | `npm run frontend:cloud_new` |
-| standard_new | S/4 Private Cloud, S/4 On-Premise, R/3 NetWeaver >750 | embed control | `npm run frontend:standard_new` |
-
-The `_new` branches carry no copy of the abap2UI5 frontend: their app is one view with one [`z2ui5.embed.Container`](https://www.npmjs.com/package/@abap2ui5/embed-control), a custom control that loads the frontend from the backend it runs against (`?z2ui5-bundle`) — the frontend always has the version of the backend it talks to, and an abap2UI5 update needs no frontend pull any more. Same objects, names, endpoints and launchpad settings as `cloud` and `standard` - a system switches between the branches by pulling another one, and launchpad target mappings and external links keep working (checked on every build by `tools/check-identity.mjs`); they need an abap2UI5 newer than 1.146.0. The app lives in [`frontend/embed`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend/embed) of abap2UI5, the control is developed in [abap2UI5/embed-control](https://github.com/abap2UI5/embed-control) and published as `@abap2ui5/embed-control`, and each of the two branches has a README of its own.
-
-`main` carries this repository's own docs plus the machine-written `result/` trees — it is not a source either: a hand edit to `result/` is overwritten by the next delivery.
-
-#### Where to change what
-
-Nothing in this repository is written by hand any more. A change made to a generated branch or to `result/` is discarded on the next delivery, without a trace in the history:
-
-| Content | Owned by |
-|---|---|
-| `result/` on `main` | [abap2UI5](https://github.com/abap2UI5/abap2UI5) — its `frontend_deploy` workflow commits the six finished trees, one commit per content change |
-| every branch (`cloud`, `cloud_v2`, `standard`, `standard_v2`, `cloud_new`, `standard_new`) | the `deliver` workflow here — each branch is `main` plus one commit carrying its `result/<branch>` content |
-| `standard_<name>` | [abap2UI5](https://github.com/abap2UI5/abap2UI5) — built on demand by a `frontend_deploy` dispatch and pushed straight onto the branch |
-| the app of `cloud_new` and `standard_new` | [abap2UI5](https://github.com/abap2UI5/abap2UI5), [`frontend/embed`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend/embed) — the control it holds is [abap2UI5/embed-control](https://github.com/abap2UI5/embed-control)'s, pinned as `@abap2ui5/embed-control` |
-| this repository's docs (`main`) | here, as a maintenance pull request |
-
-So a frontend change belongs in abap2UI5: edit `app/webapp` there and run `npm run app2abap` to regenerate the embedded ABAP resources under `src/01/03`. No delivery tree is committed with it: `frontend_check` builds all six branches from the pull request into the git-ignored `tools/out/` and checks the BSP packaging against the webapp being changed, and `frontend_deploy` runs the same build on `main`, stamps the trees and delivers them into `result/` on `main` here, from where `deliver` fans them out into the branches. (`npm run frontend:build` is that build on your machine, `npm run frontend:verify` compares it with what is published here.)
-
-The `_new` branches take the other route to the same place. Nothing of `app/webapp` is generated into them: their app in [`frontend/embed`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend/embed) is one view with one `z2ui5.embed.Container`, and the control fetches the abap2UI5 frontend from the backend at runtime — so a change to the frontend reaches a system on these branches with the backend, without a delivery here. What *is* delivered is the app itself, the control at the version pinned in `frontend/embed/package.json` and in the root `package.json` of abap2UI5 (both, or the build fails), and the ABAP artefacts. The control is developed in [abap2UI5/embed-control](https://github.com/abap2UI5/embed-control) and published as [`@abap2ui5/embed-control`](https://www.npmjs.com/package/@abap2ui5/embed-control): a limitation of the control is fixed there, one of the frontend in `app/webapp`, and neither is worked around in the app.
-
-Because the overwrite is not loud — the change is merged, works, and vanishes on some later unrelated run — the convention is enforced rather than trusted: the `guard` workflow fails **every** pull request opened here, and a change to this repository's own docs is unlocked by a maintainer applying the `maintenance` label.
-
-#### Renaming
-
-Need the BSP under a **different name** (e.g. a second copy in the same system)? Run the [`frontend_deploy` workflow](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_deploy.yaml) in abap2UI5 with a branch name of the form `standard_<name>` — plain (`ZMYUI5`) or in a registered namespace (`/ABAPGIT/` → BSP `/ABAPGIT/UI5`, handler `/ABAPGIT/CL_LP_HANDLER`) — it generates and pushes a branch `standard_<name>` / `standard_v2_<name>` with the whole deployment identity (BSP, SICF nodes, handler class) renamed. For a backend that was itself renamed with the [`build-rename` workflow](https://github.com/abap2UI5/abap2UI5/actions/workflows/build-rename.yaml), append `__<name>` (`standard_#abap2ui5#__#abap2ui5#`): the handler then calls that backend's `cl_ui5_http_handler`. Details in [`tools/bsp_rename`](https://github.com/abap2UI5/abap2UI5/tree/main/tools/bsp_rename).
-
-#### Sibling BSPs
-
-`app/webapp/manifest.json` reserves two resourceRoots that point **next to** this BSP, so a system can add frontend artefacts without a change here:
-
-| resourceRoot | Sibling BSP | Built from |
+| Object | | Use instead |
 |---|---|---|
-| `z2ui5_cci` | `Z2UI5_CCI` | [abap2UI5-addons/custom-controls](https://github.com/abap2UI5-addons/custom-controls) — community custom controls |
-| `z2ui5_ccc` | `Z2UI5_CCC` | [abap2UI5-addons/custom-controls-customer](https://github.com/abap2UI5-addons/custom-controls-customer) — a customer's own reuse library, icon font or CSS |
+| `z2ui5_cl_xml_view`, `z2ui5_cl_xml_view_cc` | the view builder apps were written with before 2026 | `z2ui5_cl_ui5_view_builder` |
+| `z2ui5_cl_http_handler` | the former name of the HTTP entry point - an empty subclass, so an ICF node that still names it keeps resolving | `z2ui5_cl_ui5_http_handler`, or the node and handler abap2UI5 delivers (`z2ui5_cl_lp_handler`) |
+| `z2ui5_if_types` | the types the old builder names | the types on `z2ui5_if_client` |
 
-Neither BSP has to be installed: the browser requests nothing from a resourceRoot until a view names the namespace. Both entries come from abap2UI5 `app/webapp` — see "Where to change what" above.
+### The popups (`src/02`)
 
-#### Dependencies
-* [abap2UI5](https://github.com/abap2UI5/abap2UI5) — the frontend artefacts pair with the abap2UI5 framework installed in the backend
+`z2ui5_cl_pop_to_confirm`, `_to_inform`, `_to_select`, `_error`, `_messages`,
+`_table`, `_data`, `_html`, `_pdf`, `_textedit`, `_input_val`, `_get_range`,
+`_get_range_m`, `_file_dl`, `_file_ul`, `_image_editor`, `_demo_output`.
+Their successor is the [popups addon](https://github.com/abap2UI5-addons/popups).
 
-#### Issues
-For bug reports or feature requests, please open an issue in the [abap2UI5 repository.](https://github.com/abap2UI5/abap2UI5/issues)
+### The utilities (`src/`)
+
+| Object | |
+|---|---|
+| `z2ui5_cl_util` | utility functions (strings, JSON/XML, RTTI, filters, ...) |
+| `z2ui5_cl_util_db` | key/value store on table `z2ui5_t_91` |
+| `z2ui5_cl_util_ext` | DDIC, transports, locks, logs, ... |
+| `z2ui5_cl_util_http` | HTTP request/response wrapper |
+| `z2ui5_cl_util_log`, `z2ui5_cl_util_msg` | logging, messages |
+| `z2ui5_cl_util_range`, `z2ui5_cl_util_xml` | select-option ranges, XML builder |
+| `z2ui5_cx_util_error` | exception |
+| `z2ui5_t_91` | table of `z2ui5_cl_util_db` |
+
+abap2UI5's apps call `z2ui5_cl_ui5_util_*` of the core instead, addons carry
+their own renamed copy of [abap-util](https://github.com/abap-util/abap-util).
+
+## Which abap2UI5 it goes with
+
+The objects were part of abap2UI5 itself (its package `src/99`) up to release
+1.149.0, and a system cannot hold an object twice:
+
+| abap2UI5 | this repository |
+|---|---|
+| up to 1.148.0 | not needed - every object is in the core |
+| 1.149.0 | only the utilities are missing from the core; the rest of this repository would collide with it |
+| after 1.149.0 | pull it, if something on the system still uses one of the objects |
+
+When an update of abap2UI5 removes these objects from its package, pull this
+repository **before** you let abapGit delete them there - or let it delete
+them and pull this one right after: the objects come back under the same
+names, in this repository's package. The table `z2ui5_t_91` and its data stay
+in the system either way; do not confirm a deletion of the table.
+
+Branches: `main` for Standard ABAP and ABAP Cloud (v750 syntax), `702` for
+NetWeaver 7.02 - 7.4x (generated by `publish-702`).
+
+## This repository used to be the frontend
+
+Until 2026-11 `abap2UI5/frontend` delivered the ICF node, the BSP `Z2UI5` and
+the cloud HTTP service as branches (`standard`, `cloud`, `standard_new`,
+`cloud_new`, ...). They are part of abap2UI5 now - one pull of its `main`
+(or its branch `cloud`) is a running installation - and the branches here are
+not rebuilt any more. If your abapGit repository points at one of them:
+
+1. Remove that repository from abapGit **without deleting its objects**.
+2. Pull abap2UI5 (`main`, `702` or `cloud`). The node `/sap/bc/z2ui5`, its
+   handler `Z2UI5_CL_LP_HANDLER` and the BSP `Z2UI5` keep their names and
+   become part of its package.

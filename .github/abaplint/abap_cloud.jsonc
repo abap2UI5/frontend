@@ -1,0 +1,41 @@
+{
+  "global": {
+    "files": "/../../src/**/*.*"
+  },
+  "dependencies": [
+    {
+      "url": "https://github.com/abapedia/steampunk-2305-api-intersect-702",
+      "folder": "/deps",
+      "files": "/src/**/*.*"
+    },
+    {
+      // see abaplint.jsonc: the release, its src/00 to src/02
+      "url": "https://github.com/abap2UI5/abap2UI5",
+      "branch": "1.149.0",
+      "folder": "/abap2UI5",
+      "files": "/src/0[0-2]/**/*.*"
+    }
+  ],
+  "syntax": {
+    "version": "Cloud",
+    "errorNamespace": "."
+  },
+  // abap2UI5's .github/abaplint/abap_cloud.jsonc, which linted these classes
+  // while they were its src/99/01
+  "rules": {
+    "downport": true,
+    "begin_end_names": true,
+    "check_ddic": true,
+    "check_include": true,
+    "check_syntax": true,
+    "global_class": true,
+    "definitions_top": false,
+    "implement_methods": true,
+    "method_implemented_twice": true,
+    "parser_error": true,
+    "superclass_final": true,
+    "unknown_types": true,
+    "xml_bom": true,
+    "xml_consistency": true
+  }
+}

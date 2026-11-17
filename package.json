@@ -1,0 +1,28 @@
+{
+  "name": "abap2ui5-ext",
+  "private": true,
+  "version": "1.0.0",
+  "description": "The legacy objects of abap2UI5 its core no longer ships (the XML view builder, the popups, z2ui5_cl_util*, z2ui5_cx_util_error, z2ui5_t_91) - install next to abap2UI5 if your code still uses them.",
+  "scripts": {
+    "syfixes": "find . -type f -name '*.abap' -exec sed -i -e 's/ RAISE EXCEPTION TYPE cx_sy_itab_line_not_found/ ASSERT 1 = 0/g' {} + ",
+    "strip_trailing_ws": "find src -type f -name '*.abap' -exec sed -i 's/[[:space:]]\\+$//' {} +",
+    "abaplintpathfix": "sed -i 's|\"files\": \"/\\.\\./\\.\\./src/\\*\\*/\\*\\.\\*\"|\"files\": \"/src/**/*.*\"|g' abaplint.jsonc",
+    "downport": "abaplint --fix .github/abaplint/abap_702.jsonc && npm run syfixes",
+    "auto_downport": "abaplint --fix .github/abaplint/abap_702.jsonc && npm run syfixes && npm run strip_trailing_ws && cp -f .github/abaplint/abap_702.jsonc abaplint.jsonc && npm run abaplintpathfix",
+    "lint": "abaplint ./abaplint.jsonc",
+    "check:cloud": "abaplint .github/abaplint/abap_cloud.jsonc",
+    "check": "npm run lint && npm run check:cloud",
+    "test": "npm run check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abap2UI5/frontend.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@abaplint/cli": "^2.120.92"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

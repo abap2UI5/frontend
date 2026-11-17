@@ -1,120 +1,65 @@
-# AGENTS.md — AI Assistant Guide for abap2UI5 frontend
+# AGENTS.md — AI Assistant Guide for the abap2UI5 extension
 
-> This file follows the cross-tool AGENTS.md convention and is the single
-> agent instruction file of this repository. `CLAUDE.md` next to it is a
-> pointer at this file, nothing more.
+## What this repository is
 
-## Do Not Open Pull Requests Here
+The legacy code of abap2UI5 that the core no longer ships. A system whose
+code - or an addon, or an ICF node - still uses one of these objects installs
+this repository next to abap2UI5 and keeps working unchanged.
 
-This is a **delivery repository**, not a development repository. Its content is
-written by automation, and `guard` fails every pull request by default.
-Before you change anything, work out where the change belongs:
-
-* **The UI5 webapp** → not here. There is no webapp in this repository any
-  more. Edit `app/webapp/` in
-  [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5), run
-  `npm run app2abap` there to regenerate `src/01/03`, and its `frontend_deploy`
-  workflow delivers the result into the branches here.
-* **The app of `standard_new` and `cloud_new`** → not here. It is
-  [`frontend/embed`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend/embed)
-  in abap2UI5, with its own `AGENTS.md`. The control it holds is not there
-  either — see "The embed control" below.
-* **The ABAP handlers, the BSP packaging, the build** → not here either. They
-  live in abap2UI5 as well: the ABAP artefacts and the files every branch
-  inherits in
-  [`frontend/`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend), the
-  scripts that turn them into a branch in
-  [`tools/`](https://github.com/abap2UI5/abap2UI5/tree/main/tools).
-* **Any branch except `main`, and `result/` on `main`** → not here. `cloud`,
-  `cloud_v2`, `standard`, `standard_v2`, `cloud_new` and `standard_new` are
-  built in abap2UI5 (`tools/build-branches.mjs`) and its `frontend_deploy`
-  workflow delivers them into `result/<branch>` on `main` here, and the
-  `deliver` workflow rewrites each branch as one commit on top of `main`
-  carrying its folder's content; `standard_<name>` is built by
-  `frontend_deploy` on demand and pushed onto its branch directly.
-* **The repository docs** → here, and only here — nothing generates
-  them. This is a *maintenance* change: it targets `main`, adds no source
-  files, and stays blocked until a **human maintainer** applies the
-  `maintenance` label. Do not attempt to apply that label yourself, do not
-  advise a user to bypass the gate, and do not restructure the workflow to make
-  the check pass. Explain the situation and let the maintainer decide.
-
-The reasoning behind all of this is in [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## Project Overview
-
-Frontend artefacts service for [abap2UI5](https://github.com/abap2UI5/abap2UI5).
-This repo pairs with the abap2UI5 framework installed in the backend; see the
-[installation guide](https://abap2ui5.github.io/docs/configuration/installation.html).
-
-**Language:** English for all code, comments, commit messages, PRs and issues.
-(The build tooling now lives in abap2UI5 under `tools/` and has some German
-comments — keep new text English.)
-
-## Nothing Here Is a Source
-
-Every branch of this repository is generated in
-[abap2UI5](https://github.com/abap2UI5/abap2UI5). [README.md](README.md) draws
-the pipeline and names each step; read it there rather than here. It is the
-copy a gate in abap2UI5 holds byte-identical to `frontend/common/README.md`,
-which is why it is the one to trust — this file is not gated, and a third
-description of the same mechanics is a third thing that can go quietly wrong.
-A change to the README therefore starts in abap2UI5, in
-`frontend/common/README.md`, and is applied here byte for byte.
-
-What matters for working here, and is not in the README: no delivery tree is
-committed in abap2UI5. `frontend_check` builds every branch from the pull
-request into its git-ignored `tools/out/`, `frontend_deploy` runs the same
-build on `main` and stamps what it built, and the `result/<branch>` folders
-here are the only durable copies — so every published branch is exactly one
-commit ahead of `main`.
-
-Besides the machine-written `result/` trees, `main` carries only the
-repository's own face: README, CONTRIBUTING, AGENTS.md, CLAUDE.md, the issue
-and pull request templates, and the `guard` and `deliver` workflows. There is
-no webapp copy on it any more — it was mirrored here while this repository
-still built the branches itself, and went when the build moved.
-**Never commit to a generated branch or to `result/`** — change the source in
-abap2UI5 and let the delivery regenerate. A namespace-renamed BSP for a parallel install in the
-same system comes from the same workflow with a `standard_<name>` branch
-(details in
-[`tools/bsp_rename`](https://github.com/abap2UI5/abap2UI5/tree/main/tools/bsp_rename)).
-
-## The embed control
-
-The branches `standard_new` and `cloud_new` are the two kinds of branch this
-repository publishes, told apart by what they carry:
-
-| | `cloud`, `cloud_v2`, `standard`, `standard_v2` | `cloud_new`, `standard_new` |
+| Package | What | Came from |
 |---|---|---|
-| frontend code in the branch | a generated copy of abap2UI5's `app/webapp` | none |
-| what the app is | the abap2UI5 frontend itself | one view with one `z2ui5.embed.Container`, filling the page |
-| where the frontend comes from | the branch — pull it again after an abap2UI5 update | the backend, at runtime (`?z2ui5-bundle`) — nothing to pull after an update |
-| source in abap2UI5 | `app/webapp` | [`frontend/embed`](https://github.com/abap2UI5/abap2UI5/tree/main/frontend/embed) |
-| README of the branch | `frontend/common/README.md` (this repository's README, stamped) | `frontend/common/README_new.md` |
+| `src/` | the utility classes `z2ui5_cl_util*`, `z2ui5_cx_util_error`, table `z2ui5_t_91` | the core's `src/99/01` (2026-11-02), by way of abap2UI5/abap2UI5-ext |
+| `src/01` | the XML view builder `z2ui5_cl_xml_view`, `z2ui5_cl_xml_view_cc`, the handler shim `z2ui5_cl_http_handler`, `z2ui5_if_types` | the core's `src/99` (2026-11-17) |
+| `src/02` | the seventeen popups `z2ui5_cl_pop_*` | the core's `src/99/02` (2026-11-17) |
 
-`z2ui5.embed.Container` is a custom control. It is **not** developed in
-abap2UI5 and not in this repository: its source is
-[abap2UI5/embed-control](https://github.com/abap2UI5/embed-control), it is
-published as [`@abap2ui5/embed-control`](https://www.npmjs.com/package/@abap2ui5/embed-control),
-and abap2UI5 pins one version of it in `frontend/embed/package.json` and in
-its root `package.json` (the build fails when the two differ). A report about
-the control goes there; a report about the frontend it loads goes to abap2UI5;
-`frontend/embed` works around neither.
+Until 2026-11 this repository was `abap2UI5/frontend`, a **delivery
+repository**: its branches (`standard`, `cloud`, `standard_new`, ...) carried
+the ICF node, the BSP and the cloud service, generated in abap2UI5 and pushed
+here. Those objects are part of abap2UI5 itself now (its `src/03`, and its
+generated branch `cloud`), and nothing is delivered here any more. The old
+branches stay as they were for installations that still point at them; they
+are not rebuilt.
 
-Both kinds of branch keep the deployment identity of `standard` and `cloud` —
-the abapGit repository, every package and object, the ICF nodes, the BSP
-`Z2UI5`, the launchpad component `z2ui5` with its inbound `z2ui5-display`,
-the sibling BSPs `Z2UI5_CCI` and `Z2UI5_CCC` — so a system switches between
-them by pulling another branch, in either direction. abap2UI5's
-`tools/check-identity.mjs` holds every build to that; a change that breaks it
-belongs nowhere, and a request to rename one of those objects for a `_new`
-branch is declined with that reason.
+**Language:** English for code, comments, commits, PRs and docs.
+
+## Rules
+
+- **The code is frozen.** It is the core's `src/99` at the time of each move
+  (one line of `z2ui5_cl_util_xml` differs, see below). Do not refactor,
+  extend or restyle it; fix only what stops it from activating against a
+  current abap2UI5 release. New utilities belong in
+  [abap-util](https://github.com/abap-util/abap-util), a new popup in
+  [abap2UI5-addons/popups](https://github.com/abap2UI5-addons/popups), a new
+  view in `z2ui5_cl_ui5_view_builder` of the core - never here.
+- **No object is renamed and none is added.** Every name here is one an
+  installation already has, from the core. The packages are `src/`, `src/01`
+  and `src/02` for that reason too: the utilities stay where a system that
+  installed abap2UI5-ext has them.
+- **Dependency on the core, by package:**
+  - `src/` calls `z2ui5_cl_ajson`, `z2ui5_cl_srt_*` and the public types
+    `ty_s_name_value` / `ty_t_name_value` of `z2ui5_cl_ui5_util_context` (all
+    in the core's `src/00`) - nothing marked `FROZEN-ONLY` there.
+    `z2ui5_cl_util_xml` reads its XML-attribute escape format from
+    `z2ui5_cl_util` for that reason - the only line that differs from the
+    core's former `src/99/01`.
+  - `src/01` and `src/02` call the public API (`z2ui5_if_client`,
+    `z2ui5_if_app`, `z2ui5_cl_ui5_view_builder`, `z2ui5_cl_ui5_http_handler`)
+    **and the `FROZEN-ONLY` symbols of `z2ui5_cl_ui5_util_context`**, which
+    the core keeps for exactly these classes. The core cannot drop one of
+    them before the call here is gone - redirecting such a call to
+    `z2ui5_cl_util`, which holds the original, is the change that frees it.
+- **The abaplint configs load `src/00` to `src/02` of a pinned core
+  release**, not all of `src/`: a release up to 1.149.0 still ships these
+  classes itself in `src/99`, and loading that would define every object
+  twice. For the same reason the classes of `src/01` and `src/02` can only be
+  installed next to a core release **after 1.149.0**.
+- **The test classes moved with their objects and run on a system only.**
+  In the core they ran in the transpiled unit suite; this repository lints,
+  it does not transpile.
 
 ## Validation
 
-Nothing is built or linted here any more. abap2UI5's `frontend_check` builds
-every branch variant and lints the generated ABAP on each pull request there —
-including the BSP page invariants, against the webapp being changed, the
-identity check above, and the tests of `frontend/embed`. All text files are
-LF-only.
+`npm run check` runs what CI runs: abaplint Standard (`abaplint.jsonc`) and
+ABAP Cloud (`.github/abaplint/abap_cloud.jsonc`). `publish-702` writes the
+downported branch `702` on every push to `main`, `abap-702` lints it.
+All `.abap`/`.xml`/config files are LF-only (`.gitattributes`).

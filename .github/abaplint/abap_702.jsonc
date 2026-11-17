@@ -1,0 +1,38 @@
+{
+  "global": {
+    "files": "/../../src/**/*.*"
+  },
+  "dependencies": [
+    {
+      "url": "https://github.com/open-abap/open-abap-core",
+      "folder": "/deps",
+      "files": "/src/**/*.*"
+    },
+    {
+      // the downported form of the release abaplint.jsonc pins, its src/00 to src/02
+      "url": "https://github.com/abap2UI5/abap2UI5",
+      "branch": "1.149.0-702",
+      "folder": "/abap2UI5",
+      "files": "/src/0[0-2]/**/*.*"
+    }
+  ],
+  "syntax": {
+    "version": "v702",
+    "errorNamespace": "."
+  },
+  "rules": {
+    "downport": true,
+    "begin_end_names": true,
+    "check_ddic": true,
+    "check_include": true,
+    "check_syntax": true,
+    "global_class": true,
+    "definitions_top": true,
+    "implement_methods": true,
+    "method_implemented_twice": true,
+    "parser_error": true,
+    "superclass_final": true,
+    "unknown_types": true,
+    "xml_consistency": true
+  }
+}
