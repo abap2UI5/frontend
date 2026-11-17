@@ -8,7 +8,7 @@ The legacy objects of abap2UI5 that its core no longer ships.
 
 **Install this repository with abapGit next to
 [abap2UI5](https://github.com/abap2UI5/abap2UI5) if your code - or an addon
-you use, or an ICF node - still names one of the objects below.** Everything
+you use - still names one of the objects below.** Everything
 then works as before. New code should not use them.
 
 ## What it holds
@@ -18,8 +18,13 @@ then works as before. New code should not use them.
 | Object | | Use instead |
 |---|---|---|
 | `z2ui5_cl_xml_view`, `z2ui5_cl_xml_view_cc` | the view builder apps were written with before 2026 | `z2ui5_cl_ui5_view_builder` |
-| `z2ui5_cl_http_handler` | the former name of the HTTP entry point - an empty subclass, so an ICF node that still names it keeps resolving | `z2ui5_cl_ui5_http_handler`, or the node and handler abap2UI5 delivers (`z2ui5_cl_lp_handler`) |
 | `z2ui5_if_types` | the types the old builder names | the types on `z2ui5_if_client` |
+
+`z2ui5_cl_http_handler`, the former name of the HTTP entry point, is **not**
+here: it was deleted when it left the core (2026-11-17). An ICF node or a
+handler class that still names it calls `z2ui5_cl_ui5_http_handler` instead -
+same methods, it was an empty subclass - or uses the node and handler
+abap2UI5 delivers (`/sap/bc/z2ui5`, `z2ui5_cl_lp_handler`).
 
 ### The popups (`src/02`)
 

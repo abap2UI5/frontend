@@ -3,13 +3,18 @@
 ## What this repository is
 
 The legacy code of abap2UI5 that the core no longer ships. A system whose
-code - or an addon, or an ICF node - still uses one of these objects installs
-this repository next to abap2UI5 and keeps working unchanged.
+code - or an addon - still uses one of these objects installs this
+repository next to abap2UI5 and keeps working unchanged.
+
+One object of the core's `src/99` did not come along and must not be added:
+`z2ui5_cl_http_handler`, the empty subclass that kept the former handler
+name alive, was deleted (maintainer decision 2026-11-17). What named it
+names `z2ui5_cl_ui5_http_handler` now.
 
 | Package | What | Came from |
 |---|---|---|
 | `src/` | the utility classes `z2ui5_cl_util*`, `z2ui5_cx_util_error`, table `z2ui5_t_91` | the core's `src/99/01` (2026-11-02), by way of abap2UI5/abap2UI5-ext |
-| `src/01` | the XML view builder `z2ui5_cl_xml_view`, `z2ui5_cl_xml_view_cc`, the handler shim `z2ui5_cl_http_handler`, `z2ui5_if_types` | the core's `src/99` (2026-11-17) |
+| `src/01` | the XML view builder `z2ui5_cl_xml_view`, `z2ui5_cl_xml_view_cc`, `z2ui5_if_types` | the core's `src/99` (2026-11-17) |
 | `src/02` | the seventeen popups `z2ui5_cl_pop_*` | the core's `src/99/02` (2026-11-17) |
 
 Until 2026-11 this repository was `abap2UI5/frontend`, a **delivery
@@ -43,7 +48,7 @@ are not rebuilt.
     `z2ui5_cl_util` for that reason - the only line that differs from the
     core's former `src/99/01`.
   - `src/01` and `src/02` call the public API (`z2ui5_if_client`,
-    `z2ui5_if_app`, `z2ui5_cl_ui5_view_builder`, `z2ui5_cl_ui5_http_handler`)
+    `z2ui5_if_app`, `z2ui5_cl_ui5_view_builder`)
     **and the `FROZEN-ONLY` symbols of `z2ui5_cl_ui5_util_context`**, which
     the core keeps for exactly these classes. The core cannot drop one of
     them before the call here is gone - redirecting such a call to
