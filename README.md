@@ -24,7 +24,7 @@ then works as before. New code should not use them.
 here: it was deleted when it left the core (2026-11-17). An ICF node or a
 handler class that still names it calls `z2ui5_cl_ui5_http_handler` instead -
 same methods, it was an empty subclass - or uses the node and handler
-abap2UI5 delivers (`/sap/bc/z2ui5`, `z2ui5_cl_lp_handler`).
+abap2UI5 delivers (`/sap/bc/z2ui5`, `z2ui5_cl_ui5_icf_handler`).
 
 ### The popups (`src/02`)
 
@@ -78,6 +78,8 @@ the cloud HTTP service as branches (`standard`, `cloud`, `standard_new`,
 not rebuilt any more. If your abapGit repository points at one of them:
 
 1. Remove that repository from abapGit **without deleting its objects**.
-2. Pull abap2UI5 (`main`, `702` or `cloud`). The node `/sap/bc/z2ui5`, its
-   handler `Z2UI5_CL_LP_HANDLER` and the BSP `Z2UI5` keep their names and
-   become part of its package.
+2. Pull abap2UI5 (`main`, `702` or `cloud`). The node `/sap/bc/z2ui5` and
+   the BSP `Z2UI5` keep their names and become part of its package. The
+   node's handler is `Z2UI5_CL_UI5_ICF_HANDLER` there; the class
+   `Z2UI5_CL_LP_HANDLER` this repository delivered is no longer named by
+   anything after the pull and can be deleted.
