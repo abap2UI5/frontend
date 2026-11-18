@@ -95,7 +95,7 @@ repository publishes, told apart by what they carry:
 
 `z2ui5.embed.Container` is a custom control. It is **not** developed in
 abap2UI5 and not in this repository: its source is
-[abap2UI5/embed-control](https://github.com/abap2UI5/embed-control), it is
+[abap2UI5-addons/embed-ui5-control](https://github.com/abap2UI5-addons/embed-ui5-control), it is
 published as [`@abap2ui5/embed-control`](https://www.npmjs.com/package/@abap2ui5/embed-control),
 and abap2UI5 pins one version of it in `frontend/embed/package.json` and in
 its root `package.json` (the build fails when the two differ). A report about
