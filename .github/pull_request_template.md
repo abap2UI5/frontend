@@ -14,7 +14,7 @@
                    app of standard_new and cloud_new in frontend/embed/, the
                    ABAP artefacts in frontend/abap/, the build in tools/.
                    The embed control those two branches hold
-                   (z2ui5.embed.Container) is abap2UI5/embed-control's.
+                   (z2ui5.embed.Container) is abap2UI5-addons/embed-ui5-control's.
     main           carries this repository's own docs plus the machine-written
                    result/ trees - the docs are the only thing maintained here.
 
