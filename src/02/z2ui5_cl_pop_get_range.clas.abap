@@ -31,7 +31,7 @@ CLASS z2ui5_cl_pop_get_range DEFINITION PUBLIC.
       RETURNING
         VALUE(result) TYPE ty_s_result.
 
-    DATA mt_mapping TYPE z2ui5_if_types=>ty_t_name_value.
+    DATA mt_mapping TYPE z2ui5_if_client=>ty_t_name_value.
 
   PROTECTED SECTION.
     DATA client TYPE REF TO z2ui5_if_client.
