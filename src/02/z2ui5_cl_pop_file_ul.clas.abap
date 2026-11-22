@@ -118,7 +118,6 @@ CLASS z2ui5_cl_pop_file_ul IMPLEMENTATION.
 
         CLEAR mv_value.
         CLEAR mv_path.
-        client->popup_model_update( ).
 
       WHEN `BUTTON_CONFIRM` OR `BUTTON_CANCEL`.
         ms_result-check_confirmed = xsdbool( lv_event = `BUTTON_CONFIRM` ).

@@ -151,7 +151,6 @@ CLASS z2ui5_cl_pop_get_range_m IMPLEMENTATION.
         ASSIGN ms_result-t_filter[ name = client->get_event_arg( 1 ) ] TO <tab>.
         CLEAR <tab>-t_token.
         CLEAR <tab>-t_range.
-        client->popup_model_update( ).
 
       WHEN `LIST_OPEN`.
         mv_popup_name = client->get_event_arg( 1 ).
@@ -172,7 +171,6 @@ CLASS z2ui5_cl_pop_get_range_m IMPLEMENTATION.
           CLEAR lr_filter->t_range.
           CLEAR lr_filter->t_token.
         ENDLOOP.
-        client->popup_model_update( ).
 
     ENDCASE.
   ENDMETHOD.

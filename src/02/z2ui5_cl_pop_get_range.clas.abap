@@ -175,15 +175,12 @@ CLASS z2ui5_cl_pop_get_range IMPLEMENTATION.
 
       WHEN `POPUP_ADD`.
         INSERT VALUE #( key = z2ui5_cl_ui5_util_context=>uuid_get_c32( ) ) INTO TABLE mt_filter.
-        client->popup_model_update( ).
 
       WHEN `POPUP_DELETE`.
         DELETE mt_filter WHERE key = client->get_event_arg( 1 ).
-        client->popup_model_update( ).
 
       WHEN `POPUP_DELETE_ALL`.
         CLEAR mt_filter.
-        client->popup_model_update( ).
 
     ENDCASE.
 
