@@ -3829,6 +3829,9 @@ CLASS z2ui5_cl_util_ext IMPLEMENTATION.
 
   METHOD lock_set_wait.
 
+    DATA lv_fm      TYPE string.
+    DATA lv_seconds TYPE i.
+
     DATA(lv_remaining) = retries.
 
     WHILE lv_remaining > 0.
@@ -3839,7 +3842,20 @@ CLASS z2ui5_cl_util_ext IMPLEMENTATION.
       ENDIF.
       lv_remaining = lv_remaining - 1.
       IF lv_remaining > 0.
-        WAIT UP TO delay_ms / 1000 SECONDS.
+        " WAIT UP TO is no statement of ABAP Cloud, where this class has to
+        " activate as well: the pause is a function module called by name,
+        " like every classic API of this class. ENQUE_SLEEP takes whole
+        " seconds - delay_ms is rounded up, so a caller never waits less
+        " than it asked for (the default of 500 ms is one second). Where
+        " the module cannot be called the tries follow without a pause.
+        lv_seconds = ( delay_ms + 999 ) DIV 1000.
+        TRY.
+            lv_fm = `ENQUE_SLEEP`.
+            CALL FUNCTION lv_fm
+              EXPORTING
+                seconds = lv_seconds.
+          CATCH cx_root ##NO_HANDLER.
+        ENDTRY.
       ENDIF.
     ENDWHILE.
 

@@ -30,12 +30,26 @@ are not rebuilt.
 ## Rules
 
 - **The code is frozen.** It is the core's `src/99` at the time of each move
-  (one line of `z2ui5_cl_util_xml` differs, see below). Do not refactor,
+  (it differs in three places, listed below). Do not refactor,
   extend or restyle it; fix only what stops it from activating against a
   current abap2UI5 release. New utilities belong in
   [abap-util](https://github.com/abap-util/abap-util), a new popup in
   [abap2UI5-addons/popups](https://github.com/abap2UI5-addons/popups), a new
   view in `z2ui5_cl_ui5_view_builder` of the core - never here.
+- **Where it differs from the core's former `src/99`** - each for
+  activation, none for behaviour a caller relies on:
+  - `z2ui5_cl_util_xml` reads its XML-attribute escape format from
+    `z2ui5_cl_util` (the dependency rule below).
+  - Four popups - `z2ui5_cl_pop_file_ul`, `_get_range`, `_get_range_m`,
+    `_to_select` - no longer call `client->popup_model_update( )` (seven
+    calls, 2026-11-22): the core removed the method after 1.150.0, and it
+    had been empty since before 1.149.0.
+  - `z2ui5_cl_util_ext=>lock_set_wait` pauses between two tries with the
+    function module `ENQUE_SLEEP`, called by name, where it had
+    `WAIT UP TO` (2026-11-22): `WAIT` is no statement of ABAP Cloud, and a
+    newer abaplint than the one locked here says so. The module takes
+    whole seconds - `delay_ms` is rounded up, the default of 500 ms is one
+    second.
 - **No object is renamed and none is added.** Every name here is one an
   installation already has, from the core. The packages are `src/`, `src/01`
   and `src/02` for that reason too: the utilities stay where a system that
@@ -45,8 +59,8 @@ are not rebuilt.
     `ty_s_name_value` / `ty_t_name_value` of `z2ui5_cl_ui5_util_context` (all
     in the core's `src/00`) - nothing marked `FROZEN-ONLY` there.
     `z2ui5_cl_util_xml` reads its XML-attribute escape format from
-    `z2ui5_cl_util` for that reason - the only line that differs from the
-    core's former `src/99/01`.
+    `z2ui5_cl_util` for that reason - a line that differs from the core's
+    former `src/99/01`.
   - `src/01` and `src/02` call the public API (`z2ui5_if_client`,
     `z2ui5_if_app`, `z2ui5_cl_ui5_view_builder`)
     **and the `FROZEN-ONLY` symbols of `z2ui5_cl_ui5_util_context`**, which
