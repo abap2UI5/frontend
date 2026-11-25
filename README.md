@@ -1,3 +1,16 @@
+> [!WARNING]
+> **This repository is retired.** Since abap2UI5 1.151.0, abap2UI5 itself ships everything this repository delivered, so one pull is a running installation. This repository gets no further updates.
+>
+> | You use | Install instead |
+> |---|---|
+> | `standard`, `standard_v2`, `standard_new` (on-premise, private cloud) | [abap2UI5](https://github.com/abap2UI5/abap2UI5), branch `main` - the ICF node `/sap/bc/z2ui5`, its handler (now `z2ui5_cl_ui5_icf_handler`, was `z2ui5_cl_lp_handler`) and the BSP `Z2UI5` are part of it |
+> | `cloud`, `cloud_v2`, `cloud_new` (ABAP Cloud) | [abap2UI5](https://github.com/abap2UI5/abap2UI5), branch `cloud` |
+> | the legacy objects (`z2ui5_cl_xml_view`, `z2ui5_cl_pop_*`, `z2ui5_if_types`, `z2ui5_cl_util*`) | [abap2UI5-ext](https://github.com/abap2UI5/abap2UI5-ext) |
+>
+> **Switching:** in abapGit, remove this repository **without deleting its objects** ("Remove", not "Uninstall"), then pull abap2UI5. Afterwards check in SICF that `/sap/bc/z2ui5` uses `z2ui5_cl_ui5_icf_handler`. Details: [abap2UI5/abap2UI5#3023](https://github.com/abap2UI5/abap2UI5/issues/3023).
+>
+> **No rush:** until you switch, keep abap2UI5 at 1.150.0 and this repository as installed - that combination keeps working.
+
 [![frontend_check](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_check.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_check.yaml)
 [![frontend_deploy](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_deploy.yaml/badge.svg?branch=main)](https://github.com/abap2UI5/abap2UI5/actions/workflows/frontend_deploy.yaml)
 
